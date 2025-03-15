@@ -1,0 +1,42 @@
+.nav {
+  display: flex;
+  padding: 0.7rem;
+}
+
+.nav img {
+  width: 6rem;
+  margin-right: auto;
+}
+
+.nav ul {
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav ul li:first-child a{
+  color: #262626;
+  text-decoration: none;
+}
+
+.nav ul li:first-child a:hover {
+  color: #8a0f0f;
+}
+
+.nav ul li:last-child a{
+  color: #262626;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.4rem;
+  border: solid 0.2rem #262626;
+  border-radius: 1rem;
+}
+
+.nav ul li:last-child a:hover{
+  color: white;
+  text-decoration: none;
+  background-color: #8a0f0f;
+  border-color: #8a0f0f;
+}
+
