@@ -1,0 +1,26 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.hero div {
+  flex: 1;
+  text-align: left;
+}
+
+.hero img {
+  width: 25rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 3.2rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}

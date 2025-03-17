@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/TaskStory_Logo.png"
+import logo from "../assets/logo.svg"
 
 import classes from './MainNavigation.module.css'
 
@@ -7,7 +7,9 @@ import classes from './MainNavigation.module.css'
 function MainNavigationPage() {
   return (
     <nav className={classes.nav}>
-      <img src={logo} alt="taskstory logo" />
+      <Link to="/">
+        <img src={logo} alt="taskstory logo" />
+      </Link>
       <ul>
         <li>
           <Link to="/login">
@@ -15,7 +17,7 @@ function MainNavigationPage() {
           </Link>
         </li>
         <li>
-          <Link>
+          <Link to="create">
             Crie uma Conta
           </Link>
         </li>

@@ -1,0 +1,55 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+}
+
+input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 8px 0;
+  margin-bottom: 1.8rem;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-bottom: 2px solid #007BFF;
+}
+
+p {
+  margin: 0;
+}
+
+p label {
+  font-size: 14px;
+  color: #777;
+  display: block;
+  margin-bottom: 5px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: #007BFF;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
