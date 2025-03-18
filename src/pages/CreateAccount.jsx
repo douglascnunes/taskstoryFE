@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { redirect } from "react-router-dom";
 
 
 import CreateAccountForm from "../components/CreateAccountForm";
@@ -54,6 +55,6 @@ export async function action({ request }) {
     const expiration = new Date();
     expiration.setHours(expiration.getHours() + 1);
     localStorage.setItem('expiration', expiration.toISOString);
-
-    return redirect('/')
+  
+    return redirect('/onboarding')
 };

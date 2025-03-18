@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "./RootLayout";
 import HomePage from "./Home";
 import CreateAccountPage, { action as createAccountAction } from "./CreateAccount";
+import OnboardingPage from "./OnboardingPage";
 
 
 const router = createBrowserRouter([
@@ -17,9 +18,13 @@ const router = createBrowserRouter([
       },
       {
         path: 'create',
-        element: <CreateAccountPage/>,
         action: createAccountAction,
-      }
+        element: <CreateAccountPage />,
+      },
+      {
+        path: 'onboarding',
+        element: <OnboardingPage />
+      },
     ]
   }
 ]);
