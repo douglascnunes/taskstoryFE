@@ -1,12 +1,13 @@
-.questionContainer {
-  /* Você pode adicionar estilos gerais para o container, se necessário */
-}
+
 
 .circlesContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  width: 30rem;
+  margin:auto;
+  margin-top: 1.2rem;
+  margin-bottom: 2.4rem;
 }
 
 .circleWrapper {
@@ -20,8 +21,8 @@
 }
 
 .circle {
-  width: 40px;
-  height: 40px;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   border: 2px solid #007BFF;
   background-color: transparent;
@@ -30,4 +31,8 @@
 
 .selected {
   background-color: #007BFF;
+}
+
+.questionContainer p {
+  text-align: center;
 }

@@ -2,6 +2,8 @@ import { useState } from "react";
 
 
 import OnboardingQuestion from "../components/OnboardingQuestions";
+import { fetchQuestions } from "../api/onboarding";
+import queryClient from "../api/queryClient";
 
 
 function OnboardingPage() {
@@ -15,15 +17,21 @@ function OnboardingPage() {
     }
   });
 
-  function onAnswer(type, choice) {
+  function onAnswer(type, idx, choice) {
     setOnboardingData(prevState => {
-      let { answers } = prevState;
-      answers.push([type, choice])
+      const updatedAnswers = prevState.answers.map(([t, existingIndex, c]) =>
+        existingIndex === idx ? [type, idx, choice] : [t, existingIndex, c]
+      );
+
+      // Se não encontrou uma resposta existente, adiciona ao array
+      const hasAnswered = prevState.answers.some(([_, existingIndex]) => existingIndex === idx);
+      const newAnswers = hasAnswered ? updatedAnswers : [...prevState.answers, [type, idx, choice]];
+
       return {
         ...prevState,
-        answers,        
-      }
-    })
+        answers: newAnswers,
+      };
+    });
   };
 
   if (onboardingData.step === 0) {
@@ -36,3 +44,11 @@ function OnboardingPage() {
 }
 
 export default OnboardingPage;
+
+
+export function loader() {
+  return queryClient.fetchQuery({
+    queryKey: ['questions'],
+    queryFn: ({ signal }) => fetchQuestions({ signal })
+  })
+}

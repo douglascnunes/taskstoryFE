@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "./RootLayout";
 import HomePage from "./Home";
 import CreateAccountPage, { action as createAccountAction } from "./CreateAccount";
-import OnboardingPage from "./OnboardingPage";
+import OnboardingPage, { loader as questionsLoader} from "./OnboardingPage";
 
 
 const router = createBrowserRouter([
@@ -23,7 +23,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'onboarding',
-        element: <OnboardingPage />
+        element: <OnboardingPage />,
+        loader: questionsLoader,
       },
     ]
   }
