@@ -16,6 +16,7 @@ function OnboardingPage() {
       mostPracticed: [],
     }
   });
+  
 
   function onAnswer(type, idx, choice) {
     setOnboardingData(prevState => {
@@ -50,5 +51,5 @@ export function loader() {
   return queryClient.fetchQuery({
     queryKey: ['questions'],
     queryFn: ({ signal }) => fetchQuestions({ signal })
-  })
-}
+  });
+};
