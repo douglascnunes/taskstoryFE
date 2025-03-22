@@ -10,16 +10,13 @@ function OnboardingQuestion({ onSelect }) {
     queryFn: ({ signal }) => fetchQuestions({ signal })
   });
 
-  console.log(data)
-
   return (
     <div className="container">
-      {data.questions.map(q => {
-        const idx = data.questions.indexOf(q);
+      {data.map(q => {
+        const idx = data.indexOf(q);
         return <Question key={idx} idx={idx} question={q} onSelect={onSelect} />
       }
       )}
-      <button>Próximo</button>
     </div>
   )
 }

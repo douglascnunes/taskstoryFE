@@ -4,6 +4,7 @@ import { useState } from "react";
 import OnboardingQuestion from "../components/OnboardingQuestions";
 import { fetchQuestions } from "../api/onboarding";
 import queryClient from "../api/queryClient";
+import OnboardingAccountType from "../components/OnboardingAccountType";
 
 
 function OnboardingPage() {
@@ -16,7 +17,17 @@ function OnboardingPage() {
       mostPracticed: [],
     }
   });
-  
+
+  function handleButtonToNext() {
+    console.log(onboardingData.answers)
+    setOnboardingData(prevState => {
+      return {
+        ...prevState,
+        step: prevState.step + 1,
+      }
+    });
+  };
+
 
   function onAnswer(type, idx, choice) {
     setOnboardingData(prevState => {
@@ -35,13 +46,41 @@ function OnboardingPage() {
     });
   };
 
+  let content, btnNextDisabled, btnPreviousDisabled;
+
   if (onboardingData.step === 0) {
-    return (
+    btnNextDisabled = false;
+    btnPreviousDisabled = true;
+  }
+  else if (onboardingData.step === 2) {
+    btnNextDisabled = true;
+    btnPreviousDisabled = false;
+  }
+  else {
+    btnNextDisabled = false;
+    btnPreviousDisabled = false;
+  }
+
+  if (onboardingData.step === 0) {
+    content = (
       <OnboardingQuestion onSelect={onAnswer} />
     )
   }
+  else if (onboardingData.step === 1) {
+    content = (
+      <OnboardingAccountType answers={onboardingData.answers} />
+    )
+  }
+  else {
 
-  return (<h1>ONBOARD</h1>)
+  }
+
+  return (
+    <div>
+      {content}
+      <button onClick={handleButtonToNext} disabled={btnNextDisabled}>Próximo</button>
+    </div>
+  )
 }
 
 export default OnboardingPage;
