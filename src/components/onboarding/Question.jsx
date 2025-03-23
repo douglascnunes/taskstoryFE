@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styles from './Question.module.css';
+import { OnboardingContext } from '../../store/onboarding-context';
 
-function Question({ idx, question, onSelect }) {
-  const [selected, setSelected] = useState(null);
+function Question({ idx, question, answer }) {
+  const { onAnswer } = useContext(OnboardingContext);
+
+  let initialState;
+  if (answer) {
+    initialState = answer[2];
+  } else {
+    initialState = null;
+  }
+
+  const [selected, setSelected] = useState(initialState);
 
   return (
     <div className={styles.questionContainer}>
@@ -14,7 +24,7 @@ function Question({ idx, question, onSelect }) {
           <div key={num} className={styles.circleWrapper}
             onClick={() => {
               setSelected(num);
-              onSelect(question[3], idx, num)
+              onAnswer(question[3], idx, num)
             }
             }
           >

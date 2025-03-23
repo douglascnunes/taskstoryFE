@@ -1,84 +1,67 @@
-import { useState } from "react";
-
-
-import OnboardingQuestion from "../components/OnboardingQuestions";
-import { fetchQuestions } from "../api/onboarding";
+import { useContext, useState } from "react";
+import { fetchAreasOfLife, fetchQuestions } from "../api/onboarding";
 import queryClient from "../api/queryClient";
-import OnboardingAccountType from "../components/OnboardingAccountType";
+import OnboardingAccountType from "../components/onboarding/OnboardingAccountType";
+import OnboardingContextProvider, { OnboardingContext } from "../store/onboarding-context";
+import OnboardingQuestion from "../components/onboarding/OnboardingQuestions";
+import OnboardingAreaOfLife from "../components/onboarding/OnboardingAreaOfLifes";
+import { useQuery } from "@tanstack/react-query";
 
 
 function OnboardingPage() {
-  const [onboardingData, setOnboardingData] = useState({
-    step: 0,
-    answers: [],
-    accountType: null,
-    keywords: {
-      desirable: [],
-      mostPracticed: [],
-    }
-  });
+  const { answers } = useContext(OnboardingContext)
+  const [step, setSteps] = useState(0);
+  const [advice, setAdvice] = useState();
+
+  // const { data: questions } = useQuery({
+  //   queryKey: ['questions'],
+  //   queryFn: ({ signal }) => fetchQuestions({ signal })
+  // });
 
   function handleButtonToNext() {
-    console.log(onboardingData.answers)
-    setOnboardingData(prevState => {
-      return {
-        ...prevState,
-        step: prevState.step + 1,
-      }
-    });
+    setSteps(prevStep => prevStep + 1);
+
+    // if (answers.length === questions.length) {
+    //   setSteps(prevStep => prevStep + 1);
+    // }
+    // else {
+    //   setAdvice(`Faltam ${answers.length - questions.length} perguntas a serem respondidas.`);
+    // }
+  };
+
+  function handleButtonToPrevious() {
+    setSteps(prevStep => prevStep - 1);
   };
 
 
-  function onAnswer(type, idx, choice) {
-    setOnboardingData(prevState => {
-      const updatedAnswers = prevState.answers.map(([t, existingIndex, c]) =>
-        existingIndex === idx ? [type, idx, choice] : [t, existingIndex, c]
-      );
+  let content;
 
-      // Se não encontrou uma resposta existente, adiciona ao array
-      const hasAnswered = prevState.answers.some(([_, existingIndex]) => existingIndex === idx);
-      const newAnswers = hasAnswered ? updatedAnswers : [...prevState.answers, [type, idx, choice]];
-
-      return {
-        ...prevState,
-        answers: newAnswers,
-      };
-    });
-  };
-
-  let content, btnNextDisabled, btnPreviousDisabled;
-
-  if (onboardingData.step === 0) {
-    btnNextDisabled = false;
-    btnPreviousDisabled = true;
+  if (step === 0) {
+    content = <OnboardingQuestion />
   }
-  else if (onboardingData.step === 2) {
-    btnNextDisabled = true;
-    btnPreviousDisabled = false;
+  else if (step === 1) {
+    content = <OnboardingAccountType />
   }
   else {
-    btnNextDisabled = false;
-    btnPreviousDisabled = false;
-  }
-
-  if (onboardingData.step === 0) {
-    content = (
-      <OnboardingQuestion onSelect={onAnswer} />
-    )
-  }
-  else if (onboardingData.step === 1) {
-    content = (
-      <OnboardingAccountType answers={onboardingData.answers} />
-    )
-  }
-  else {
-
+    content = <OnboardingAreaOfLife />
   }
 
   return (
     <div>
-      {content}
-      <button onClick={handleButtonToNext} disabled={btnNextDisabled}>Próximo</button>
+      <OnboardingContextProvider>
+        {content}
+        <div>
+          {/* {advice && <p>{advice}</p>} */}
+          <button
+            onClick={handleButtonToPrevious} disabled={step === 0}>
+            Retorna
+          </button>
+          <button onClick={handleButtonToNext} disabled={step === 2}>
+            Próximo
+          </button>
+        </div>
+      </OnboardingContextProvider>
+
     </div>
   )
 }
@@ -86,9 +69,21 @@ function OnboardingPage() {
 export default OnboardingPage;
 
 
-export function loader() {
-  return queryClient.fetchQuery({
+export async function loader() {
+  const questionsPromise = queryClient.fetchQuery({
     queryKey: ['questions'],
     queryFn: ({ signal }) => fetchQuestions({ signal })
   });
-};
+
+  const areasOfLifePromise = queryClient.fetchQuery({
+    queryKey: ['areasoflife'],
+    queryFn: ({ signal }) => fetchAreasOfLife({ signal })
+  });
+
+  const [questions, areasOfLife] = await Promise.all([
+    questionsPromise,
+    areasOfLifePromise,
+  ]);
+
+  return { questions, areasOfLife };
+}
