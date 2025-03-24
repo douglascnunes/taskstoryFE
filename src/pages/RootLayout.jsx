@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import MainNavigationPage from "../components/MainNavigation";
 
 
-function RootLayout() {
+export default function RootLayout() {
   return (
     <>
       <MainNavigationPage />
@@ -14,5 +14,3 @@ function RootLayout() {
     </>
   )
 };
-
-export default RootLayout;

@@ -1,22 +1,17 @@
-import { useState } from "react";
 import { redirect } from "react-router-dom";
 
 
-import CreateAccountForm from "../components/CreateAccountForm";
+import CreateAccountForm from "../../components/auth/CreateAccountForm";
 
 
-function CreateAccountPage() {
-  const [statusProgress, setStatusProgress] = useState(0);
+export default function CreateAccountPage() {
 
   return (
     <div className="container">
       <CreateAccountForm />
     </div>
   )
-}
-
-export default CreateAccountPage;
-
+};
 
 
 export async function action({ request }) {
@@ -28,9 +23,9 @@ export async function action({ request }) {
     password: data.get('password'),
     confirmPassword: data.get('confirmPassword')
   }
-  console.log('ANIVERSARIO:'+accountData.birthdate)
+  console.log('ANIVERSARIO:' + accountData.birthdate)
 
-  const response = await fetch('http://localhost:8080/api/signup', {
+  const response = await fetch('http://localhost:3000/api/signup', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -49,12 +44,12 @@ export async function action({ request }) {
     ))
   }
 
-    const resData = await response.json()
-    const token = resData.token;
-    localStorage.setItem('token', token);
-    const expiration = new Date();
-    expiration.setHours(expiration.getHours() + 1);
-    localStorage.setItem('expiration', expiration.toISOString);
-  
-    return redirect('/onboarding')
+  const resData = await response.json()
+  const token = resData.token;
+  localStorage.setItem('token', token);
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem('expiration', expiration.toISOString);
+
+  return redirect('/onboarding')
 };

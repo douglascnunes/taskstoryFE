@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { OnboardingContext } from "../../store/onboarding-context";
 
-function AccountTypeButton({ children, index }) {
+function AccountTypeButton({ children, account }) {
   const { accountType, updateAccountType } = useContext(OnboardingContext);
 
   return (
     <button
-      onClick={() => updateAccountType(index)}
-      className={accountType === index ? 'active' : ''}
+      onClick={() => updateAccountType(account)}
+      className={accountType === account ? 'active' : ''}
     >
       {children}
     </button>

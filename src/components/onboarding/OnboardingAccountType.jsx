@@ -1,13 +1,7 @@
 import { useContext } from "react";
 import { OnboardingContext } from "../../store/onboarding-context.jsx";
 import AccountTypeButton from "./AccountTypeButton";
-
-const ACCOUNT_NAMES = [
-  ['SUPERPROCRASTINATOR', 'Super Procastinador'],
-  ['PERFECTIONIST', 'Perfeccionista'],
-  ['DISORGANIZED', 'Desorganizado'],
-  ['ANTIPROCRASTINATOR', 'Antiprocrastinator']
-]
+import { ACCOUNT_NAMES} from '../../util/data.js';
 
 function calculateAverages(responses) {
   let selfRegulationSum = 0;
@@ -60,13 +54,19 @@ function OnboardingAccountType() {
       <p>Cada tipo de conta no aplicativo oferece uma abordagem personalizada para ajudar o usuário a vencer a procrastinaçãa Serão entregues
         missões especificas que guiamodesenvolvimento da autorregulação e da autoeficácia, focando nas áreas que precisam ser melhoradas.</p>
       <p>Seu tipo de procrastinaçao é Perfeccionista.</p>
-      <AccountTypeButton key={accountTypeResult} index={accountTypeResult}>
+      <AccountTypeButton
+        key={accountTypeResult}
+        account={ACCOUNT_NAMES[accountTypeResult][0]}
+      >
         {ACCOUNT_NAMES[accountTypeResult][1]}
       </AccountTypeButton>
       <p>Você pode optar por escolher começar com um dos outros tipos de procrastinação.</p>
       {otherAccountTypes.map(type => {
         return (
-          <AccountTypeButton key={type} index={type}>
+          <AccountTypeButton
+            key={type}
+            account={ACCOUNT_NAMES[type][0]}
+          >
             {ACCOUNT_NAMES[type][1]}
           </AccountTypeButton>
         )
