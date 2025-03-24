@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import OnboardingQuestion from "../components/OnboardingQuestions";
 import { fetchQuestions } from "../api/onboarding";
-import queryClient from "../api/queryClient";
+import { queryClient } from "../api/queryClient";
 
 
 function OnboardingPage() {

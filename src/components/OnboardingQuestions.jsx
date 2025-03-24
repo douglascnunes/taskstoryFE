@@ -18,10 +18,10 @@ function OnboardingQuestion({ onSelect }) {
         const idx = data.questions.indexOf(q);
         return <Question key={idx} idx={idx} question={q} onSelect={onSelect} />
       }
-      )}
+      )};
       <button>Próximo</button>
     </div>
   )
-}
+};
 
 export default OnboardingQuestion;
