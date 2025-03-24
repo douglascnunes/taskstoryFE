@@ -17,7 +17,7 @@ function MainNavigationPage() {
           </Link>
         </li>
         <li>
-          <Link to="create">
+          <Link to="/create">
             Crie uma Conta
           </Link>
         </li>

@@ -3,8 +3,11 @@ import { createBrowserRouter } from "react-router-dom";
 
 import RootLayout from "./RootLayout";
 import HomePage from "./Home";
-import CreateAccountPage, { action as createAccountAction } from "./CreateAccount";
-import OnboardingPage, { loader as questionsLoader} from "./OnboardingPage";
+import CreateAccountPage, { action as createAccountAction } from "./auth/CreateAccountPage";
+import OnboardingPage, { loader as questionsLoader } from "./auth/OnboardingPage";
+import MainPanelApp from "./app/MainPanelApp";
+import RootApp from "./app/RootApp";
+import LoginPage, { action as loginAction } from "./auth/LoginPage";
 
 
 const router = createBrowserRouter([
@@ -26,6 +29,21 @@ const router = createBrowserRouter([
         element: <OnboardingPage />,
         loader: questionsLoader,
       },
+      {
+        path: 'login',
+        element: <LoginPage />,
+        action: loginAction,
+      }
+    ]
+  },
+  {
+    path: '/app',
+    element: <RootApp />,
+    children: [
+      {
+        index: true,
+        element: <MainPanelApp />
+      }
     ]
   }
 ]);
