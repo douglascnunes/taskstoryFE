@@ -2,6 +2,7 @@ import { redirect } from "react-router-dom";
 
 
 import CreateAccountForm from "../../components/auth/CreateAccountForm";
+import { authenticateStorage } from "../../util/auth";
 
 
 export default function CreateAccountPage() {
@@ -44,15 +45,8 @@ export async function action({ request }) {
     ))
   }
 
-  const resData = await response.json()
-  const token = resData.token;
-  localStorage.setItem('token', token);
-  const expiration = new Date();
-  expiration.setHours(expiration.getHours() + 1);
-  localStorage.setItem('expiration', expiration.toISOString());
-
-  const procrastinationType = resData.procrastinationType;
-  localStorage.setItem('procrastinationType', procrastinationType);
+  const resData = await response.json();
+  authenticateStorage(resData);
 
   return redirect('/onboarding')
 };

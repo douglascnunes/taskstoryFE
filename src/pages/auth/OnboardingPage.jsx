@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { fetchAreasOfLife, fetchQuestions } from "../../api/onboarding";
-import queryClient from "../../api/queryClient";
+import { queryClient } from "../../api/queryClient";
 import OnboardingAccountType from "../../components/onboarding/OnboardingAccountType";
 import OnboardingContextProvider, { OnboardingContext } from "../../store/onboarding-context";
 import OnboardingQuestion from "../../components/onboarding/OnboardingQuestions";

@@ -1,6 +1,6 @@
 import { redirect } from "react-router-dom";
 import LoginForm from "../../components/auth/LoginForm";
-import { PROCRASTINATION_TYPE } from "../../util/enum";
+import { authenticateStorage, checkProcrastinationType } from "../../util/auth";
 
 
 export default function LoginPage() {
@@ -38,21 +38,9 @@ export async function action({ request }) {
     ))
   }
 
-  const resData = await response.json()
-  const token = resData.token;
-  localStorage.setItem('token', token);
-  const expiration = new Date();
-  expiration.setHours(expiration.getHours() + 1);
-  localStorage.setItem('expiration', expiration.toISOString());
+  const resData = await response.json();
+  authenticateStorage(resData);
+  checkProcrastinationType();
 
-  const procrastinationType = resData.procrastinationType;
-  localStorage.setItem('procrastinationType', procrastinationType);
-
-  if (!procrastinationType ||
-    procrastinationType === PROCRASTINATION_TYPE[0] ||
-    !PROCRASTINATION_TYPE.includes(procrastinationType)
-  ) {
-    return redirect('/onboarding');
-  }
   return redirect('/app')
 };

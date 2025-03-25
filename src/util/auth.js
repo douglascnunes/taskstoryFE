@@ -35,7 +35,6 @@ export function tokenLoader() {
 
 export function checkAuthLoader() {
   const token = getAuthToken();
-
   if (!token) {
     throw redirect('/login');
   }
@@ -47,9 +46,18 @@ export function checkProcrastinationType() {
   const procrastinationType = localStorage.getItem('procrastinationType');
 
   if (!procrastinationType ||
+    procrastinationType !== undefined ||
     procrastinationType === PROCRASTINATION_TYPE[0] ||
     !PROCRASTINATION_TYPE.includes(procrastinationType)
   ) {
     throw redirect('/onboarding');
-  }
-} 
+  };
+};
+
+export function authenticateStorage({ token, procrastinationType }) {
+  localStorage.setItem('token', token);
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem('expiration', expiration.toISOString());
+  localStorage.setItem('procrastinationType', procrastinationType);
+};
