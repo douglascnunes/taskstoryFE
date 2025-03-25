@@ -11,7 +11,7 @@ export default function LoginForm() {
   const isSubmitting = navigation.state === 'submitting';
 
   return (
-    <>
+    <div className="container">
       {data && data.data && (
         <ul>
           {Object.values(data.data).map(
@@ -21,8 +21,7 @@ export default function LoginForm() {
       )}
       {data && data.message && <p>{data.message}</p>}
       <div className={classes.formContainer}>
-        <h1>Você já possui uma conta?</h1>
-        <Link to="login">Entre</Link>
+        <h1>Entre na sua conta TaskStory</h1>
       </div>
       <Form method="POST">
         <input id="email" name="email" type="email" placeholder="Email" required />
@@ -31,6 +30,6 @@ export default function LoginForm() {
           {isSubmitting ? 'Carregando' : 'Entrar'}
         </button>
       </Form>
-    </>
+    </div>
   )
 };
