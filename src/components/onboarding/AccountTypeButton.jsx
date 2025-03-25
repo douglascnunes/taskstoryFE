@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { OnboardingContext } from "../../store/onboarding-context";
 
+
 function AccountTypeButton({ children, account }) {
   const { accountType, updateAccountType } = useContext(OnboardingContext);
 

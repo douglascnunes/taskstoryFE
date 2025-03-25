@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import OnboardingModal from "./OnboardingModal";
 import { onboarding } from "../../api/onboarding";
 import { useNavigate } from "react-router-dom";
-
+import style from './AccountTypeButton.module.css';
 
 function ControllerButtons({ toPrevious, toNext, step }) {
   const { answers, accountType, areaOfLife } = useContext(OnboardingContext);
@@ -72,7 +72,7 @@ function ControllerButtons({ toPrevious, toNext, step }) {
   };
 
   return (
-    <div>
+    <div className={style.accountBtn}>
       {advice[1] === step && <p>{advice[0]}</p>}
       <button
         onClick={handlePreviousClick} disabled={step === 0}>

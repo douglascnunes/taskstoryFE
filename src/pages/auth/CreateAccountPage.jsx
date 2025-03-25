@@ -49,7 +49,10 @@ export async function action({ request }) {
   localStorage.setItem('token', token);
   const expiration = new Date();
   expiration.setHours(expiration.getHours() + 1);
-  localStorage.setItem('expiration', expiration.toISOString);
+  localStorage.setItem('expiration', expiration.toISOString());
+
+  const procrastinationType = resData.procrastinationType;
+  localStorage.setItem('procrastinationType', procrastinationType);
 
   return redirect('/onboarding')
 };
