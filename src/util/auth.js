@@ -44,9 +44,8 @@ export function checkAuthLoader() {
 
 export function checkProcrastinationType() {
   const procrastinationType = localStorage.getItem('procrastinationType');
-
+  console.log('check');
   if (!procrastinationType ||
-    procrastinationType !== undefined ||
     procrastinationType === PROCRASTINATION_TYPE[0] ||
     !PROCRASTINATION_TYPE.includes(procrastinationType)
   ) {

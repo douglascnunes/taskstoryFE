@@ -20,7 +20,8 @@ function ControllerButtons({ toPrevious, toNext, step }) {
   const { mutate } = useMutation({
     mutationFn: onboarding,
     onSuccess: () => {
-      navigate('/app')
+      localStorage.setItem('procrastinationType', accountType);
+      navigate('/app');
     }
   })
 
@@ -64,6 +65,7 @@ function ControllerButtons({ toPrevious, toNext, step }) {
   const handleConfirm = () => {
     setIsModalOpen(false);
     const { desirable, mostPracticed } = areaOfLife;
+    console.log('handleConfirm')
     mutate({ accountType, desirable, mostPracticed });
   };
 

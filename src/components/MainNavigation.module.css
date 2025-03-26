@@ -18,7 +18,8 @@
 }
 
 .nav a img {
-  width: 7rem;
+  height: 1.5rem;
+  width: auto;
 }
 
 .nav ul {

@@ -32,7 +32,6 @@ function onboardingReducer(state, action) {
   }
 
   if (action.type === 'ACCOUNT_TYPE_CHOICE') {
-    console.log(action.payload)
     return {
       ...state,
       accountType: action.payload,
