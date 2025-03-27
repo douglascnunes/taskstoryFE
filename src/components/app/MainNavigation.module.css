@@ -1,0 +1,49 @@
+.nav {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+/* Logo */
+.nav a {
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+.nav a img {
+  height: 1.5rem;
+  width: auto;
+}
+
+.nav ul {
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav ul li a {
+  color: #262626;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav ul li a:hover {
+  color: #8a0f0f;
+}
+
+.appButton {
+  background-color: #b81414;
+  margin: 0;
+}
+
+button {
+  margin: 0;
+}
