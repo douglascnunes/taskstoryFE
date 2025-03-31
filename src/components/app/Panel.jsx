@@ -13,20 +13,20 @@ export default function Panel({ activities, mode }) {
       if (finalDate < today && instance.completedOn === null) {
         if (instance.currentState === SPECIALIZATION_STATE[1]) { // 'TODO'
           instance.currentState = SPECIALIZATION_STATE[2]; // 'TODO_LATE'
-          console.log("Updated currentState from TODO to TODO_LATE for instance:", instance);
+          // console.log("Updated currentState from TODO to TODO_LATE for instance:", instance);
         } else if (instance.currentState === SPECIALIZATION_STATE[3]) { // 'WAITING'
           instance.currentState = SPECIALIZATION_STATE[4]; // 'WAITING_LATE'
-          console.log("Updated currentState from WAITING to WAITING_LATE for instance:", instance);
+          // console.log("Updated currentState from WAITING to WAITING_LATE for instance:", instance);
         } else if (instance.currentState === SPECIALIZATION_STATE[5]) { // 'DOING'
           instance.currentState = SPECIALIZATION_STATE[6]; // 'DOING_LATE'
-          console.log("Updated currentState from DOING to DOING_LATE for instance:", instance);
+          // console.log("Updated currentState from DOING to DOING_LATE for instance:", instance);
         }
       }
     });
   });
 
   const activitiesLate = activities.filter(activity => {
-    console.log(activity.task?.taskInstances[0].currentState)
+    // console.log(activity.task?.taskInstances[0].currentState)
     return activity.task?.taskInstances[0].currentState === SPECIALIZATION_STATE[2] // 'TODO_LATE'
   });
 

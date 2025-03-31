@@ -10,7 +10,6 @@ export default function MainApp() {
     queryFn: ({ signal }) => getOverview({ signal })
   });
 
-  console.log(activities)
   return (
     <>
       <Panel activities={activities} mode="overview" />

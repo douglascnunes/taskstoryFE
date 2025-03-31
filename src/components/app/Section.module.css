@@ -12,7 +12,7 @@
   overflow-y: auto;
   transition: width 0.3s ease;
   width: auto; /* Adjust width dynamically */
-  min-width: 200px; /* Slightly larger than the cards */
+  min-width: 250px; /* Slightly larger than the cards */
 }
 
 .section.closed {
@@ -23,15 +23,6 @@
 
 .section > :not(:last-child) {
   margin-bottom: 16px;
-}
-
-.card {
-  width: 180px; /* Fixed size for all cards */
-  height: 100px; /* Fixed size for all cards */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .sectionName {

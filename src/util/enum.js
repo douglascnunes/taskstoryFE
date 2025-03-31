@@ -27,3 +27,12 @@ export const SECTION_NAMES = [
   'HOJE',
   'PROXIMOS 7 DIAS',
 ];
+
+export const ACTIVITY_TYPE = [
+  'ACTIVITY',
+  'TASK',
+  'PROJECT',
+  'HABIT',
+  'GOAL',
+  'PLANNING',
+];

@@ -1,16 +1,17 @@
 .card {
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 16px;
+  padding: 0.5rem;
   margin: 8px 0;
   background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 180px; /* Fixed width */
-  height: 100px; /* Fixed height */
+  width: 14rem; /* Fixed width */
+  height: auto; /* Fixed height */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .card h3 {
@@ -25,4 +26,13 @@
   font-size: 1rem;
   color: #666;
   text-align: center;
+  margin-bottom: 1.6rem;
+}
+
+.card p:last-child {
+  position: absolute;
+  bottom: -1rem;
+  right: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
 }
