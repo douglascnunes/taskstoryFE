@@ -5,7 +5,7 @@ import RootLayout from "./RootLayout";
 import HomePage from "./Home";
 import CreateAccountPage, { action as createAccountAction } from "./auth/CreateAccountPage";
 import OnboardingPage, { loader as questionsLoader } from "./auth/OnboardingPage";
-import MainApp from "./app/MainApp";
+import MainApp, { loader as activitiesLoader } from "./app/MainApp";
 import RootApp from "./app/RootApp";
 import LoginPage, { action as loginAction } from "./auth/LoginPage";
 import { checkAuthLoader, checkProcrastinationType, tokenLoader } from "../util/auth";
@@ -50,20 +50,21 @@ const router = createBrowserRouter([
     ]
   },
   {
+    path: 'logout',
+    action: logoutAction
+  },
+  {
     path: '/app',
     element: <RootApp />,
     loader: checkAuthLoader_AND_checkProcrastinationType,
     children: [
       {
         index: true,
-        element: <MainApp />
+        element: <MainApp />,
+        loader: activitiesLoader,
       }
     ]
   },
-  {
-    path: 'logout',
-    action: logoutAction
-  }
 ]);
 
 export default router;

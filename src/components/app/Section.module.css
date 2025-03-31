@@ -1,0 +1,49 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the top */
+  height: 100vh; /* Full height of the screen */
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  margin: 8px;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+  width: auto; /* Adjust width dynamically */
+  min-width: 200px; /* Slightly larger than the cards */
+}
+
+.section.closed {
+  width: 50px;
+  padding: 8px;
+  justify-content: center;
+}
+
+.section > :not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.card {
+  width: 180px; /* Fixed size for all cards */
+  height: 100px; /* Fixed size for all cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sectionName {
+  font-size: 1.2rem; /* Smaller font size */
+  font-weight: bold;
+  margin-bottom: 8px; /* Reduced margin */
+  text-align: center;
+}
+
+.divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #ccc;
+  margin-bottom: 16px;
+}

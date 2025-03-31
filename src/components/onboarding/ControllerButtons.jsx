@@ -65,7 +65,6 @@ function ControllerButtons({ toPrevious, toNext, step }) {
   const handleConfirm = () => {
     setIsModalOpen(false);
     const { desirable, mostPracticed } = areaOfLife;
-    console.log('handleConfirm')
     mutate({ accountType, desirable, mostPracticed });
   };
 

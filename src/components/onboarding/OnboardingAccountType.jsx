@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { OnboardingContext } from "../../store/onboarding-context.jsx";
 import AccountTypeButton from "./AccountTypeButton";
-import { ACCOUNT_NAMES} from '../../util/data.js';
+import { ACCOUNT_NAMES } from '../../util/data.js';
 
 function calculateAverages(responses) {
   let selfRegulationSum = 0;
