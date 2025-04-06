@@ -5,14 +5,19 @@ import { useQuery } from "@tanstack/react-query";
 
 
 export default function MainApp() {
-  const { data: activities } = useQuery({
+  const { data } = useQuery({
     queryKey: ['activities', 'overview'],
     queryFn: ({ signal }) => getOverview({ signal })
   });
 
   return (
     <>
-      <Panel activities={activities} mode="overview" />
+      <Panel
+        activities={data.activities}
+        mode="overview"
+        startdate={data.startdate}
+        finaldate={data.finaldate}
+      />
     </>
   );
 };

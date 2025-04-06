@@ -1,5 +1,6 @@
-import { redirect } from "react-router-dom";
+import { redirect, useSubmit } from "react-router-dom";
 import { PROCRASTINATION_TYPE } from "./enum";
+import { useEffect } from "react";
 
 
 export function getTokenDuration() {
@@ -35,10 +36,12 @@ export function tokenLoader() {
 
 export function checkAuthLoader() {
   const token = getAuthToken();
-  if (!token) {
+  if (!token || token === 'EXPIRED') {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiration');
+    localStorage.removeItem('procrastinationType');
     throw redirect('/login');
   }
-
   return null
 };
 
