@@ -13,9 +13,9 @@ export async function getOverview({ signal }) {
     throw new Error("Failed to fetch overview activities");
   }
 
-  const { activities } = await response.json();
+  const { activities, startdate, finaldate } = await response.json();
 
-  return activities;
+  return { activities, startdate, finaldate };
 };
 
 

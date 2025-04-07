@@ -4,9 +4,26 @@ import { isToday, isWithinInterval, addDays } from 'date-fns';
 import { SPECIALIZATION_STATE, SECTION_NAMES } from "../../util/enum";
 import Modal from "./modals/Modal";
 
-export default function Panel({ activities, mode }) {
+
+function formatToISO(date) {
+  return new Date(date).toISOString().slice(0, 10); // "2025-06-04"
+}
+
+
+function taskInstanceCopy(activity, instance) {
+  return {
+    ...activity,
+    task: {
+      ...activity.task,
+      taskInstances: [instance]
+    }
+  }
+};
+
+
+export default function Panel({ activities, mode, startdate, finaldate }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const today = new Date();
+  const today = formatToISO(new Date());
 
   function onCloseModal() {
     setIsModalOpen(false);
@@ -15,46 +32,66 @@ export default function Panel({ activities, mode }) {
     setIsModalOpen(true);
   };
 
-  // Update currentState of activities
+
   activities.forEach(activity => {
     activity.task?.taskInstances.forEach(instance => {
-      const finalDate = new Date(instance.finalDate);
-      if (finalDate < today && instance.completedOn === null) {
+      if (formatToISO(new Date(instance.finalDate)) < today) {
         if (instance.currentState === SPECIALIZATION_STATE[1]) { // 'TODO'
           instance.currentState = SPECIALIZATION_STATE[2]; // 'TODO_LATE'
-          // console.log("Updated currentState from TODO to TODO_LATE for instance:", instance);
         } else if (instance.currentState === SPECIALIZATION_STATE[3]) { // 'WAITING'
           instance.currentState = SPECIALIZATION_STATE[4]; // 'WAITING_LATE'
-          // console.log("Updated currentState from WAITING to WAITING_LATE for instance:", instance);
         } else if (instance.currentState === SPECIALIZATION_STATE[5]) { // 'DOING'
           instance.currentState = SPECIALIZATION_STATE[6]; // 'DOING_LATE'
-          // console.log("Updated currentState from DOING to DOING_LATE for instance:", instance);
         }
       }
     });
   });
 
-  const activitiesLate = activities.filter(activity => {
-    // console.log(activity.task?.taskInstances[0].currentState)
-    return activity.task?.taskInstances[0].currentState === SPECIALIZATION_STATE[2] // 'TODO_LATE'
+  let activitiesLate = [];
+  activities.forEach(activity => {
+    if (activity.activityType === 'TASK') {
+      activity.task.taskInstances.forEach(instance => {
+        if (instance.currentState === SPECIALIZATION_STATE[2]) { // 'TODO_LATE'
+          activitiesLate.push(taskInstanceCopy(activity, instance));
+        }
+      })
+    }
   });
 
-  const activitiesPriority = activities.filter(activity =>
-    activity.priorityId === 5 || activity.priorityId === 6
-  );
+  let activitiesPriority = [];
+  activities.forEach(activity => {
+    if (activity.priorityId === 5 || activity.priorityId === 6) {
+      if (activity.activityType === 'TASK') {
+        activity.task.taskInstances.forEach(instance => {
+          activitiesPriority.push(taskInstanceCopy(activity, instance));
+        })
+      }
+    }
+  });
 
-  const activitiesToday = activities.filter(activity =>
-    activity.task?.taskInstances.some(instance => isToday(new Date(instance.finalDate)))
-  );
-
-  const activitiesWeek = activities.filter(activity =>
-    activity.task?.taskInstances.some(instance =>
-      isWithinInterval(new Date(instance.finalDate), {
-        start: addDays(today, 1),
-        end: addDays(today, 7),
+  let activitiesToday = [];
+  activities.forEach(activity => {
+    if (activity.activityType === 'TASK') {
+      activity.task.taskInstances.forEach(instance => {
+        if (formatToISO(new Date(activity.task?.taskInstances[0].finalDate)) === today) {
+          activitiesToday.push(taskInstanceCopy(activity, instance));
+        }
       })
-    )
-  );
+    }
+  });
+
+  let activitiesWeek = [];
+  activities.forEach(activity => {
+    if (activity.activityType === 'TASK') {
+      activity.task.taskInstances.forEach(instance => {
+        if (new Date(instance.finalDate) > new Date(today) &&
+          new Date(instance.finalDate) <= addDays(new Date(today), 7)) {
+          activitiesWeek.push(taskInstanceCopy(activity, instance));
+        }
+      })
+    }
+  });
+
 
   if (mode === "overview") {
     return (

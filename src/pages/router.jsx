@@ -16,8 +16,8 @@ const checkAuthLoader_AND_questionsLoader = async () => {
   return Promise.all([checkAuthLoader(), questionsLoader()]);
 }
 
-const checkAuthLoader_AND_checkProcrastinationType = async () => {
-  return Promise.all([checkAuthLoader(), checkProcrastinationType()]);
+const tokenLoader_checkAuthLoader_AND_checkProcrastinationType = async () => {
+  return Promise.all([tokenLoader(), checkAuthLoader(), checkProcrastinationType()]);
 }
 
 
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
   {
     path: '/app',
     element: <RootApp />,
-    loader: checkAuthLoader_AND_checkProcrastinationType,
+    loader: tokenLoader_checkAuthLoader_AND_checkProcrastinationType,
     children: [
       {
         index: true,
