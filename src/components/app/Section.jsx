@@ -1,5 +1,5 @@
 import styles from './Section.module.css';
-import Card from './activities/Card';
+import Card from './cards/Card';
 
 export default function Section({ activities, name }) {
   const isClosed = activities.length === 0;

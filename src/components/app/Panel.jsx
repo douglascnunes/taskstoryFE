@@ -2,9 +2,18 @@ import Section from "./Section";
 import style from './Panel.module.css';
 import { isToday, isWithinInterval, addDays } from 'date-fns';
 import { SPECIALIZATION_STATE, SECTION_NAMES } from "../../util/enum";
+import Modal from "./modals/Modal";
 
 export default function Panel({ activities, mode }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const today = new Date();
+
+  function onCloseModal() {
+    setIsModalOpen(false);
+  };
+  function onOpenModal() {
+    setIsModalOpen(true);
+  };
 
   // Update currentState of activities
   activities.forEach(activity => {
@@ -49,12 +58,15 @@ export default function Panel({ activities, mode }) {
 
   if (mode === "overview") {
     return (
-      <div className={style.panel}>
-        <Section activities={activitiesLate} name={SECTION_NAMES[0]} />
-        <Section activities={activitiesPriority} name={SECTION_NAMES[1]} />
-        <Section activities={activitiesToday} name={SECTION_NAMES[2]} />
-        <Section activities={activitiesWeek} name={SECTION_NAMES[3]} />
-      </div>
+      <>
+        {isModalOpen && <Modal onClose={onCloseModal} />}
+        <div className={style.panel}>
+          <Section activities={activitiesLate} name={SECTION_NAMES[0]} />
+          <Section activities={activitiesPriority} name={SECTION_NAMES[1]} />
+          <Section activities={activitiesToday} name={SECTION_NAMES[2]} />
+          <Section activities={activitiesWeek} name={SECTION_NAMES[3]} />
+        </div>
+      </>
     );
   }
 

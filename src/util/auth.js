@@ -35,7 +35,7 @@ export function tokenLoader() {
 
 export function checkAuthLoader() {
   const token = getAuthToken();
-  if (!token) {
+  if (!token || token === 'EXPIRED') {
     throw redirect('/login');
   }
 
