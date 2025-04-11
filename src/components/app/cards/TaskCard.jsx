@@ -1,7 +1,10 @@
+import TaskStep from "./TaskStep";
+
 export default function TaskCard({ task }) {
+
   return (
     <>
-      <p> [ TASK_CONTENT ]</p>
+      {task.steps.map(s => <TaskStep step={s} />)}
     </>
   )
 };

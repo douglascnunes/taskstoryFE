@@ -1,8 +1,9 @@
 import Section from "./Section";
 import style from './Panel.module.css';
-import { isToday, isWithinInterval, addDays } from 'date-fns';
+import { addDays } from 'date-fns';
 import { SPECIALIZATION_STATE, SECTION_NAMES } from "../../util/enum";
 import Modal from "./modals/Modal";
+import { useState } from "react";
 
 
 function formatToISO(date) {

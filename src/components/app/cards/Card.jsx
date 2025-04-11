@@ -12,7 +12,7 @@ export default function PanelCard({ activity }) {
   if (activity.activityType === 'TASK') {
     finalDate = activity.task.taskInstances[0].finalDate;
     currentState = activity.task.taskInstances[0].currentState;
-    content = <TaskCard task={activity.task} />;
+    content = <TaskCard task={activity.task} />
   }
 
   return (
