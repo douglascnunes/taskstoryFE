@@ -2,7 +2,7 @@ import { useState } from "react";
 import { fetchAreasOfLife, fetchQuestions } from "../../api/onboarding";
 import { queryClient } from "../../api/queryClient";
 import OnboardingAccountType from "../../components/onboarding/OnboardingAccountType";
-import OnboardingContextProvider, { OnboardingContext } from "../../store/onboarding-context";
+import OnboardingContextProvider from "../../store/onboarding-context";
 import OnboardingQuestion from "../../components/onboarding/OnboardingQuestions";
 import OnboardingAreaOfLife from "../../components/onboarding/OnboardingAreaOfLifes";
 import ControllerButtons from "../../components/onboarding/ControllerButtons";

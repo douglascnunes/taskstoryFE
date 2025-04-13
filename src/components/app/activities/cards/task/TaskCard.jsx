@@ -1,4 +1,4 @@
-import TaskStep from "./TaskStep";
+import TaskStep from "./Step";
 
 export default function TaskCard({ task }) {
 

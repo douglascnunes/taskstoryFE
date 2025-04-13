@@ -36,3 +36,29 @@ export const ACTIVITY_TYPE = [
   'GOAL',
   'PLANNING',
 ];
+
+export const ACITIVITIES_MENU = [
+  ["Activity", "activity"],
+  ["Task", "task"],
+];
+
+export const IMPORTANCE_NAME = {
+  LOW: ['Baixa', 1],
+  MEDIUM: ['Média', 2],
+  HIGH: ['Alta', 3],
+};
+
+export const DIFFICULTY_NAME = {
+  LOW: ['Fácil', 1],
+  MEDIUM: ['Média', 2],
+  HIGH: ['Difícil', 3],
+};
+
+export const PRIORITY_NAME = {
+  MINIMAL: ['Mínima', 1, 1.5],
+  LOW: ['Baixa', 1.5, 2],
+  MEDIUM: ['Média', 2, 2.5],
+  HIGH: ['Alta', 2.5, 3],
+  MAXIMUM: ['Máxima', 3, 3.5],
+  URGENT: ['Urgente', 999, 999],
+};

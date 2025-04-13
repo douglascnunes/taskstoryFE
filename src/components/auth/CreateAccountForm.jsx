@@ -1,7 +1,7 @@
-import { Form, Link, redirect, useActionData, useNavigation } from "react-router-dom";
+import { Form, Link, useActionData, useNavigation } from "react-router-dom";
 
 
-import classes from './CreateAccountForm.module.css';
+import styles from './CreateAccountForm.module.css';
 
 
 function CreateAccountForm() {
@@ -21,18 +21,18 @@ function CreateAccountForm() {
         </ul>
       )}
       {data && data.message && <p>{data.message}</p>}
-      <div className={classes.formContainer}>
+      <div className={styles.formContainer}>
         <h1>Você já possui uma conta?</h1>
         <Link to="/login">Entre</Link>
       </div>
       <Form method="POST">
-        <input id="name" name="name" type="text" placeholder="Nome" required />
+        <input id="name" name="name" type="text" className={styles.input} placeholder="Nome" required />
         <input id="email" name="email" type="email" placeholder="Email" required />
         <p>
           <label htmlFor="birthdate">Data de aniversário</label>
           <input type="date" id="birthdate" name="birthdate" />
         </p>
-        <input id="password" name="password" type="password" placeholder="Sua senha" required />
+        <input id="password" name="password" type="password" className={styles.input} placeholder="Sua senha" required />
         <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirme sua senha" required />
         <button disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Save'}

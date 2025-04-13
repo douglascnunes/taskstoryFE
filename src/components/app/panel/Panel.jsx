@@ -1,9 +1,7 @@
 import Section from "./Section";
 import style from './Panel.module.css';
 import { addDays } from 'date-fns';
-import { SPECIALIZATION_STATE, SECTION_NAMES } from "../../util/enum";
-import Modal from "./modals/Modal";
-import { useState } from "react";
+import { SPECIALIZATION_STATE, SECTION_NAMES } from "../../../util/enum";
 
 
 function formatToISO(date) {
@@ -23,15 +21,7 @@ function taskInstanceCopy(activity, instance) {
 
 
 export default function Panel({ activities, mode, startdate, finaldate }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const today = formatToISO(new Date());
-
-  function onCloseModal() {
-    setIsModalOpen(false);
-  };
-  function onOpenModal() {
-    setIsModalOpen(true);
-  };
 
 
   activities.forEach(activity => {
@@ -97,7 +87,6 @@ export default function Panel({ activities, mode, startdate, finaldate }) {
   if (mode === "overview") {
     return (
       <>
-        {isModalOpen && <Modal onClose={onCloseModal} />}
         <div className={style.panel}>
           <Section activities={activitiesLate} name={SECTION_NAMES[0]} />
           <Section activities={activitiesPriority} name={SECTION_NAMES[1]} />

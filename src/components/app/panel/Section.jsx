@@ -1,5 +1,5 @@
 import styles from './Section.module.css';
-import Card from './cards/Card';
+import Card from '../activities/cards/Card';
 
 export default function Section({ activities, name }) {
 

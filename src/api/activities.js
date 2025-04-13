@@ -19,7 +19,7 @@ export async function getOverview({ signal }) {
 };
 
 
-export async function createActivity({ signal, activity }) {
+export async function upsertActivity({ signal, activity }) {
   let method;
 
   if (!activity.id) {
@@ -44,4 +44,4 @@ export async function createActivity({ signal, activity }) {
   };
 
   return await response.json();
-}
+};
