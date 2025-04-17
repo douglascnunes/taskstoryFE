@@ -4,24 +4,22 @@ import { useMutation } from "@tanstack/react-query";
 import { upsertActivity } from "../../../../../api/activities";
 import ImpDiffPicker from "../ImpDiffPicker";
 import { IMPORTANCE_NAME, DIFFICULTY_NAME, PRIORITY_NAME } from "../../../../../util/enum";
-import PriorityTag from "../task/PriorityTag";
+import PriorityTag from "../PriorityTag";
 import styles from "./ActivityModal.module.css";
 import modalStyles from "../Modal.module.css";
-
 
 export default function ActivityModal({ activity }) {
   const [formData, setFormData] = useState({
     title: undefined,
     description: undefined,
     keywords: [],
-    importance: undefined,
-    difficulty: undefined,
+    importance: "MEDIUM",
+    difficulty: "MEDIUM",
   });
 
   const { mutate } = useMutation({
     mutationFn: upsertActivity
   });
-
 
   function handleFieldChange(name, value) {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -40,7 +38,6 @@ export default function ActivityModal({ activity }) {
     ) {
       mutate({ activity: formData });
     };
-    console.log("Activity inserted:", formData);
   };
 
   function handleChangeAndInsert(name, value) {
@@ -62,14 +59,13 @@ export default function ActivityModal({ activity }) {
         />
       </div>
       <SpecializationMenu />
-      <div className={modalStyles.optionsMenu}>
+      <div className={modalStyles.optionMenu}>
         <PriorityTag importance={formData.importance} difficulty={formData.difficulty} />
         <ImpDiffPicker
           importance={formData.importance}
           difficulty={formData.difficulty}
           onSelect={handleChangeAndInsert}
         />
-
       </div>
         <textarea
           name="description"

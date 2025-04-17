@@ -3,7 +3,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './api/queryClient';
 
 
-import './App.css'
 import router from './pages/router.jsx'
 
 

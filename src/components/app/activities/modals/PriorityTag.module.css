@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.container div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.container svg {
+  width: 24px;
+  height: 24px;
+}
+
+.container h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.container .priorityTagContainer {
+  justify-content: center;
+}
+
+.priorityTagContainer .urgent {
+  background-color: #b81414;
+}
+
+.priorityTagContainer .maximum {
+  background-color: #e65e19;
+}
+
+.priorityTagContainer .high {
+  background-color: #d9ac26;
+}
+
+.priorityTagContainer .medium {
+  background-color: #1fad36;
+}
+
+.priorityTagContainer .low {
+  background-color: #2662d9;
+}
+
+.priorityTagContainer .minimal {
+  background-color: #a770c2;
+}
+
+.priorityTagContainer .not-defined {
+  background-color: #b3b3b3;
+}
+
+.container .priorityTag {
+  color: #e6e6e6;
+  font-size: 1.2rem;
+  text-align: center;
+}

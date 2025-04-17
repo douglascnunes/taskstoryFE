@@ -1,0 +1,64 @@
+.button {
+  color: #f2f2f2;
+  background-color: #333333;
+  border-radius: 5px;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+}
+
+.button:disabled {
+  color: #cccccc;
+  background-color: #808080;
+}
+
+.active {
+  color: #fff2b3;
+  background-color: #0d0d0d;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 8px 0;
+  margin-bottom: 1.8rem;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-bottom: 2px solid #007BFF;
+}
+
+p {
+  margin: 0;
+}
+
+p label {
+  font-size: 14px;
+  color: #777;
+  display: block;
+  margin-bottom: 5px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: #007BFF;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+a:hover {
+  text-decoration: underline;
+}

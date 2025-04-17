@@ -1,7 +1,7 @@
 import { Form, Link, redirect, useActionData, useNavigation } from "react-router-dom";
 
 
-import classes from './CreateAccountForm.module.css';
+import styles from './LoginForm.module.css';
 
 
 export default function LoginForm() {
@@ -20,13 +20,13 @@ export default function LoginForm() {
         </ul>
       )}
       {data && data.message && <p>{data.message}</p>}
-      <div className={classes.formContainer}>
+      <div className={styles.formContainer}>
         <h1>Entre na sua conta TaskStory</h1>
       </div>
       <Form method="POST">
-        <input id="email" name="email" type="email" placeholder="Email" required />
-        <input id="password" name="password" type="password" placeholder="Sua senha" required />
-        <button disabled={isSubmitting}>
+        <input id="email" name="email" type="email" className={styles.input} placeholder="Email" required />
+        <input id="password" name="password" type="password" className={styles.input} placeholder="Sua senha" required />
+        <button className={styles.button} disabled={isSubmitting}>
           {isSubmitting ? 'Carregando' : 'Entrar'}
         </button>
       </Form>
