@@ -1,15 +1,15 @@
-import { IMPORTANCE_NAME, DIFFICULTY_NAME, PRIORITY_NAME } from "../../../../util/enum";
+import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY_VALUES } from "../../../../util/enum";
 import styles from "./PriorityTag.module.css";
 
 export default function PriorityTag({ importance, difficulty }) {
-  const importanceValue = IMPORTANCE_NAME[importance]?.[1];
-  const difficultyValue = DIFFICULTY_NAME[difficulty]?.[1];
+  const importanceValue = IMPORTANCE_VALUES[importance]?.[1];
+  const difficultyValue = DIFFICULTY_VALUES[difficulty]?.[1];
 
   let priority = null;
 
   if (importanceValue && difficultyValue) {
     const priorityValue = (importanceValue + difficultyValue) / 2;
-    priority = Object.entries(PRIORITY_NAME).find(([key, value]) => {
+    priority = Object.entries(PRIORITY_VALUES).find(([key, value]) => {
       return priorityValue >= value[1] && priorityValue < value[2];
     });
   };
@@ -24,10 +24,7 @@ export default function PriorityTag({ importance, difficulty }) {
       </div>
       {priority && (
         <div className={`${styles.priorityTagContainer} ${styles[priority[0].toLowerCase()]}`}>
-          <span className={styles.priorityTag}>
-            {console.log(priority[0].toLowerCase())}
-            {PRIORITY_NAME[priority[0]][0]}
-          </span>
+          <span className={styles.priorityTag}>{PRIORITY_VALUES[priority[0]][0]}</span>
         </div>
       )}
       {!priority && (

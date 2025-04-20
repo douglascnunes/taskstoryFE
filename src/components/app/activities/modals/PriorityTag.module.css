@@ -7,48 +7,52 @@
 .container div {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
 .container svg {
-  width: 24px;
-  height: 24px;
+  width: 2rem;
+  height: 2rem;
 }
 
 .container h3 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 700;
 }
 
 .container .priorityTagContainer {
   justify-content: center;
+  border-radius: 0.3rem;
+  width: 9rem;
+  height: 1.8rem;
 }
 
-.priorityTagContainer .urgent {
+.priorityTagContainer.urgent {
   background-color: #b81414;
 }
 
-.priorityTagContainer .maximum {
+.priorityTagContainer.maximum {
   background-color: #e65e19;
 }
 
-.priorityTagContainer .high {
+.priorityTagContainer.high {
   background-color: #d9ac26;
 }
 
-.priorityTagContainer .medium {
+.priorityTagContainer.medium {
   background-color: #1fad36;
 }
 
-.priorityTagContainer .low {
+.priorityTagContainer.low {
   background-color: #2662d9;
 }
 
-.priorityTagContainer .minimal {
+.priorityTagContainer.minimal {
   background-color: #a770c2;
 }
 
-.priorityTagContainer .not-defined {
+.priorityTagContainer.not-defined {
   background-color: #b3b3b3;
 }
 

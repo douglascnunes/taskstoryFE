@@ -1,5 +1,5 @@
 import styles from './Card.module.css';
-import KeywordTag from './KeywordTag';
+import KeywordTag from '../KeywordTag';
 import TaskCard from './task/TaskCard';
 import { STATES_CARD_COLORS } from '../../../../util/color';
 

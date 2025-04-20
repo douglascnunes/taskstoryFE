@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useRef } from "react";
-import { AppContext } from "../../../../store/panel-context";
+import { AppContext } from "../../../../store/app-context";
 import styles from "./Modal.module.css";
 import ActivityModal from "./activity/ActivityModal";
 
@@ -9,11 +9,13 @@ export default function Modal({ activity }) {
   const { isOpenModal, closeModal } = useContext(AppContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const modalRef = useRef();
+  const contentRef = useRef();
 
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
+        contentRef.current.handleCreateActivity();
         closeModal();
       }
     };
@@ -35,7 +37,7 @@ export default function Modal({ activity }) {
   let content;
 
   if (searchParams.get('mode') === 'activity') {
-    content = <ActivityModal />
+    content = <ActivityModal ref={contentRef} />
   };
 
 

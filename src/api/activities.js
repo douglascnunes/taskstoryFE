@@ -32,7 +32,7 @@ export async function upsertActivity({ signal, activity }) {
   const response = await fetch('http://localhost:3000/api/activities', {
     signal,
     method: method,
-    body: JSON.stringify({ activity }),
+    body: JSON.stringify(activity),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token,

@@ -42,19 +42,19 @@ export const ACITIVITIES_MENU = [
   ["Task", "task"],
 ];
 
-export const IMPORTANCE_NAME = {
+export const IMPORTANCE_VALUES = {
   LOW: ['Baixa', 1],
   MEDIUM: ['Média', 2],
   HIGH: ['Alta', 3],
 };
 
-export const DIFFICULTY_NAME = {
+export const DIFFICULTY_VALUES = {
   LOW: ['Fácil', 1],
   MEDIUM: ['Média', 2],
   HIGH: ['Difícil', 3],
 };
 
-export const PRIORITY_NAME = {
+export const PRIORITY_VALUES = {
   MINIMAL: ['Mínima', 1, 1.5],
   LOW: ['Baixa', 1.5, 2],
   MEDIUM: ['Média', 2, 2.5],

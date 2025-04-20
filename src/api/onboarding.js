@@ -41,6 +41,7 @@ export async function onboarding({ accountType, desirable, mostPracticed }) {
     error.info = await response.json();
     throw error;
   };
+  
   return response.json();
 }
 

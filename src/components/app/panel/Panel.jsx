@@ -1,7 +1,13 @@
 import Section from "./Section";
 import style from './Panel.module.css';
 import { addDays } from 'date-fns';
-import { SPECIALIZATION_STATE, SECTION_NAMES } from "../../../util/enum";
+import {
+  SPECIALIZATION_STATE,
+  SECTION_NAMES,
+  IMPORTANCE_VALUES,
+  DIFFICULTY_VALUES,
+  PRIORITY_VALUES
+} from "../../../util/enum";
 
 
 function formatToISO(date) {
@@ -51,14 +57,25 @@ export default function Panel({ activities, mode, startdate, finaldate }) {
 
   let activitiesPriority = [];
   activities.forEach(activity => {
-    if (activity.priorityId === 5 || activity.priorityId === 6) {
-      if (activity.activityType === 'TASK') {
-        activity.task.taskInstances.forEach(instance => {
-          activitiesPriority.push(taskInstanceCopy(activity, instance));
-        })
-      }
+    // 1) calcula os valores numéricos
+    const importanceValue = IMPORTANCE_VALUES[activity.importance][1];
+    const difficultyValue = DIFFICULTY_VALUES[activity.difficulty][1];
+    const priorityValue = (importanceValue + difficultyValue) / 2;
+  
+    // 2) verifica se entra em MAXIMUM ou URGENT
+    const isMaxOrUrgent = ['MAXIMUM', 'URGENT'].some(key => {
+      const [, min, max] = PRIORITY_VALUES[key];
+      // no caso de URGENT, min e max são iguais (999) — aqui usamos <= para incluir
+      return priorityValue >= min && priorityValue <= max;
+    });
+  
+    if (isMaxOrUrgent && activity.activityType === 'TASK') {
+      activity.task.taskInstances.forEach(instance => {
+        activitiesPriority.push(taskInstanceCopy(activity, instance));
+      });
     }
   });
+
 
   let activitiesToday = [];
   activities.forEach(activity => {

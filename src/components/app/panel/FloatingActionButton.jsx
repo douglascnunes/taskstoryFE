@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import styles from "./FloatingActionButton.module.css";
 import { Link } from "react-router-dom";
-import { AppContext } from "../../../store/panel-context";
+import { AppContext } from "../../../store/app-context";
 import { ACITIVITIES_MENU } from "../../../util/enum";
 
 

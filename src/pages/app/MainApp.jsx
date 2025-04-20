@@ -4,7 +4,7 @@ import { queryClient } from "../../api/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import FloatingActionButton from "../../components/app/panel/FloatingActionButton";
 import Modal from "../../components/app/activities/modals/Modal";
-import AppContextProvider from "../../store/panel-context";
+import AppContextProvider from "../../store/app-context";
 
 
 export default function MainApp() {
