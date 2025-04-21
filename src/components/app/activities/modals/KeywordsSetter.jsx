@@ -1,27 +1,27 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import KeywordsModal from '../KeywordsModal';
-import styles from './KeywordsPicker.module.css';
+import styles from './KeywordsSetter.module.css';
 import KeywordTag from '../KeywordTag';
+import { ModalContext } from '../../../../store/modal-context';
 
 
-export default function KeywordsPicker({ keywords, keywordToggle }) {
+export default function KeywordsSetter() {
+  const { keywords } = useContext(ModalContext);
   const [isOpenKeywordModal, setIsOpenKeywordModal] = useState(false);
 
   function openKeywordModal() {
     setIsOpenKeywordModal(true);
-  }
+  };
 
   function closeKeywordModal() {
     setIsOpenKeywordModal(false);
-  }
+  };
 
   return (
     <>
       <KeywordsModal
         isOpenModal={isOpenKeywordModal}
         closeModal={closeKeywordModal}
-        selectedKeywords={keywords}
-        keywordToggle={keywordToggle}
       />
       <div className={styles.container}>
         <div className={styles.label}>
@@ -36,11 +36,11 @@ export default function KeywordsPicker({ keywords, keywordToggle }) {
             keywords.map((keyword) => (
               <KeywordTag key={keyword.id} keyword={keyword} />
             ))}
-          {keywords.length === 0 &&
+          {keywords.length === 0 && (
             <div className={styles.nokeywords}>
               <p>Atividade sem Palavras-Chave</p>
             </div>
-          }
+          )}
           <button className={styles.addKeywordButton} onClick={openKeywordModal}>+</button>
         </div>
       </div>

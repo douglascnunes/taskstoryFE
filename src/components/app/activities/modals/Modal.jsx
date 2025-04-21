@@ -3,31 +3,29 @@ import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../../../../store/app-context";
 import styles from "./Modal.module.css";
 import ActivityModal from "./activity/ActivityModal";
+import TaskModal from "./task/TaskModal";
 
 
-export default function Modal({ activity }) {
+export default function Modal() {
   const { isOpenModal, closeModal } = useContext(AppContext);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const modalRef = useRef();
-  const contentRef = useRef();
+  const contentModalRef = useRef();
 
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
-        contentRef.current.handleCreateActivity();
+        contentModalRef.current.upsert();
         closeModal();
-      }
+      };
     };
-    if (isOpenModal) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    if (isOpenModal) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpenModal, closeModal]);
 
+
+  const mode = searchParams.get('mode');
 
   if (!isOpenModal) {
     return null;
@@ -36,9 +34,12 @@ export default function Modal({ activity }) {
 
   let content;
 
-  if (searchParams.get('mode') === 'activity') {
-    content = <ActivityModal ref={contentRef} />
-  };
+  if (mode === 'activity') {
+    content = <ActivityModal ref={contentModalRef} />
+  }
+  else if (mode === 'task') {
+    content = <TaskModal ref={contentModalRef} />
+  }
 
 
   return (

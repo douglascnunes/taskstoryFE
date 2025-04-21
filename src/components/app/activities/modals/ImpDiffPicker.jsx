@@ -1,7 +1,14 @@
+import { useContext } from "react";
 import { IMPORTANCE_VALUES, DIFFICULTY_VALUES } from "../../../../util/enum";
 import styles from "./ImpDiffPicker.module.css";
+import { ModalContext } from "../../../../store/modal-context";
 
-export default function ImpDiffPicker({ importance, difficulty, onChange }) {
+export default function ImpDiffPicker() {
+  const {
+    importance, setImportance,
+    difficulty, setDifficulty,
+   } = useContext(ModalContext);
+
   return (
     <div className={styles.container}>
       <div>
@@ -9,7 +16,7 @@ export default function ImpDiffPicker({ importance, difficulty, onChange }) {
         <select
           id="importance"
           value={importance}
-          onChange={(e) => onChange('importance', e.target.value)}
+          onChange={(e) => setImportance(e.target.value)}
         >
           {Object.entries(IMPORTANCE_VALUES).map(([key, value]) => (
             <option key={key} value={key}>
@@ -23,7 +30,7 @@ export default function ImpDiffPicker({ importance, difficulty, onChange }) {
         <select
           id="difficulty"
           value={difficulty}
-          onChange={(e) => onChange('difficulty', e.target.value)}
+          onChange={(e) => setDifficulty(e.target.value)}
         >
           {Object.entries(DIFFICULTY_VALUES).map(([key, value]) => (
             <option key={key} value={key}>

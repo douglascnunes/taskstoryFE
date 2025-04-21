@@ -1,7 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
 import { createContext, useReducer } from "react";
-import { upsertActivity } from "../api/activities";
-
 
 export const ModalContext = createContext({
   id: null,
@@ -10,11 +7,17 @@ export const ModalContext = createContext({
   importance: null,
   difficulty: null,
   keywords: [],
+  activityType: null,
+  task: {
+    
+  },
   setTitle: () => { },
   setDescription: () => { },
   setImportance: () => { },
   setDifficulty: () => { },
-  save: () => { },
+  toggleKeywords: () => { },
+  setActivityType: () => { },
+  reset: () => { },
 });
 
 
@@ -34,6 +37,32 @@ function activityReducer(state, action) {
   if (action.type === 'SET_DIFFICULTY') {
     return { ...state, difficulty: action.payload };
   };
+
+  if (action.type === 'TOGGLE_KEYWORDS') {
+    const exists = state.keywords.some(k => k.id === action.payload.id);
+    return {
+      ...state,
+      keywords: exists
+        ? state.keywords.filter(k => k.id !== action.payload.id)
+        : [...state.keywords, action.payload],
+    };
+  };
+
+  if (action.type === 'SET_ACTIVITY_TYPE') {
+    return { ...state, activityType: action.payload };
+  };
+
+  if (action.type === 'RESET') {
+    return {
+      id: null,
+      title: "",
+      description: "",
+      importance: "MEDIUM",
+      difficulty: "MEDIUM",
+      keywords: [],
+      activityType: null,
+    };
+  }
 };
 
 
@@ -42,10 +71,12 @@ export default function ModalContextProvider({ children }) {
     id: null,
     title: "",
     description: "",
-    keywords: [],
     importance: "MEDIUM",
     difficulty: "MEDIUM",
+    keywords: [],
+    activityType: null,
   };
+
 
   const [activityState, activityDispatch] = useReducer(activityReducer, initialState);
 
@@ -65,25 +96,16 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'SET_DIFFICULTY', payload: difficulty });
   };
 
-  const { mutate } = useMutation({
-    mutationFn: upsertActivity,
-  });
+  function handleToggleKeyword(keyword) {
+    activityDispatch({ type: 'TOGGLE_KEYWORDS', payload: keyword });
+  };
 
-  function handleSave() {
-    const { id, title, description, importance, difficulty, keywords } = activityState;
+  function handleSetActivityType(activityType) {
+    activityDispatch({ type: 'SET_ACTIVITY_TYPE', payload: activityType });
+  };
 
-    const isValidToCreate = (
-      title && description && importance && difficulty && keywords.length > 0
-    );
-
-    const isValidToUpdate = (
-      id && (title || description || importance || difficulty || keywords.length > 0)
-    );
-
-    if (isValidToCreate || isValidToUpdate) {
-      mutate({ activity: activityState });
-    }
-    console.log('Activity without ID')
+  function handleReset() {
+    activityDispatch({ type: 'RESET' });
   };
 
   const ctxValue = {
@@ -97,7 +119,9 @@ export default function ModalContextProvider({ children }) {
     setDescription: handleSetDescription,
     setImportance: handleSetImportance,
     setDifficulty: handleSetDifficulty,
-    save: handleSave,
+    toggleKeywords: handleToggleKeyword,
+    setActivityType: handleSetActivityType,
+    reset: handleReset
   };
 
   return <ModalContext.Provider value={ctxValue}>

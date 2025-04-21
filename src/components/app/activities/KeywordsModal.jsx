@@ -1,13 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import styles from './KeywordsModal.module.css';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createKeyword, getUserKeywords } from '../../../api/keywords';
 import KeywordTag from './KeywordTag';
 import { getAreasOfLife } from '../../../api/areaoflife';
 import { queryClient } from '../../../api/queryClient';
+import { ModalContext } from '../../../store/modal-context';
+import Input from './modals/Input';
 
 
-export default function KeywordsModal({ isOpenModal, closeModal, selectedKeywords, keywordToggle }) {
+export default function KeywordsModal({ isOpenModal, closeModal }) {
+  const {
+    keywords: selectedKeywords, toggleKeywords,
+  } = useContext(ModalContext);
+
   const [rawKeywords, setRawKeywords] = useState([]);
   const [filterText, setFilterText] = useState('');
   const [filterArea, setFilterArea] = useState(null);
@@ -19,10 +25,12 @@ export default function KeywordsModal({ isOpenModal, closeModal, selectedKeyword
     queryFn: ({ signal }) => getUserKeywords({ signal }),
   });
 
+
   const { data: areasOfLife } = useQuery({
     queryKey: ['areasOfLife'],
     queryFn: ({ signal }) => getAreasOfLife({ signal }),
   });
+
 
   const { mutate } = useMutation({
     mutationFn: createKeyword,
@@ -31,28 +39,29 @@ export default function KeywordsModal({ isOpenModal, closeModal, selectedKeyword
     }
   });
 
+
   function clearFilter() {
     setFilterText('');
     setFilterArea(null);
   }
 
-  function handleChangeNewKeyword(field, value) {
-    if (field === 'name' && value.length < 15) {
+  function handleChangeName(value) {
+    if (value.length < 15) {
       setNewKeyword(prev => {
         return { ...prev, name: value }
       });
     };
-    
-    if (field === 'areaoflife') {
-      const selectedArea = areasOfLife.find(area => area.id === Number(value));
-      if (!selectedArea) return;
-  
-      setNewKeyword(prev => ({
-        ...prev,
-        colorAngle: selectedArea.colorAngle,
-        areaOfLifeId: value,
-      }));
-    };
+  };
+
+  function handleChangeAreaOfLife(value) {
+    const selectedArea = areasOfLife.find(area => area.id === Number(value));
+    if (!selectedArea) return;
+
+    setNewKeyword(prev => ({
+      ...prev,
+      colorAngle: selectedArea.colorAngle,
+      areaOfLifeId: value,
+    }));
   };
 
 
@@ -91,12 +100,11 @@ export default function KeywordsModal({ isOpenModal, closeModal, selectedKeyword
       <div className={styles.modal} ref={modalRef}>
         <h3 className={styles.title}>Adicionar Palavra-Chave</h3>
         <div className={styles.filtermenu}>
-          <input
-            className={styles.input}
+          <Input
             type="text"
             placeholder="Filtrar por nome..."
             value={filterText}
-            onChange={(e) => setFilterText(e.target.value)}
+            setFunction={setFilterText}
           />
           {areasOfLife && (
             <select
@@ -123,7 +131,7 @@ export default function KeywordsModal({ isOpenModal, closeModal, selectedKeyword
             <a
               key={keyword.id}
               className={styles.keywordButton}
-              onClick={() => keywordToggle(keyword)}
+              onClick={() => toggleKeywords(keyword)}
             >
               <KeywordTag keyword={keyword} hoverColor={true} />
             </a>
@@ -135,18 +143,17 @@ export default function KeywordsModal({ isOpenModal, closeModal, selectedKeyword
 
         <h3 className={styles.title}>Criar Palavra-Chave</h3>
         <div className={styles.filtermenu}>
-          <input
-            className={styles.input}
+          <Input
             type="text"
             placeholder="Digite um nome..."
             value={newKeyword.name}
-            onChange={(e) => handleChangeNewKeyword('name', e.target.value)}
+            setFunction={handleChangeName}
           />
           {areasOfLife && (
             <select
               className={styles.filterSelect}
               value={areasOfLife.find(a => a.id === newKeyword.areaOfLifeId?.id)}
-              onChange={e => handleChangeNewKeyword('areaoflife', e.target.value)}
+              onChange={e => handleChangeAreaOfLife(e.target.value)}
             >
               <option value="">Todas as áreas</option>
               {areasOfLife.map(area => (
@@ -165,7 +172,7 @@ export default function KeywordsModal({ isOpenModal, closeModal, selectedKeyword
           {selectedKeywords.length > 0 ? (
             selectedKeywords.map((keyword) => {
               return (
-                <a className={styles.keywordButton} key={keyword.id} onClick={() => keywordToggle(keyword)}>
+                <a className={styles.keywordButton} key={keyword.id} onClick={() => toggleKeywords(keyword)}>
                   <KeywordTag key={keyword.id} keyword={keyword} hoverColor={true} />
                 </a>
               )

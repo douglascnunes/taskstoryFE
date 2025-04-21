@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import FloatingActionButton from "../../components/app/panel/FloatingActionButton";
 import Modal from "../../components/app/activities/modals/Modal";
 import AppContextProvider from "../../store/app-context";
+import ModalContextProvider from "../../store/modal-context";
 
 
 export default function MainApp() {
@@ -17,7 +18,9 @@ export default function MainApp() {
 
   return (
     <AppContextProvider >
-      <Modal />
+      <ModalContextProvider>
+        <Modal />
+      </ModalContextProvider>
       <FloatingActionButton />
       <Panel
         activities={data.activities}
