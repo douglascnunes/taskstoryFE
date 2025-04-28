@@ -34,12 +34,12 @@ export const STATES_CARD_COLORS = {
   TODO: {
     interfaceName: 'A Fazer',
     nameColor: '#333333', // H:0 S:0 L:20 Gray 20%
-    cardColor: '#fcf9e8',
+    cardColor: '#f9f2d2',
   },
   TODO_LATE: {
     interfaceName: 'A Fazer (Atrasado)',
     nameColor: '#a32929', // H:0 S:60 L:40 BlackRed
-    cardColor: '#ede2ab',
+    cardColor: '#eccfc6',
   },
   WAITNG: {
     interfaceName: 'Esperando',

@@ -1,14 +1,15 @@
 .keywordTag {
-  border-radius: 0.5rem;
-  width: 7rem;
-  height: 1.8rem;
   align-content: center;
+  min-width: 3.4rem;
+  height: 1.2rem;
+  border-radius: 0.3rem;
 }
 
 .keywordTag p {
-  text-align: center;
   color: #ffffff;
-
+  font-size: 0.7rem;
+  text-align: center;
+  margin: 0 0.3rem 0;
 }
 
 .hoverable:hover {

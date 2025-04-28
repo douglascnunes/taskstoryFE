@@ -7,25 +7,25 @@
 .container div {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 0.5rem;
 }
 
 .container svg {
-  width: 2rem;
-  height: 2rem;
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .container h3 {
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
 .container .priorityTagContainer {
   justify-content: center;
   border-radius: 0.3rem;
-  width: 9rem;
-  height: 1.8rem;
+  width: 8rem;
+  height: 1.6rem;
 }
 
 .priorityTagContainer.urgent {
@@ -58,6 +58,6 @@
 
 .container .priorityTag {
   color: #e6e6e6;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
 }

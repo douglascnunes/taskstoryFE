@@ -14,7 +14,6 @@ export async function getOverview({ signal }) {
   }
 
   const { activities, startdate, finaldate } = await response.json();
-
   return { activities, startdate, finaldate };
 };
 

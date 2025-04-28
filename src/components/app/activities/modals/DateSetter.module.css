@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.container div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.container svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.container h3 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.container p {
+  color: #777;
+  font-weight: 700;
+  cursor: pointer;
+  margin: auto;
+}
+
+.container p:hover {
+  color: #aaa;
+}

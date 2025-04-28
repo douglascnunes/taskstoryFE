@@ -6,7 +6,7 @@ export const PROCRASTINATION_TYPE = [
   'ANTIPROCRASTINATOR',
 ];
 
-export const SPECIALIZATION_STATE = [
+export const SPECIALIZATION_STATUS = [
   'INCUBATION',
   'TODO',
   'TODO_LATE',

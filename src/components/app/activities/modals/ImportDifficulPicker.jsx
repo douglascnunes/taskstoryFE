@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { IMPORTANCE_VALUES, DIFFICULTY_VALUES } from "../../../../util/enum";
-import styles from "./ImpDiffPicker.module.css";
+import styles from "./ImportDifficulPicker.module.css";
 import { ModalContext } from "../../../../store/modal-context";
 
-export default function ImpDiffPicker() {
+export default function ImportDifficulPicker() {
   const {
     importance, setImportance,
     difficulty, setDifficulty,

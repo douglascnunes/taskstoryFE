@@ -1,6 +1,6 @@
 import { useContext, useImperativeHandle } from "react";
 import SpecializationMenu from "./SpecializationMenu";
-import ImpDiffPicker from "../ImpDiffPicker";
+import ImportDifficulPicker from "../ImportDifficulPicker";
 import PriorityTag from "../PriorityTag";
 import modalStyles from "../Modal.module.css";
 import KeywordsSetter from "../KeywordsSetter";
@@ -9,6 +9,7 @@ import Description from "../Description";
 import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";
 import { upsertActivity } from "../../../../../api/activities";
+import { queryClient } from "../../../../../api/queryClient";
 
 
 export default function ActivityModal({ ref }) {
@@ -24,7 +25,10 @@ export default function ActivityModal({ ref }) {
 
 
   const { mutate } = useMutation({
-    mutationFn: upsertActivity
+    mutationFn: upsertActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['activities']);
+    }
   });
 
   useImperativeHandle(ref, () => {
@@ -57,7 +61,7 @@ export default function ActivityModal({ ref }) {
       </div>
       <SpecializationMenu />
       <div className={modalStyles.optionMenu}>
-        <ImpDiffPicker />
+        <ImportDifficulPicker />
         <PriorityTag />
       </div>
       <Description

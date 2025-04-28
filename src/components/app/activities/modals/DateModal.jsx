@@ -1,0 +1,207 @@
+import { useContext, useEffect, useRef, useState } from 'react';
+import styles from './DateModal.module.css';
+import { ModalContext } from '../../../../store/modal-context.jsx';
+
+
+const daysOfWeek = [
+  { label: "Dom", value: 0 },
+  { label: "Seg", value: 1 },
+  { label: "Ter", value: 2 },
+  { label: "Qua", value: 3 },
+  { label: "Qui", value: 4 },
+  { label: "Sex", value: 5 },
+  { label: "Sáb", value: 6 },
+];
+
+
+export default function DateModal({ isOpenModal, closeModal }) {
+  const {
+    task,
+    setTaskStartPeriod,
+    setTaskEndPeriod,
+    setTaskFrequenceIntervalDays,
+    setTaskFrequenceWeeklyDays,
+  } = useContext(ModalContext);
+  const [mode, setMode] = useState("SINGLE");
+  const modalRef = useRef();
+
+
+  function toggleMode() {
+    setTaskStartPeriod("");
+    // setTaskEndPeriod("");
+    setTaskFrequenceIntervalDays("");
+    setTaskFrequenceWeeklyDays([]);
+    setMode(prev => {
+      if (prev === "SINGLE") return "MULTI"
+      else return "SINGLE"
+    })
+  };
+
+
+  function clearData(field) {
+    if (field === "startPeriod") {
+      setTaskStartPeriod("");
+    }
+    else if (field === "endPeriod") {
+      setTaskEndPeriod("");
+    };
+  };
+
+  function handleSetPeriod(field, value) {
+    const valueDate = new Date(value);
+    const startDate = task.startPeriod ? new Date(task.startPeriod) : null;
+    const endDate = task.endPeriod ? new Date(task.endPeriod) : null;
+
+    if (field === "startPeriod" && (!endDate || valueDate < endDate)) {
+      setTaskStartPeriod(value);
+    }
+    else if (field === "endPeriod" && (!startDate || valueDate > startDate)) {
+      setTaskEndPeriod(value);
+    }
+  }
+
+  function handleSetTaskFrequenceIntervalDays(value) {
+    setTaskFrequenceIntervalDays(value);
+    setTaskFrequenceWeeklyDays([]);
+  };
+
+  const toggleDay = (dayValue) => {
+    setTaskFrequenceIntervalDays("")
+    if (task.frequenceWeeklyDays.includes(dayValue)) {
+      setTaskFrequenceWeeklyDays(task.frequenceWeeklyDays.filter(d => d !== dayValue));
+    } else {
+      setTaskFrequenceWeeklyDays([...task.frequenceWeeklyDays, dayValue]);
+    }
+  };
+
+
+  let content;
+
+  if (mode === "SINGLE") {
+    content = (
+      <div className={styles.finalDate}>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+          </svg>
+          <h3>Data Final</h3>
+        </div>
+        <input
+          type="date"
+          id="date"
+          value={task.endPeriod}
+          onChange={(e) => handleSetPeriod("endPeriod", e.target.value)}
+        />
+        <button onClick={() => clearData("endPeriod")}>Limpar</button>
+      </div>
+    )
+  };
+
+
+  if (mode === "MULTI") {
+    content = (
+      <div className={styles.multiContainer}>
+        <div>
+          <div className={styles.finalDate}>
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+              </svg>
+              <h3>Data Inicial</h3>
+            </div>
+            <input
+              type="date"
+              id="date"
+              value={task.startPeriod}
+              onChange={(e) => handleSetPeriod("startPeriod", e.target.value)}
+            />
+            <button onClick={() => clearData("startPeriod")}>Limpar</button>
+          </div>
+          <div className={styles.finalDate}>
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+              </svg>
+              <h3>Data Final</h3>
+            </div>
+            <input
+              type="date"
+              id="date"
+              value={task.endPeriod}
+              onChange={(e) => handleSetPeriod("endPeriod", e.target.value)}
+            />
+            <button onClick={() => clearData("endPeriod")}>Limpar</button>
+          </div>
+          <div className={styles.frequenceIntervalDays}>
+            <label htmlFor="frequenceIntervalDays">
+              Dias entre cada execução da tarefa:
+            </label>
+            <input
+              id="frequenceIntervalDays"
+              type="number"
+              min="1"
+              placeholder="Ex: 2"
+              value={task.frequenceIntervalDays}
+              onChange={(e) => handleSetTaskFrequenceIntervalDays(e.target.value)}
+            />
+          </div>
+          <div className={styles.frequenceWeeklyDays}>
+            <label>Selecione os dias da semana para repetir a tarefa:</label>
+            <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+              {daysOfWeek.map(day => (
+                <button
+                  key={day.value}
+                  onClick={() => toggleDay(day.value)}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #ccc',
+                    backgroundColor: task.frequenceWeeklyDays.includes(day.value) ? '#4CAF50' : '#f0f0f0',
+                    color: task.frequenceWeeklyDays.includes(day.value) ? '#fff' : '#333',
+                    cursor: 'pointer'
+                  }}
+                  type="button"
+                >
+                  {day.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        closeModal();
+      }
+    };
+    if (isOpenModal) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpenModal, closeModal]);
+
+  if (!isOpenModal) return null;
+
+
+  return (
+    <div className={styles.overlay}>
+      <div className={styles.modal} ref={modalRef}>
+        <div className={styles.buttonOptions}>
+          <button
+            disabled={mode === "SINGLE"}
+            onClick={toggleMode}
+          >Tarefa Única</button>
+          <button
+            disabled={mode === "MULTI"}
+            onClick={toggleMode}
+          >Tarefas Periódicas</button>
+        </div>
+        <div>
+          {content}
+        </div>
+      </ div>
+    </div>
+  )
+};

@@ -7,8 +7,8 @@ export default function Section({ activities, name }) {
     <div className={styles.section}>
       <h3 className={styles.sectionName}>{name}</h3>
       <hr className={styles.divider} />
-      {activities.map(activity => (
-        <Card key={activity.id} activity={activity} />
+      {activities.map((activity, index) => (
+        <Card key={index} activity={activity} />
       ))}
     </div>
   );

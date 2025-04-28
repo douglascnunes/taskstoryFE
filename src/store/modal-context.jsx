@@ -1,5 +1,6 @@
 import { createContext, useReducer } from "react";
 
+
 export const ModalContext = createContext({
   id: null,
   title: null,
@@ -7,16 +8,24 @@ export const ModalContext = createContext({
   importance: null,
   difficulty: null,
   keywords: [],
-  activityType: null,
+  type: null,
   task: {
-    
+    startPeriod: null,
+    endPeriod: null,
+    frequenceIntervalDays: null,
+    frequenceWeeklyDays: null,
+    steps: [],
   },
   setTitle: () => { },
   setDescription: () => { },
   setImportance: () => { },
   setDifficulty: () => { },
   toggleKeywords: () => { },
-  setActivityType: () => { },
+  setType: () => { },
+  setTaskStartPeriod: () => { },
+  setTaskEndPeriod: () => { },
+  setTaskFrequenceIntervalDays: () => { },
+  setTaskFrequenceWeeklyDays: () => { },
   reset: () => { },
 });
 
@@ -48,8 +57,24 @@ function activityReducer(state, action) {
     };
   };
 
-  if (action.type === 'SET_ACTIVITY_TYPE') {
-    return { ...state, activityType: action.payload };
+  if (action.type === 'SET_TYPE') {
+    return { ...state, type: action.payload };
+  };
+
+  if (action.type === 'SET_TASK_START_PERIOD') {
+    return { ...state, task: { ...state.task, startPeriod: action.payload } };
+  };
+
+  if (action.type === 'SET_TASK_END_PERIOD') {
+    return { ...state, task: { ...state.task, endPeriod: action.payload } };
+  };
+
+  if (action.type === 'SET_TASK_FREQUENCE_INTERVAL_DAYS') {
+    return { ...state, task: { ...state.task, frequenceIntervalDays: action.payload } };
+  };
+
+  if (action.type === 'SET_TASK_FREQUENCE_WEEKLY_DAYS') {
+    return { ...state, task: { ...state.task, frequenceWeeklyDays: action.payload } };
   };
 
   if (action.type === 'RESET') {
@@ -60,7 +85,14 @@ function activityReducer(state, action) {
       importance: "MEDIUM",
       difficulty: "MEDIUM",
       keywords: [],
-      activityType: null,
+      type: null,
+      task: {
+        startPeriod: "",
+        endPeriod: "",
+        frequenceIntervalDays: null,
+        frequenceWeeklyDays: [],
+        steps: [],
+      },
     };
   }
 };
@@ -74,7 +106,14 @@ export default function ModalContextProvider({ children }) {
     importance: "MEDIUM",
     difficulty: "MEDIUM",
     keywords: [],
-    activityType: null,
+    type: null,
+    task: {
+      startPeriod: "",
+      endPeriod: "",
+      frequenceIntervalDays: "",
+      frequenceWeeklyDays: [],
+      steps: [],
+    },
   };
 
 
@@ -100,8 +139,24 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'TOGGLE_KEYWORDS', payload: keyword });
   };
 
-  function handleSetActivityType(activityType) {
-    activityDispatch({ type: 'SET_ACTIVITY_TYPE', payload: activityType });
+  function handleSetType(type) {
+    activityDispatch({ type: 'SET_TYPE', payload: type });
+  };
+
+  function handleSetTaskStartPeriod(startPeriod) {
+    activityDispatch({ type: 'SET_TASK_START_PERIOD', payload: startPeriod });
+  };
+
+  function handleSetTaskEndPeriod(endPeriod) {
+    activityDispatch({ type: 'SET_TASK_END_PERIOD', payload: endPeriod });
+  };
+
+  function handleSetTaskFrequenceIntervalDays(frequenceIntervalDays) {
+    activityDispatch({ type: 'SET_TASK_FREQUENCE_INTERVAL_DAYS', payload: frequenceIntervalDays });
+  };
+
+  function handleSetTaskFrequenceWeeklyDays(frequenceWeeklyDays) {
+    activityDispatch({ type: 'SET_TASK_FREQUENCE_WEEKLY_DAYS', payload: frequenceWeeklyDays });
   };
 
   function handleReset() {
@@ -115,12 +170,18 @@ export default function ModalContextProvider({ children }) {
     importance: activityState.importance,
     difficulty: activityState.difficulty,
     keywords: activityState.keywords,
+    task: activityState.task,
     setTitle: handleSetTitle,
     setDescription: handleSetDescription,
     setImportance: handleSetImportance,
     setDifficulty: handleSetDifficulty,
     toggleKeywords: handleToggleKeyword,
-    setActivityType: handleSetActivityType,
+    setType: handleSetType,
+    // TASK REDUCERS
+    setTaskStartPeriod: handleSetTaskStartPeriod,
+    setTaskEndPeriod: handleSetTaskEndPeriod,
+    setTaskFrequenceIntervalDays: handleSetTaskFrequenceIntervalDays,
+    setTaskFrequenceWeeklyDays: handleSetTaskFrequenceWeeklyDays,
     reset: handleReset
   };
 

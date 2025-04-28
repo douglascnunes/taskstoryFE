@@ -15,7 +15,6 @@ export default function MainApp() {
     queryFn: ({ signal }) => getOverview({ signal })
   });
 
-
   return (
     <AppContextProvider >
       <ModalContextProvider>
@@ -25,8 +24,8 @@ export default function MainApp() {
       <Panel
         activities={data.activities}
         mode="overview"
-        startdate={data.startdate}
-        finaldate={data.finaldate}
+        startOverviewDate={data.startdate}
+        endOverviewDate={data.finaldate}
       />
     </AppContextProvider>
   );
