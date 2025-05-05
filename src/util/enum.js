@@ -28,7 +28,7 @@ export const STATUS_NAME = [
   ['Referência', '#cccccc', '#4d4d4d'],
   ['Incubação',],
   ['A Fazer', '#f5e0a3', '#635836'],
-  ['A fazer (Atrasado)', '#f5b8a3', '$6f3b2a'],
+  ['A fazer (Atrasado)', '#f5b8a3', '$cf4517'],
   ['Esperando', '#bbbbbb', '#888888'],
   ['Esperando (Atrasado)', '#bbbbbb', '#888888'],
   ['Fazendo', '#bbbbbb', '#888888'],
