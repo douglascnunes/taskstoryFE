@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 import { ModalContext } from "../../../../store/modal-context"
 import styles from './DateSetter.module.css';
 import DateModal from "./DateModal";
+import { dateToYYYYMMDD } from "../../../../util/date";
 
 export default function DateSetter() {
   const { task } = useContext(ModalContext);
@@ -28,7 +29,7 @@ export default function DateSetter() {
           <h3>Prazo Final</h3>
         </div>
         <div onClick={openDateModal}>
-          {task.endPeriod && <p>{task.endPeriod}</p>}
+          {task.endPeriod && <p>{dateToYYYYMMDD(task.endPeriod)}</p>}
           {!task.endPeriod && <p> -- / -- / ----</p>}
         </div>
       </div>

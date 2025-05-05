@@ -7,7 +7,7 @@ import TaskModal from "./task/TaskModal";
 
 
 export default function Modal() {
-  const { isOpenModal, closeModal } = useContext(AppContext);
+  const { isOpenModal, closeModal, setMode } = useContext(AppContext);
   const [searchParams] = useSearchParams();
   const modalRef = useRef();
   const contentModalRef = useRef();
@@ -17,6 +17,7 @@ export default function Modal() {
     const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
         contentModalRef.current.upsert();
+        setMode(null);
         closeModal();
       };
     };
@@ -25,25 +26,28 @@ export default function Modal() {
   }, [isOpenModal, closeModal]);
 
 
-  const mode = searchParams.get('mode');
-
+  const modalType = searchParams.get('type');
+  
   if (!isOpenModal) {
     return null;
   };
 
 
-  let content;
+  let content, modalLabel;
 
-  if (mode === 'activity') {
+  if (modalType === 'activity') {
+    modalLabel = "Criando Atividade";
     content = <ActivityModal ref={contentModalRef} />
   }
-  else if (mode === 'task') {
+  else if (modalType === 'task') {
+    modalLabel = "Criando Tarefa";
     content = <TaskModal ref={contentModalRef} />
   }
 
 
   return (
     <div className={styles.overlay}>
+      {/* <h2 className={styles.modalLabel}>{modalLabel}</h2> */}
       <div className={styles.modal} ref={modalRef}>
         {content}
       </ div>

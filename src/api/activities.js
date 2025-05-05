@@ -1,10 +1,14 @@
 import { getAuthToken } from "../util/auth";
 
 
-export async function getOverview({ signal }) {
+export async function getOverview({ signal, startdateFilter, finaldateFilter }) {
   const token = getAuthToken();
 
-  const response = await fetch('http://localhost:3000/api/overview', {
+  const params = new URLSearchParams();
+  if (startdateFilter) params.append('startdate', startdateFilter);
+  if (finaldateFilter) params.append('finaldate', finaldateFilter);
+
+  const response = await fetch(`http://localhost:3000/api/overview?${params.toString()}`, {
     signal,
     headers: { 'Authorization': 'Bearer ' + token }
   });
@@ -14,6 +18,7 @@ export async function getOverview({ signal }) {
   }
 
   const { activities, startdate, finaldate } = await response.json();
+
   return { activities, startdate, finaldate };
 };
 

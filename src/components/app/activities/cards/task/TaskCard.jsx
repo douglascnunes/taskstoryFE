@@ -1,10 +1,11 @@
-import TaskStep from "./Step";
+import Step from "./Step";
+import styles from './TaskCard.module.css'
 
 export default function TaskCard({ task }) {
 
   return (
-    <>
-      {task.steps.map(s => <TaskStep step={s} />)}
-    </>
+    <div className={styles.container}>
+      {task.steps.map((step, index) => <Step key={index} step={step} />)}
+    </div>
   )
 };

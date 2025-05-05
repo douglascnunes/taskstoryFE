@@ -10,28 +10,11 @@ import { useMutation } from "@tanstack/react-query";
 import { upsertTask } from "../../../../../api/task";
 import DateSetter from "../DateSetter";
 import { queryClient } from "../../../../../api/queryClient";
+import { cleanTask, isTaskTimingValid } from "../../../../../util/upsert/task";
+import StepSetter from "./StepSetter";
+import StatusTag from "../StatusTag";
 
-// initialDate
-// finalDate
-// frequenceIntervalDays
-// frequenceWeeklyDays
 // steps
-
-function cleanTask(task) {
-  const cleanedTask = {};
-  for (const [key, value] of Object.entries(task)) {
-    if (value !== null && value !== undefined && value !== "" && value.length > 0 ) {
-      cleanedTask[key] = value;
-    }
-  }
-  return cleanedTask;
-};
-
-function isTaskTimingValid(task) {
-  const hasSomeTiming = task.endPeriod || task.frequenceIntervalDays || task.frequenceWeeklyDays;
-  const isNotMixingFrequencies = (!!task.frequenceIntervalDays === !!task.frequenceWeeklyDays);
-  return hasSomeTiming && isNotMixingFrequencies;
-};
 
 
 
@@ -58,18 +41,21 @@ export default function TaskModal({ ref }) {
   useImperativeHandle(ref, () => {
     return {
       upsert() {
+        task.startPeriod = task.startPeriod ? new Date(task.startPeriod) : null;
+        task.endPeriod = task.endPeriod ? new Date(task.endPeriod) : null;
+        const createdAt = new Date();
         const cleanedTask = cleanTask(task);
         const keywordsId = keywords.map(k => k.id);
 
         if (id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0)
           && isTaskTimingValid(task)) {
-          mutate({ task: { id, title, description, importance, difficulty, keywords: keywordsId, ...cleanedTask } });
+          mutate({ task: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         }
 
         else if ((title !== "" || importance || difficulty || keywords.length > 0)
         ) {
-          mutate({ task: { title, description, importance, difficulty, keywords: keywordsId, ...cleanedTask } });
+          mutate({ task: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         };
 
         reset();
@@ -80,7 +66,7 @@ export default function TaskModal({ ref }) {
 
   return (
     <>
-      <div>
+      <div className={modalStyles.header}>
         <Title
           type="text"
           name="title"
@@ -88,6 +74,15 @@ export default function TaskModal({ ref }) {
           value={title}
           setFunction={setTitle}
         />
+        <div className={modalStyles.information}>
+          <div className={modalStyles.modalType}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
+            </svg>
+            <p>Tarefa</p>
+          </div>
+          <StatusTag />
+        </div>
       </div>
       <div className={modalStyles.optionMenu}>
         <ImportDifficulPicker />
@@ -101,6 +96,7 @@ export default function TaskModal({ ref }) {
         value={description}
         setFunction={setDescription}
       />
+      <StepSetter />
       <KeywordsSetter />
     </>
   );

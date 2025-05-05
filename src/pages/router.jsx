@@ -5,7 +5,7 @@ import RootLayout from "./RootLayout";
 import HomePage from "./Home";
 import CreateAccountPage, { action as createAccountAction } from "./auth/CreateAccountPage";
 import OnboardingPage, { loader as questionsLoader } from "./auth/OnboardingPage";
-import MainApp, { loader as activitiesLoader } from "./app/MainApp";
+import MainApp from "./app/MainApp";
 import RootApp from "./app/RootApp";
 import LoginPage, { action as loginAction } from "./auth/LoginPage";
 import { checkAuthLoader, checkProcrastinationType, tokenLoader } from "../util/auth";
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <MainApp />,
-        loader: activitiesLoader,
+        // loader: activitiesLoader,
       },
     ]
   },

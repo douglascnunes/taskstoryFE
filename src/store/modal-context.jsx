@@ -15,6 +15,7 @@ export const ModalContext = createContext({
     frequenceIntervalDays: null,
     frequenceWeeklyDays: null,
     steps: [],
+    stepCompletionStatus: {},
   },
   setTitle: () => { },
   setDescription: () => { },
@@ -26,6 +27,10 @@ export const ModalContext = createContext({
   setTaskEndPeriod: () => { },
   setTaskFrequenceIntervalDays: () => { },
   setTaskFrequenceWeeklyDays: () => { },
+  addTaskStep: () => { },
+  removeTaskStep: () => { },
+  toggleStepCompletion: () => { },
+  setStepCompletionStatus: () => { },
   reset: () => { },
 });
 
@@ -77,6 +82,46 @@ function activityReducer(state, action) {
     return { ...state, task: { ...state.task, frequenceWeeklyDays: action.payload } };
   };
 
+  if (action.type === 'ADD_TASK_STEP') {
+    if (!state.task.steps.some(s => s === action.payload)) {
+      return { ...state, task: { ...state.task, steps: [...state.task.steps, action.payload] } };
+    }
+    return state;
+  };
+
+  if (action.type === 'REMOVE_TASK_STEP') {
+    if (state.task.steps.some(s => s === action.payload)) {
+      return { ...state, task: { ...state.task, steps: state.task.steps.filter(s => s !== action.payload) } };
+    }
+    return state;
+  };
+
+  if (action.type === 'TOGGLE_STEP_COMPLETION') {
+    const prevStatus = state.task.stepCompletionStatus || {};
+    const current = !!prevStatus[action.payload];
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        stepCompletionStatus: {
+          ...prevStatus,
+          [action.payload]: !current,
+        }
+      }
+    };
+  };
+
+  if (action.type === 'SET_STEP_COMPLETION_STATUS') {
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        stepCompletionStatus: action.payload,
+      }
+    };
+  };
+
+
   if (action.type === 'RESET') {
     return {
       id: null,
@@ -113,6 +158,7 @@ export default function ModalContextProvider({ children }) {
       frequenceIntervalDays: "",
       frequenceWeeklyDays: [],
       steps: [],
+      stepCompletionStatus: {},
     },
   };
 
@@ -159,6 +205,22 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'SET_TASK_FREQUENCE_WEEKLY_DAYS', payload: frequenceWeeklyDays });
   };
 
+  function handleAddTaskStep(step) {
+    activityDispatch({ type: 'ADD_TASK_STEP', payload: step });
+  };
+
+  function handleRemoveTaskStep(step) {
+    activityDispatch({ type: 'REMOVE_TASK_STEP', payload: step });
+  };
+
+  function handleToggleStepCompletion(stepId) {
+    activityDispatch({ type: 'TOGGLE_STEP_COMPLETION', payload: stepId });
+  };
+
+  function handleSetStepCompletionStatus(status) {
+    activityDispatch({ type: 'SET_STEP_COMPLETION_STATUS', payload: status });
+  };
+
   function handleReset() {
     activityDispatch({ type: 'RESET' });
   };
@@ -170,6 +232,7 @@ export default function ModalContextProvider({ children }) {
     importance: activityState.importance,
     difficulty: activityState.difficulty,
     keywords: activityState.keywords,
+    type: activityState.type,
     task: activityState.task,
     setTitle: handleSetTitle,
     setDescription: handleSetDescription,
@@ -182,6 +245,10 @@ export default function ModalContextProvider({ children }) {
     setTaskEndPeriod: handleSetTaskEndPeriod,
     setTaskFrequenceIntervalDays: handleSetTaskFrequenceIntervalDays,
     setTaskFrequenceWeeklyDays: handleSetTaskFrequenceWeeklyDays,
+    addTaskStep: handleAddTaskStep,
+    removeTaskStep: handleRemoveTaskStep,
+    toggleStepCompletion: handleToggleStepCompletion,
+    setStepCompletionStatus: handleSetStepCompletionStatus,
     reset: handleReset
   };
 

@@ -1,5 +1,8 @@
-export default function TaskStep({ steps }) {
+import styles from './Step.module.css'
+
+export default function Step({ step }) {
+
   return (
-    <p>{steps}</p>
+    <p className={styles.description}>{step.description}</p>
   )
 };

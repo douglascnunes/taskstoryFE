@@ -43,5 +43,5 @@ export async function onboarding({ accountType, desirable, mostPracticed }) {
   };
   
   return response.json();
-}
+};
 

@@ -24,7 +24,6 @@ export async function action({ request }) {
     password: data.get('password'),
     confirmPassword: data.get('confirmPassword')
   }
-  console.log('ANIVERSARIO:' + accountData.birthdate)
 
   const response = await fetch('http://localhost:3000/api/signup', {
     method: 'POST',

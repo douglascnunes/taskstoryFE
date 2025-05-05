@@ -10,6 +10,7 @@ import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";
 import { upsertActivity } from "../../../../../api/activities";
 import { queryClient } from "../../../../../api/queryClient";
+import { getLocalTime } from "../../../../../util/date";
 
 
 export default function ActivityModal({ ref }) {
@@ -34,13 +35,15 @@ export default function ActivityModal({ ref }) {
   useImperativeHandle(ref, () => {
     return {
       upsert() {
+        const createdAt = getLocalTime();
+
         if (id && (title !== "" || description !== "" || importance || difficulty || keywords.length > 0)) {
           const keywordsId = keywords.map(k => k.id);
-          mutate({ activity: { id, title, description, importance, difficulty, keywords: keywordsId } })
+          mutate({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt } })
         }
         else if (title !== "" && keywords.length > 0) {
           const keywordsId = keywords.map(k => k.id);
-          mutate({ activity: { title, description, importance, difficulty, keywords: keywordsId } })
+          mutate({ activity: { title, description, importance, difficulty, keywords: keywordsId, createdAt } })
         }
         reset();
       },
