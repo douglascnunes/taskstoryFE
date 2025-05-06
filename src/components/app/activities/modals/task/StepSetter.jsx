@@ -8,7 +8,7 @@ export default function StepSetter({ }) {
     isEditing: false,
     description: "",
   });
-  const { 
+  const {
     task,
     addTaskStep,
   } = useContext(ModalContext);
@@ -87,11 +87,17 @@ export default function StepSetter({ }) {
           className={styles.stepInput}
           value={edition.description}
           onChange={(e) => handleEditionDescription(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleAddStep();
+            }
+          }}
           autoFocus
         />
-        <button 
-        className={styles.addStepButton} 
-        onClick={handleAddStep}>
+        <button
+          className={styles.addStepButton}
+          onClick={handleAddStep}>
           Adicionar
         </button>
       </div>
@@ -112,4 +118,4 @@ export default function StepSetter({ }) {
       </div>
     </>
   );
-}
+};

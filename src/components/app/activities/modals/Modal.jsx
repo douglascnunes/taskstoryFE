@@ -16,7 +16,7 @@ export default function Modal() {
   useEffect(() => {
     const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
-        contentModalRef.current.upsert();
+        contentModalRef.current.create();
         setMode(null);
         closeModal();
       };

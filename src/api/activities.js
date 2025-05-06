@@ -1,4 +1,6 @@
 import { getAuthToken } from "../util/auth";
+import { url } from '../util/api-helpers/url.js';
+
 
 
 export async function getOverview({ signal, startdateFilter, finaldateFilter }) {
@@ -8,7 +10,7 @@ export async function getOverview({ signal, startdateFilter, finaldateFilter }) 
   if (startdateFilter) params.append('startdate', startdateFilter);
   if (finaldateFilter) params.append('finaldate', finaldateFilter);
 
-  const response = await fetch(`http://localhost:3000/api/overview?${params.toString()}`, {
+  const response = await fetch(`${url}overview?${params.toString()}`, {
     signal,
     headers: { 'Authorization': 'Bearer ' + token }
   });
@@ -23,19 +25,34 @@ export async function getOverview({ signal, startdateFilter, finaldateFilter }) 
 };
 
 
-export async function upsertActivity({ signal, activity }) {
-  let method;
 
-  if (!activity.id) {
-    method = 'POST';
-  } else {
-    method = 'PATCH';
+export async function createActivity({ signal, activity }) {
+  const token = getAuthToken();
+
+  const response = await fetch(url + 'activities', {
+    signal,
+    method: 'POST',
+    body: JSON.stringify(activity),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create activity");
   };
 
+  return await response.json();
+};
+
+
+export async function updateActivity({ signal, activity }) {
+
   const token = getAuthToken();
-  const response = await fetch('http://localhost:3000/api/activities', {
+  const response = await fetch(url + 'activities', {
     signal,
-    method: method,
+    method: 'PATCH',
     body: JSON.stringify(activity),
     headers: {
       'Content-Type': 'application/json',

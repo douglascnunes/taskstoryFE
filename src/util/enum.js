@@ -26,7 +26,7 @@ export const STATUS = [
 // Label, DivColor, PColor
 export const STATUS_NAME = [
   ['Referência', '#cccccc', '#4d4d4d'],
-  ['Incubação',],
+  ['Incubação', '#d9cabf', '#8f6e56'],
   ['A Fazer', '#f5e0a3', '#635836'],
   ['A fazer (Atrasado)', '#f5b8a3', '$cf4517'],
   ['Esperando', '#bbbbbb', '#888888'],

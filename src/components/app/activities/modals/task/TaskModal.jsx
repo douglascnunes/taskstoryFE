@@ -7,10 +7,10 @@ import { ModalContext } from "../../../../../store/modal-context";
 import Description from "../Description";
 import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";
-import { upsertTask } from "../../../../../api/task";
+import { createTask, updateTask } from "../../../../../api/task";
 import DateSetter from "../DateSetter";
 import { queryClient } from "../../../../../api/queryClient";
-import { cleanTask, isTaskTimingValid } from "../../../../../util/upsert/task";
+import { cleanTask, isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpers/task";
 import StepSetter from "./StepSetter";
 import StatusTag from "../StatusTag";
 
@@ -31,8 +31,15 @@ export default function TaskModal({ ref }) {
   } = useContext(ModalContext);
 
 
-  const { mutate } = useMutation({
-    mutationFn: upsertTask,
+  const { mutate: mutateCreateTask } = useMutation({
+    mutationFn: createTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['activities', 'overview']);
+    }
+  });
+
+  const { mutate: mutateUpdateTask } = useMutation({
+    mutationFn: updateTask,
     onSuccess: () => {
       queryClient.invalidateQueries(['activities', 'overview']);
     }
@@ -40,24 +47,22 @@ export default function TaskModal({ ref }) {
 
   useImperativeHandle(ref, () => {
     return {
-      upsert() {
-        task.startPeriod = task.startPeriod ? new Date(task.startPeriod) : null;
-        task.endPeriod = task.endPeriod ? new Date(task.endPeriod) : null;
-        const createdAt = new Date();
-        const cleanedTask = cleanTask(task);
-        const keywordsId = keywords.map(k => k.id);
+      create() {
+        const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
 
-        if (id &&
-          (title !== "" || description !== "" || importance || difficulty || keywords.length > 0)
-          && isTaskTimingValid(task)) {
-          mutate({ task: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
-        }
-
-        else if ((title !== "" || importance || difficulty || keywords.length > 0)
-        ) {
-          mutate({ task: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
+        if ((title && importance && difficulty && keywords.length > 0 && isTaskTimingValid(task))) {
+          mutateCreateTask({ task: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         };
+        reset();
+      },
 
+      update() {
+        const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
+
+        if (id && (title !== "" || description !== "" || importance || difficulty || keywords.length > 0)
+          && isTaskTimingValid(task)) {
+          mutateUpdateTask({ task: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
+        }
         reset();
       },
     }
