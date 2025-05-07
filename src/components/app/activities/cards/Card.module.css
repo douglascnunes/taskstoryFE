@@ -1,4 +1,4 @@
-.container {
+.cardContainer {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 0.4rem 0.6rem;
@@ -6,6 +6,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 18rem;
   height: auto;
+  cursor: pointer;
 }
 
 .container h3 {
