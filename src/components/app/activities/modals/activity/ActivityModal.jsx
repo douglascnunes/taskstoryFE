@@ -4,7 +4,7 @@ import ImportDifficulPicker from "../ImportDifficulPicker";
 import PriorityTag from "../PriorityTag";
 import modalStyles from "../Modal.module.css";
 import KeywordsSetter from "../KeywordsSetter";
-import { ModalContext } from "../../../../../store/modal-context";
+import { ModalContext } from "../../../../../store/modal-context/modal-context";
 import Description from "../Description";
 import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";

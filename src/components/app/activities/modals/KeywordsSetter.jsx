@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import KeywordsModal from '../KeywordsModal';
 import styles from './KeywordsSetter.module.css';
 import KeywordTag from '../KeywordTag';
-import { ModalContext } from '../../../../store/modal-context';
+import { ModalContext } from '../../../../store/modal-context/modal-context';
 
 
 export default function KeywordsSetter() {

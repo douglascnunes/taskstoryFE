@@ -6,17 +6,15 @@ import { generateTaskInstances, isTaskLate, isTaskOnWeek, isTaskToday, updateTas
 export function generateInstances(activities, startOverviewDate, endOverviewDate) {
   let activityInstances = [];
 
-
   activities.forEach(activity => {
-
     if (activity.type === "TASK") {
       const taskInstances = generateTaskInstances(activity, startOverviewDate, endOverviewDate);
       if (taskInstances) {
         activityInstances.push(...taskInstances);
       };
     };
-
   });
+
   return activityInstances;
 };
 
@@ -27,7 +25,7 @@ export function updateStatus(activityInstances) {
   activityInstances.forEach(activity => {
 
     if (activity.type === "TASK") {
-      activity.task.taskInstances.currentStatus = updateTaskStatus(activity);
+      activity.task.taskInstances.status = updateTaskStatus(activity);
     };
   });
 

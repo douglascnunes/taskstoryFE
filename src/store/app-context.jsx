@@ -4,6 +4,7 @@ import { createContext, useReducer } from "react";
 export const AppContext = createContext({
   isOpenModal: null,
   mode: null,
+  type: null,
   openModal: () => { },
   closeModal: () => { },
   setMode: () => { },
@@ -15,6 +16,8 @@ function appReducer(state, action) {
     return {
       ...state,
       isOpenModal: true,
+      mode: action.payload.mode,
+      type: action.payload.type,
     };
   };
 
@@ -22,6 +25,8 @@ function appReducer(state, action) {
     return {
       ...state,
       isOpenModal: false,
+      mode: null,
+      type: null
     };
   };
 
@@ -31,16 +36,18 @@ function appReducer(state, action) {
 };
 
 
+
 export default function AppContextProvider({ children }) {
   const initialState = {
     isOpenModal: false,
     mode: null,
+    type: null,
   };
 
   const [appState, appDispatch] = useReducer(appReducer, initialState);
 
-  function handleOpenModal() {
-    appDispatch({ type: 'OPEN_MODAL' });
+  function handleOpenModal(mode, type) {
+    appDispatch({ type: 'OPEN_MODAL', payload: { mode, type } });
   };
 
   function handleCloseModal() {
@@ -51,9 +58,11 @@ export default function AppContextProvider({ children }) {
     appDispatch({ type: 'SET_MODE', payload: mode });
   };
 
+
   const ctxValue = {
     isOpenModal: appState.isOpenModal,
     mode: appState.mode,
+    type: appState.type,
     openModal: handleOpenModal,
     closeModal: handleCloseModal,
     setMode: handleSetMode,

@@ -5,7 +5,7 @@ import { createKeyword, getUserKeywords } from '../../../api/keywords';
 import KeywordTag from './KeywordTag';
 import { getAreasOfLife } from '../../../api/areaoflife';
 import { queryClient } from '../../../api/queryClient';
-import { ModalContext } from '../../../store/modal-context';
+import { ModalContext } from '../../../store/modal-context/modal-context';
 import Input from './modals/Input';
 
 

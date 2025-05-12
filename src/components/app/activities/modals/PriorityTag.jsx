@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY_VALUES } from "../../../../util/enum";
 import styles from "./PriorityTag.module.css";
-import { ModalContext } from "../../../../store/modal-context";
+import { ModalContext } from "../../../../store/modal-context/modal-context";
 
 export default function PriorityTag() {
   const {

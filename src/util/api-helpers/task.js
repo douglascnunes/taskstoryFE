@@ -8,8 +8,8 @@ export function cleanTask(task) {
       (hasLength ? value.length > 0 : true)
     ) {
       cleanedTask[key] = value;
-    }
-  }
+    };
+  };
   return cleanedTask;
 };
 

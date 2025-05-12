@@ -8,7 +8,7 @@ function taskCopy(activity, finalDate) {
     task: {
       ...activity.task,
       taskInstances: {
-        currentStatus: STATUS[2], // TODO
+        status: STATUS[2], // TODO
         completedOn: null,
         finalDate: finalDate,
         stepCompletionStatus: null,
@@ -23,7 +23,6 @@ function taskCopy(activity, finalDate) {
 export function generateTaskInstances(activity, startOverviewDate, endOverviewDate) {
   const { task, createdAt } = activity;
   const { taskInstances, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod } = task;
-
 
   if (taskInstances.length === 0) {
     if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
@@ -51,7 +50,7 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
       return activityInstances;
     };
 
-    
+
     if (frequenceWeeklyDays && frequenceWeeklyDays.length > 0) {
       const activityInstances = [];
 
@@ -83,20 +82,20 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 export function updateTaskStatus(activity) {
   const today = new Date();
   const { task } = activity;
-  const current = task.taskInstances.currentStatus;
+  const completedOn = task.taskInstances.completedOn;
 
   if (compareDatesOnly(new Date(task.taskInstances.finalDate), today) < 0) {
-    if (current === STATUS[2]) return STATUS[3]; // TODO → TODO_LATE
-    if (current === STATUS[4]) return STATUS[5]; // WAITING → WAITING_LATE
-    if (current === STATUS[6]) return STATUS[7]; // DOING → DOING_LATE
+    if (completedOn === null) return STATUS[3]; // TODO_LATE
+    // if (current === STATUS[4]) return STATUS[5]; // WAITING → WAITING_LATE
+    // if (current === STATUS[6]) return STATUS[7]; // DOING → DOING_LATE
   };
 
-  return current;
+  return STATUS[2]; // TODO
 };
 
 
 export function isTaskLate(activity) {
-  return activity.task.taskInstances.currentStatus === STATUS[3]
+  return activity.task.taskInstances.status === STATUS[3]
 };
 
 

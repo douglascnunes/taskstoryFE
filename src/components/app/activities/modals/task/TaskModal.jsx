@@ -3,14 +3,14 @@ import ImportDifficulPicker from "../ImportDifficulPicker";
 import PriorityTag from "../PriorityTag";
 import modalStyles from "../Modal.module.css";
 import KeywordsSetter from "../KeywordsSetter";
-import { ModalContext } from "../../../../../store/modal-context";
+import { ModalContext } from "../../../../../store/modal-context/modal-context";
 import Description from "../Description";
 import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";
 import { createTask, updateTask } from "../../../../../api/task";
 import DateSetter from "../DateSetter";
 import { queryClient } from "../../../../../api/queryClient";
-import { cleanTask, isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpers/task";
+import { isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpers/task";
 import StepSetter from "./StepSetter";
 import StatusTag from "../StatusTag";
 
@@ -51,17 +51,17 @@ export default function TaskModal({ ref }) {
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
 
         if ((title && importance && difficulty && keywords.length > 0 && isTaskTimingValid(task))) {
-          mutateCreateTask({ task: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
+          mutateCreateTask({ activity: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         };
         reset();
       },
 
       update() {
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
-
-        if (id && (title !== "" || description !== "" || importance || difficulty || keywords.length > 0)
+        if (id && 
+          (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
           && isTaskTimingValid(task)) {
-          mutateUpdateTask({ task: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
+          mutateUpdateTask({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         }
         reset();
       },

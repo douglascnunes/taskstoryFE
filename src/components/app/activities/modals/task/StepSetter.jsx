@@ -1,45 +1,72 @@
 import { useContext, useRef, useState } from "react";
-import { ModalContext } from "../../../../../store/modal-context";
+import { ModalContext } from "../../../../../store/modal-context/modal-context";
 import styles from "./StepSetter.module.css";
 import Step from "./Step";
+import { AppContext } from "../../../../../store/app-context";
+import { useMutation } from "@tanstack/react-query";
+import { upsertSteps } from "../../../../../api/task";
 
-export default function StepSetter({ }) {
+export default function StepSetter() {
   const [edition, setEdition] = useState({
     isEditing: false,
     description: "",
   });
+
   const {
     task,
     addTaskStep,
+    removeTaskStep
   } = useContext(ModalContext);
-  const { steps } = task;
+  const { mode } = useContext(AppContext);
+  const { id, steps } = task;
   const containerRef = useRef();
+
+  const { mutate } = useMutation({
+    mutationFn: upsertSteps
+  })
 
 
   function handleStartEditing() {
-    setEdition(prev => ({
-      ...prev,
-      isEditing: true,
-    }));
+    setEdition(prev => ({ ...prev, isEditing: true, }));
   };
 
   function handleEditionDescription(value) {
-    setEdition(prev => ({
-      ...prev,
-      description: value,
-    }));
+    setEdition(prev => ({ ...prev, description: value, }));
   };
 
   function handleAddStep() {
-    if (edition.description.trim() === "") {
-      return;
+    if (edition.description.trim() === "") return;
+
+    const newStep = {
+      id: null,
+      description: edition.description,
     };
+
     addTaskStep(edition.description);
+
+    if (mode === 'UPDATE' && id) {
+      const updatedSteps = [...(task.steps || []), newStep];
+      mutate({ id, steps: updatedSteps });
+    };
+
     setEdition(prev => ({
       ...prev,
       description: "",
       isEditing: false,
     }));
+  };
+
+
+  function handleRemoveStep(index) {
+    console.log('check')
+    const updatedSteps = [...task.steps];
+    updatedSteps.splice(index, 1);
+
+    removeTaskStep(index);
+
+    if (mode === 'UPDATE' && id) {
+      mutate({ id, steps: updatedSteps });
+    };
   };
 
 
@@ -54,10 +81,15 @@ export default function StepSetter({ }) {
 
   let stepsContent;
 
-  if (steps.length > 0) {
+  if (steps && steps.length > 0) {
     stepsContent = (
-      task.steps.map(step => (
-        <Step key={step} step={step} />
+      task.steps.map((step, index) => (
+        <Step
+          key={step.id ? step.id : step.description}
+          step={step}
+          index={index}
+          removeTaskStep={handleRemoveStep}
+        />
       ))
     );
   };

@@ -1,11 +1,10 @@
 import { getOverview } from "../../api/activities";
 import Panel from "../../components/app/panel/Panel";
-import { queryClient } from "../../api/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import FloatingActionButton from "../../components/app/panel/FloatingActionButton";
 import Modal from "../../components/app/activities/modals/Modal";
 import AppContextProvider from "../../store/app-context";
-import ModalContextProvider from "../../store/modal-context";
+import ModalContextProvider from "../../store/modal-context/modal-context";
 import { dateToYYYYMMDD } from "../../util/date";
 
 
@@ -32,13 +31,13 @@ export default function MainApp() {
       <ModalContextProvider>
         <Modal />
         <FloatingActionButton />
+        <Panel
+          activities={data.activities}
+          mode="overview"
+          startOverviewDate={data.startdate}
+          endOverviewDate={data.finaldate}
+        />
       </ModalContextProvider>
-      <Panel
-        activities={data.activities}
-        mode="overview"
-        startOverviewDate={data.startdate}
-        endOverviewDate={data.finaldate}
-      />
     </AppContextProvider>
   );
 };

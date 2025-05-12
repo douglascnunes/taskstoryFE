@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../../../../store/app-context";
 import styles from "./Modal.module.css";
@@ -7,17 +6,15 @@ import TaskModal from "./task/TaskModal";
 
 
 export default function Modal() {
-  const { isOpenModal, closeModal, setMode } = useContext(AppContext);
-  const [searchParams] = useSearchParams();
+  const { isOpenModal, mode, type, closeModal } = useContext(AppContext);
   const modalRef = useRef();
   const contentModalRef = useRef();
-
 
   useEffect(() => {
     const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
-        contentModalRef.current.create();
-        setMode(null);
+        if (mode === 'CREATE') contentModalRef.current.create();
+        if (mode === 'UPDATE') contentModalRef.current.update();
         closeModal();
       };
     };
@@ -26,8 +23,6 @@ export default function Modal() {
   }, [isOpenModal, closeModal]);
 
 
-  const modalType = searchParams.get('type');
-  
   if (!isOpenModal) {
     return null;
   };
@@ -35,11 +30,11 @@ export default function Modal() {
 
   let content, modalLabel;
 
-  if (modalType === 'activity') {
+  if (type === 'ACTIVITY') {
     modalLabel = "Criando Atividade";
     content = <ActivityModal ref={contentModalRef} />
   }
-  else if (modalType === 'task') {
+  else if (type === 'TASK') {
     modalLabel = "Criando Tarefa";
     content = <TaskModal ref={contentModalRef} />
   }

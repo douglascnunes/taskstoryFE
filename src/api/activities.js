@@ -26,6 +26,30 @@ export async function getOverview({ signal, startdateFilter, finaldateFilter }) 
 
 
 
+export async function getActivity({ signal, activityId, instanceId }) {
+  let urlQueries = url + `activities/${activityId}`;
+
+  if (instanceId) {
+    urlQueries += `?instanceid=${instanceId}`;
+  };
+
+  const token = getAuthToken();
+  const response = await fetch(urlQueries, {
+    signal,
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch overview activities");
+  }
+
+  const { activity } = await response.json();
+
+  return activity;
+};
+
+
+
 export async function createActivity({ signal, activity }) {
   const token = getAuthToken();
 
@@ -48,9 +72,8 @@ export async function createActivity({ signal, activity }) {
 
 
 export async function updateActivity({ signal, activity }) {
-
   const token = getAuthToken();
-  const response = await fetch(url + 'activities', {
+  const response = await fetch(url + 'activities/' + activity.id, {
     signal,
     method: 'PATCH',
     body: JSON.stringify(activity),

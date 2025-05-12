@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import styles from './DateModal.module.css';
-import { ModalContext } from '../../../../store/modal-context.jsx';
+import { ModalContext } from '../../../../store/modal-context/modal-context.jsx';
 import { dateToYYYYMMDD, yyyymmddToDate } from '../../../../util/date.js';
 import { DAYS_OF_WEEK } from '../../../../util/enum.js';
 
@@ -14,7 +14,8 @@ export default function DateModal({ isOpenModal, closeModal }) {
     setTaskFrequenceIntervalDays,
     setTaskFrequenceWeeklyDays,
   } = useContext(ModalContext);
-  const [mode, setMode] = useState("SINGLE");
+  const [mode, setMode] = useState(
+    (task.frequenceIntervalDays == true || task.frequenceWeeklyDays == true) ? 'MULTI' : 'SINGLE');
   const modalRef = useRef();
 
 
@@ -147,8 +148,8 @@ export default function DateModal({ isOpenModal, closeModal }) {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #ccc',
-                    backgroundColor: task.frequenceWeeklyDays.includes(day.value) ? '#4CAF50' : '#f0f0f0',
-                    color: task.frequenceWeeklyDays.includes(day.value) ? '#fff' : '#333',
+                    backgroundColor: task.frequenceWeeklyDays?.includes(day.value) ? '#4CAF50' : '#f0f0f0',
+                    color: task.frequenceWeeklyDays?.includes(day.value) ? '#fff' : '#333',
                     cursor: 'pointer'
                   }}
                   type="button"

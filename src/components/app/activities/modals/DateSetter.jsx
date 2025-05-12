@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import { ModalContext } from "../../../../store/modal-context"
+import { ModalContext } from "../../../../store/modal-context/modal-context"
 import styles from './DateSetter.module.css';
 import DateModal from "./DateModal";
 import { dateToYYYYMMDD } from "../../../../util/date";

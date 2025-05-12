@@ -1,7 +1,8 @@
 import styles from './StatusTag.module.css';
 import { STATUS_NAME } from '../../../../util/enum.js';
 import { useContext, useMemo } from 'react';
-import { ModalContext } from '../../../../store/modal-context.jsx';
+import { ModalContext } from '../../../../store/modal-context/modal-context.jsx';
+import { AppContext } from '../../../../store/app-context.jsx';
 
 
 
@@ -9,15 +10,16 @@ import { ModalContext } from '../../../../store/modal-context.jsx';
 
 export default function StatusTag() {
   const { type, task } = useContext(ModalContext);
+  const { type: modalType } = useContext(AppContext);
 
-  let status;
-  if (type === 'activity') {
+  let status = [];
+  if (modalType === 'ACTIVITY') {
     status = [...STATUS_NAME[0], "1rem"]
   };
 
-  if (type === "task") {
+  if (modalType === "TASK") {
     const { endPeriod, frequenceIntervalDays, frequenceWeeklyDays } = task;
-    const defineDate = (task.endPeriod || task.frequenceIntervalDays || task.frequenceWeeklyDays.length > 0);
+    const defineDate = (task.endPeriod || task.frequenceIntervalDays || task.frequenceWeeklyDays?.length > 0);
 
     status = useMemo(() => {
       const today = new Date();

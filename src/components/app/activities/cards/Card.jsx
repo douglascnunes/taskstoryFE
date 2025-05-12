@@ -2,60 +2,90 @@ import styles from './Card.module.css';
 import KeywordTag from '../KeywordTag';
 import TaskCard from './task/TaskCard';
 import { STATES_CARD_COLORS } from '../../../../util/color';
-import { Link } from 'react-router-dom';
+import { dataTagErrorSymbol, useQuery } from '@tanstack/react-query';
+import { getActivity } from '../../../../api/activities';
+import { useContext, useEffect } from 'react';
+import { AppContext } from '../../../../store/app-context';
+import { ModalContext } from '../../../../store/modal-context/modal-context';
+import { getTask } from '../../../../api/task';
+
 
 
 export default function PanelCard({ activity }) {
+  const { openModal } = useContext(AppContext);
+  const { loader } = useContext(ModalContext);
   let content = null;
   let finalDate = null;
   let status = null;
-  let queryInstanceId = null;
 
-  const queryType = (`?type=${activity.type}`)
-  const queryActivityId = (`&activity=${activity.id}`)
+  const queryConfigMap = {
+    TASK: {
+      queryFn: getTask,
+      getParams: ({ signal, activity }) => ({
+        signal,
+        id: activity.id,
+        instanceId: activity.task.taskInstances.id ?? null,
+      }),
+    },
+  };
+  const defaultQueryConfig = {
+    queryFn: getActivity,
+    getParams: ({ signal, activity }) => ({ signal, activityId: activity.id }),
+  };
+  const { queryFn, getParams } = queryConfigMap[activity.type] || defaultQueryConfig;
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: [activity.type.toLowerCase(), activity.id],
+    queryFn: ({ signal }) => queryFn(getParams({ signal, activity })),
+    enabled: false,
+  });
+
+  function handleClick(type) {
+    openModal('UPDATE', String(type).toUpperCase());
+    refetch();
+  }
 
   if (activity.type === 'TASK') {
     finalDate = new Date(activity.task.taskInstances.finalDate);
-    status = activity.task.taskInstances.currentStatus;
+    status = activity.task.taskInstances.status;
     content = <TaskCard task={activity.task} />
-    queryInstanceId = activity.task.taskInstances?.id? (`&instance=${activity.task.taskInstances.id}`) : null;
   };
 
+  useEffect(() => {
+    if (!isLoading && data) {
+      loader(data);
+    }
+  }, [data, isLoading]);
+
+  const bg = STATES_CARD_COLORS[status]?.cardColor;
 
   return (
-    <Link
-      key={activity.id+queryActivityId+queryInstanceId}
-      to={queryType+queryActivityId+queryInstanceId}
-      onClick={() => handleChoice(item[1])}
+    <div
+      className={styles.cardContainer}
+      style={{ backgroundColor: bg }}
+      onClick={() => handleClick(activity.type)}
     >
-
-      <div
-        className={styles.cardContainer}
-        style={{ backgroundColor: STATES_CARD_COLORS[status].cardColor }}>
-        <div className={styles.header}>
-          <h3>{activity.title}</h3>
-        </div>
-        <p className={styles.description}>{activity.description}</p>
-
-        {content}
-
-        <div className={styles.keywords}>
-          {activity.keywords.map((keyword, index) => (
-            <KeywordTag keyword={keyword} key={index} />
-          ))}
-        </div>
-
-        <div className={styles.dates}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <p>{`${new Date(activity.task.taskInstances.finalDate).toLocaleDateString('pt-br', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          })}`}</p>
-        </div>
-      </div >
-    </Link>
+      <div className={styles.header}>
+        <h3>{activity.title}</h3>
+      </div>
+      <p className={styles.description}>{activity.description}</p>
+      {activity.type === "TASK" && <TaskCard task={activity.task} />}
+      <div className={styles.keywords}>
+        {activity.keywords.map((kw, i) => (
+          <KeywordTag keyword={kw} key={i} />
+        ))}
+      </div>
+      <div className={styles.dates}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <p>
+          {new Date(activity.task.taskInstances.finalDate).toLocaleDateString(
+            "pt-br",
+            { day: "2-digit", month: "long", year: "numeric" }
+          )}
+        </p>
+      </div>
+    </div>
   );
-};
+}

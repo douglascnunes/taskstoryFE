@@ -15,7 +15,7 @@ export const ModalContext = createContext({
     frequenceIntervalDays: null,
     frequenceWeeklyDays: null,
     steps: [],
-    stepCompletionStatus: {},
+    stepCompletionStatus: null,
   },
   setTitle: () => { },
   setDescription: () => { },
@@ -23,6 +23,7 @@ export const ModalContext = createContext({
   setDifficulty: () => { },
   toggleKeywords: () => { },
   setType: () => { },
+  loader: () => { },
   setTaskStartPeriod: () => { },
   setTaskEndPeriod: () => { },
   setTaskFrequenceIntervalDays: () => { },
@@ -30,7 +31,6 @@ export const ModalContext = createContext({
   addTaskStep: () => { },
   removeTaskStep: () => { },
   toggleStepCompletion: () => { },
-  setStepCompletionStatus: () => { },
   reset: () => { },
 });
 
@@ -66,6 +66,45 @@ function activityReducer(state, action) {
     return { ...state, type: action.payload };
   };
 
+  if (action.type === 'LOADER') {
+    const activity = action.payload;
+    const type = String(activity.type).toLocaleLowerCase();
+
+    activity.createAt = activity.createAt ? new Date(activity.createAt) : null;
+
+    if (type === 'task') {
+      activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : "";
+      activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : "";
+      activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? "";
+      activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? [];
+      activity.task.stepCompletionStatus = activity.task.stepCompletionStatus ?? [];
+      activity.task.steps = activity.task.steps ?? [];
+    };
+
+
+    return {
+      ...state,
+      id: activity.id,
+      title: activity.title,
+      description: activity.description,
+      importance: activity.importance,
+      difficulty: activity.difficulty,
+      keywords: activity.keywords || [],
+      type,
+
+      // zera todos os tipos conhecidos primeiro, mantendo a estrutura limpa
+      task: {},
+      project: {},
+      habit: {},
+      goal: {},
+
+      // popula dinamicamente com base no type (ex: task: {...})
+      [type]: {
+        ...(activity[type] || {})
+      }
+    };
+  };
+
   if (action.type === 'SET_TASK_START_PERIOD') {
     return { ...state, task: { ...state.task, startPeriod: action.payload } };
   };
@@ -83,45 +122,41 @@ function activityReducer(state, action) {
   };
 
   if (action.type === 'ADD_TASK_STEP') {
-    if (!state.task.steps.some(s => s === action.payload)) {
-      return { ...state, task: { ...state.task, steps: [...state.task.steps, action.payload] } };
-    }
-    return state;
+    return {
+      ...state, task: {
+        ...state.task,
+        steps: [...state.task.steps, { id: null, description: action.payload }]
+      }
+    };
   };
 
   if (action.type === 'REMOVE_TASK_STEP') {
-    if (state.task.steps.some(s => s === action.payload)) {
-      return { ...state, task: { ...state.task, steps: state.task.steps.filter(s => s !== action.payload) } };
-    }
-    return state;
+    return {
+      ...state, task: {
+        ...state.task,
+        steps: state.task.steps.filter((_, i) => i !== action.payload)
+      }
+    };
   };
+
 
   if (action.type === 'TOGGLE_STEP_COMPLETION') {
-    const prevStatus = state.task.stepCompletionStatus || {};
-    const current = !!prevStatus[action.payload];
+    const prevStatus = state.task.stepCompletionStatus || [];
+    const stepId = action.payload;
+
+    const updatedStatus = prevStatus.includes(stepId)
+      ? prevStatus.filter(id => id !== stepId) : [...prevStatus, stepId];
+
     return {
       ...state,
       task: {
         ...state.task,
-        stepCompletionStatus: {
-          ...prevStatus,
-          [action.payload]: !current,
-        }
+        stepCompletionStatus: updatedStatus
       }
     };
   };
 
-  if (action.type === 'SET_STEP_COMPLETION_STATUS') {
-    return {
-      ...state,
-      task: {
-        ...state.task,
-        stepCompletionStatus: action.payload,
-      }
-    };
-  };
-
-
+  
   if (action.type === 'RESET') {
     return {
       id: null,
@@ -137,6 +172,7 @@ function activityReducer(state, action) {
         frequenceIntervalDays: null,
         frequenceWeeklyDays: [],
         steps: [],
+        stepCompletionStatus: [],
       },
     };
   }
@@ -158,7 +194,7 @@ export default function ModalContextProvider({ children }) {
       frequenceIntervalDays: "",
       frequenceWeeklyDays: [],
       steps: [],
-      stepCompletionStatus: {},
+      stepCompletionStatus: [],
     },
   };
 
@@ -209,16 +245,16 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'ADD_TASK_STEP', payload: step });
   };
 
-  function handleRemoveTaskStep(step) {
-    activityDispatch({ type: 'REMOVE_TASK_STEP', payload: step });
+  function handleRemoveTaskStep(index) {
+    activityDispatch({ type: 'REMOVE_TASK_STEP', payload: index });
   };
 
   function handleToggleStepCompletion(stepId) {
     activityDispatch({ type: 'TOGGLE_STEP_COMPLETION', payload: stepId });
   };
 
-  function handleSetStepCompletionStatus(status) {
-    activityDispatch({ type: 'SET_STEP_COMPLETION_STATUS', payload: status });
+  function handleLoader(activity) {
+    activityDispatch({ type: 'LOADER', payload: activity })
   };
 
   function handleReset() {
@@ -240,6 +276,7 @@ export default function ModalContextProvider({ children }) {
     setDifficulty: handleSetDifficulty,
     toggleKeywords: handleToggleKeyword,
     setType: handleSetType,
+    loader: handleLoader,
     // TASK REDUCERS
     setTaskStartPeriod: handleSetTaskStartPeriod,
     setTaskEndPeriod: handleSetTaskEndPeriod,
@@ -248,8 +285,7 @@ export default function ModalContextProvider({ children }) {
     addTaskStep: handleAddTaskStep,
     removeTaskStep: handleRemoveTaskStep,
     toggleStepCompletion: handleToggleStepCompletion,
-    setStepCompletionStatus: handleSetStepCompletionStatus,
-    reset: handleReset
+    reset: handleReset,
   };
 
   return <ModalContext.Provider value={ctxValue}>

@@ -80,7 +80,7 @@ export function isOnWeek(date) {
   const baseDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   const day2 = new Date(baseDate);
-  day2.setDate(day2.getDate() + 2);
+  day2.setDate(day2.getDate() + 1);
 
   const day7 = new Date(baseDate);
   day7.setDate(day7.getDate() + 7);
