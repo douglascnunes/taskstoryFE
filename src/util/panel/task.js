@@ -7,12 +7,12 @@ function taskCopy(activity, finalDate) {
     ...activity,
     task: {
       ...activity.task,
-      taskInstances: {
+      instance: {
+        finalDate: new Date(finalDate),
         status: STATUS[2], // TODO
         completedOn: null,
-        finalDate: finalDate,
-        stepCompletionStatus: null,
-        priorityEvolved: 0,
+        stepCompletionStatus: [],
+        // priorityEvolved: 0,
         taskId: activity.task.id
       }
     }
@@ -82,9 +82,9 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 export function updateTaskStatus(activity) {
   const today = new Date();
   const { task } = activity;
-  const completedOn = task.taskInstances.completedOn;
+  const completedOn = task.instance.completedOn;
 
-  if (compareDatesOnly(new Date(task.taskInstances.finalDate), today) < 0) {
+  if (compareDatesOnly(new Date(task.instance.finalDate), today) < 0) {
     if (completedOn === null) return STATUS[3]; // TODO_LATE
     // if (current === STATUS[4]) return STATUS[5]; // WAITING → WAITING_LATE
     // if (current === STATUS[6]) return STATUS[7]; // DOING → DOING_LATE
@@ -95,16 +95,16 @@ export function updateTaskStatus(activity) {
 
 
 export function isTaskLate(activity) {
-  return activity.task.taskInstances.status === STATUS[3]
+  return activity.task.instance.status === STATUS[3]
 };
 
 
 export function isTaskToday(activity) {
   const today = new Date();
-  return compareDatesOnly(new Date(activity.task.taskInstances.finalDate), today) === 0;
+  return compareDatesOnly(new Date(activity.task.instance.finalDate), today) === 0;
 }
 
 
 export function isTaskOnWeek(activity) {
-  return isOnWeek(activity.task.taskInstances.finalDate);
+  return isOnWeek(activity.task.instance.finalDate);
 }

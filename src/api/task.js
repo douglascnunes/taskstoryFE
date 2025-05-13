@@ -89,13 +89,13 @@ export async function upsertSteps({ signal, id, steps }) {
 
 
 
-export async function createInstance({ signal, taskId, taskInstance }) {
+export async function createInstance({ signal, taskId, instance }) {
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + taskId + '/instance', {
     signal,
     method: 'POST',
-    body: JSON.stringify(taskInstance),
+    body: JSON.stringify(instance),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token,

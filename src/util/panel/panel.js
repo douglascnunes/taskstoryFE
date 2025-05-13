@@ -8,9 +8,9 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
 
   activities.forEach(activity => {
     if (activity.type === "TASK") {
-      const taskInstances = generateTaskInstances(activity, startOverviewDate, endOverviewDate);
-      if (taskInstances) {
-        activityInstances.push(...taskInstances);
+      const instance = generateTaskInstances(activity, startOverviewDate, endOverviewDate);
+      if (instance) {
+        activityInstances.push(...instance);
       };
     };
   });
@@ -25,7 +25,7 @@ export function updateStatus(activityInstances) {
   activityInstances.forEach(activity => {
 
     if (activity.type === "TASK") {
-      activity.task.taskInstances.status = updateTaskStatus(activity);
+      activity.task.instance.status = updateTaskStatus(activity);
     };
   });
 
@@ -137,7 +137,7 @@ export function filterMonthActivities(activityInstances, startOverviewDate, endO
     };
     activityInstances.forEach(activity => {
       if (activity.type === 'TASK') {
-        if (isOnMonth(new Date(activity.task.taskInstances.finalDate),
+        if (isOnMonth(new Date(activity.task.instance.finalDate),
           refDate.getMonth(), refDate.getFullYear(), startOverviewDate, endOverviewDate)) {
           month.activities.push(activity);
         }

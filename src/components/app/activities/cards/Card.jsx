@@ -24,7 +24,7 @@ export default function PanelCard({ activity }) {
       getParams: ({ signal, activity }) => ({
         signal,
         id: activity.id,
-        instanceId: activity.task.taskInstances.id ?? null,
+        instanceId: activity.task.instance.id ?? null,
       }),
     },
   };
@@ -46,13 +46,16 @@ export default function PanelCard({ activity }) {
   }
 
   if (activity.type === 'TASK') {
-    finalDate = new Date(activity.task.taskInstances.finalDate);
-    status = activity.task.taskInstances.status;
+    finalDate = new Date(activity.task.instance.finalDate);
+    status = activity.task.instance.status;
     content = <TaskCard task={activity.task} />
   };
 
   useEffect(() => {
     if (!isLoading && data) {
+      console.log('Log DATA no Card.jsx')
+      const data1 = {...data};
+      console.log(data1)
       loader(data);
     }
   }, [data, isLoading]);
@@ -80,7 +83,7 @@ export default function PanelCard({ activity }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
         <p>
-          {new Date(activity.task.taskInstances.finalDate).toLocaleDateString(
+          {new Date(activity.task.instance.finalDate).toLocaleDateString(
             "pt-br",
             { day: "2-digit", month: "long", year: "numeric" }
           )}
