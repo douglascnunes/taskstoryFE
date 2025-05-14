@@ -18,6 +18,7 @@ export default function Panel({ activities, mode, startOverviewDate, endOverview
   let activityInstances = generateInstances(activities, startOverviewDate, endOverviewDate);
 
   activityInstances = updateStatus(activityInstances);
+  console.log('Log activityInstances no Panel.jsx')
   console.log(activityInstances)
 
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);

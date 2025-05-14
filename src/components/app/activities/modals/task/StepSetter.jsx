@@ -58,7 +58,6 @@ export default function StepSetter() {
 
 
   function handleRemoveStep(index) {
-    // console.log('check')
     const updatedSteps = [...task.steps];
     updatedSteps.splice(index, 1);
 

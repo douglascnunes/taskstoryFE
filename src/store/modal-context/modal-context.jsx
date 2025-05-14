@@ -22,7 +22,8 @@ export const ModalContext = createContext({
       completedOn: null,
       status: null,
       stepCompletionStatus: null,
-    },
+      // priorityEvolved: null,
+    }
   },
   setTitle: () => { },
   setDescription: () => { },
@@ -77,7 +78,7 @@ function activityReducer(state, action) {
     const activity = action.payload;
     const type = String(activity.type).toLocaleLowerCase();
 
-    activity.createAt = activity.createAt ? new Date(activity.createAt) : null;
+    activity.createdAt = activity.createdAt ? new Date(activity.createdAt) : null;
 
     if (type === 'task') {
       activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : "";
@@ -85,7 +86,19 @@ function activityReducer(state, action) {
       activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? "";
       activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? [];
       activity.task.steps = activity.task.steps ?? [];
-      activity.task.stepCompletionStatus = activity.task.stepCompletionStatus ?? [];
+      activity.task.instance = activity.task.instance ?? {};
+      activity.task.instance.stepCompletionStatus = activity.task.instance.stepCompletionStatus ?? [];
+
+      activity.task.instance = activity.task.instance ?? {
+        id: null,
+        finalDate: null,
+        completedOn: null,
+        status: null,
+        stepCompletionStatus: [],
+        taskId: activity.task.id ?? activity.id
+      };
+
+      activity.task.instance.stepCompletionStatus = activity.task.instance.stepCompletionStatus ?? [];
     };
 
 
@@ -148,7 +161,7 @@ function activityReducer(state, action) {
 
 
   if (action.type === 'TOGGLE_STEP_COMPLETION') {
-    const prevStatus = state.task.stepCompletionStatus || [];
+    const prevStatus = state.task.instance?.stepCompletionStatus || [];
     const stepId = action.payload;
 
     const updatedStatus = prevStatus.includes(stepId)
@@ -158,7 +171,10 @@ function activityReducer(state, action) {
       ...state,
       task: {
         ...state.task,
-        stepCompletionStatus: updatedStatus
+        instance: {
+          ...state.task.instance,
+          stepCompletionStatus: updatedStatus
+        }
       }
     };
   };
@@ -174,9 +190,10 @@ function activityReducer(state, action) {
       keywords: [],
       type: null,
       task: {
+        id: null,
         startPeriod: "",
         endPeriod: "",
-        frequenceIntervalDays: null,
+        frequenceIntervalDays: "",
         frequenceWeeklyDays: [],
         steps: [],
         instance: {
@@ -185,7 +202,7 @@ function activityReducer(state, action) {
           completedOn: "",
           status: null,
           stepCompletionStatus: [],
-        },
+        }
       },
     };
   }
@@ -202,6 +219,7 @@ export default function ModalContextProvider({ children }) {
     keywords: [],
     type: null,
     task: {
+      id: null,
       startPeriod: "",
       endPeriod: "",
       frequenceIntervalDays: "",
@@ -213,7 +231,7 @@ export default function ModalContextProvider({ children }) {
         completedOn: "",
         status: null,
         stepCompletionStatus: [],
-      },
+      }
     },
   };
 
