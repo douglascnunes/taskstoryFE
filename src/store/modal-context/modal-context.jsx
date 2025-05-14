@@ -10,12 +10,19 @@ export const ModalContext = createContext({
   keywords: [],
   type: null,
   task: {
+    id: null,
     startPeriod: null,
     endPeriod: null,
     frequenceIntervalDays: null,
     frequenceWeeklyDays: null,
     steps: [],
-    stepCompletionStatus: null,
+    instance: {
+      id: null,
+      finalDate: null,
+      completedOn: null,
+      status: null,
+      stepCompletionStatus: null,
+    },
   },
   setTitle: () => { },
   setDescription: () => { },
@@ -77,8 +84,8 @@ function activityReducer(state, action) {
       activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : "";
       activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? "";
       activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? [];
-      activity.task.stepCompletionStatus = activity.task.stepCompletionStatus ?? [];
       activity.task.steps = activity.task.steps ?? [];
+      activity.task.stepCompletionStatus = activity.task.stepCompletionStatus ?? [];
     };
 
 
@@ -156,7 +163,7 @@ function activityReducer(state, action) {
     };
   };
 
-  
+
   if (action.type === 'RESET') {
     return {
       id: null,
@@ -172,7 +179,13 @@ function activityReducer(state, action) {
         frequenceIntervalDays: null,
         frequenceWeeklyDays: [],
         steps: [],
-        stepCompletionStatus: [],
+        instance: {
+          id: null,
+          finalDate: "",
+          completedOn: "",
+          status: null,
+          stepCompletionStatus: [],
+        },
       },
     };
   }
@@ -194,7 +207,13 @@ export default function ModalContextProvider({ children }) {
       frequenceIntervalDays: "",
       frequenceWeeklyDays: [],
       steps: [],
-      stepCompletionStatus: [],
+      instance: {
+        id: null,
+        finalDate: "",
+        completedOn: "",
+        status: null,
+        stepCompletionStatus: [],
+      },
     },
   };
 

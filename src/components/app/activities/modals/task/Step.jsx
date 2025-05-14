@@ -2,25 +2,30 @@ import { useContext } from "react";
 import { AppContext } from "../../../../../store/app-context";
 import styles from "./Step.module.css";
 import { useMutation } from "@tanstack/react-query";
-import { createInstance, updateTaskInstace } from "../../../../../api/task";
+import { createInstance, updateTaskInstance } from "../../../../../api/task";
 import { ModalContext } from "../../../../../store/modal-context/modal-context";
 
 export default function Step({ step, index, removeTaskStep }) {
   const { mode } = useContext(AppContext);
-  const { task, toggleStepCompletion } = useContext(ModalContext);
-
+  const { id, task, toggleStepCompletion } = useContext(ModalContext);
+  // console.log(task)
   const { mutate: mutateCreate } = useMutation({
     mutationFn: createInstance
   });
 
   const { mutate: mutateUpdate } = useMutation({
-    mutationFn: updateTaskInstace
+    mutationFn: updateTaskInstance
   });
 
   function handleClickCheckbox() {
     toggleStepCompletion(step.id);
-    if (task.id) {}
-  }
+    if (task.instanceId) {
+      updateTaskInstance(id, task.instanceId, { stepCompletionStatus: task.stepCompletionStatus })
+    }
+    else {
+      createInstance(id, { finalDate: task.endPeriod, stepCompletionStatus: task.stepCompletionStatus });
+    }
+  };
 
   return (
     <div className={styles.stepContainer}>

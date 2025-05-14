@@ -111,7 +111,7 @@ export async function createInstance({ signal, taskId, taskInstance }) {
 
 
 
-export async function updateTaskInstace({ signal, activityId, instanceId, instance }) {
+export async function updateTaskInstance({ signal, activityId, instanceId, instance }) {
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + activityId + '/instance/' + instanceId, {
