@@ -83,7 +83,7 @@ function activityReducer(state, action) {
     const instance = action.payload.instance;
     const type = String(activity.type).toLocaleLowerCase();
     activity.createdAt = activity.createdAt ? new Date(activity.createdAt) : null;
-    console.log('context')
+
     if (type === 'task') {
       // console.log('activity:\n', activity)
       // console.log('instance:\n', instance)

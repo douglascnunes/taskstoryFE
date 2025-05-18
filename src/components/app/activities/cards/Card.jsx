@@ -34,16 +34,21 @@ export default function PanelCard({ activity }) {
   };
   const { queryFn, getParams } = queryConfigMap[activity.type] || defaultQueryConfig;
 
-  const { data, refetch } = useQuery({
+  const { refetch } = useQuery({
     queryKey: [activity.type.toLowerCase(), activity.id],
     queryFn: ({ signal }) => queryFn(getParams({ signal, activity })),
     enabled: false,
   });
 
-  function handleClick(type) {
-    openModal('UPDATE', String(type).toUpperCase());
-    refetch();
-  }
+  async function handleClick() {
+    const result = await refetch();
+    
+    if (result.data && activity.type === 'TASK') {
+      loader(result.data, activity.task.instance);
+    };
+    openModal('UPDATE', String(activity.type).toUpperCase());
+  };
+
 
   if (activity.type === 'TASK') {
     finalDate = new Date(activity.task.instance.finalDate);
@@ -51,20 +56,13 @@ export default function PanelCard({ activity }) {
     content = <TaskCard task={activity.task} />
   };
 
-  useEffect(() => {
-    if (data) {
-      console.log('CARD')
-      if (activity.type === 'TASK') loader(data, activity.task.instance);
-    }
-  }, [data]);
-
   const bg = CONDICTION_CARD_COLORS[condiction]?.cardColor;
 
   return (
     <div
       className={styles.cardContainer}
       style={{ backgroundColor: bg }}
-      onClick={() => handleClick(activity.type)}
+      onClick={handleClick}
     >
       <div className={styles.header}>
         <h3>{activity.title}</h3>

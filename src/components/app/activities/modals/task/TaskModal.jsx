@@ -61,7 +61,6 @@ export default function TaskModal({ ref }) {
       },
 
       update() {
-        console.log('TaskModal update()')
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
         if (id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
