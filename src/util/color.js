@@ -15,7 +15,7 @@ export const AREAOFLIFE_TYPE = [
   'MOSTPRACTICED',
 ];
 
-export const STATES_CARD_COLORS = {
+export const CONDICTION_CARD_COLORS = {
   REFERENCE: {
     cardColor:'#d9d9d9',
   },

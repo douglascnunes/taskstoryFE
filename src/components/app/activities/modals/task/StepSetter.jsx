@@ -1,10 +1,24 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ModalContext } from "../../../../../store/modal-context/modal-context";
 import styles from "./StepSetter.module.css";
 import Step from "./Step";
 import { AppContext } from "../../../../../store/app-context";
 import { useMutation } from "@tanstack/react-query";
 import { upsertSteps } from "../../../../../api/task";
+
+
+function addTaskStepHelper(prevSteps, description) {
+  return [...prevSteps, { id: null, description: description, index: prevSteps.length }]
+};
+
+function removeTaskStepHelper(prevSteps, index) {
+  return prevSteps
+    .filter((step) => step.index !== index)
+    .map((step, newIndex) => ({
+      ...step,
+      index: newIndex
+    }));
+};
 
 export default function StepSetter() {
   const [edition, setEdition] = useState({
@@ -14,6 +28,7 @@ export default function StepSetter() {
 
   const {
     task,
+    setTaskSteps,
     addTaskStep,
     removeTaskStep
   } = useContext(ModalContext);
@@ -21,10 +36,15 @@ export default function StepSetter() {
   const { id, steps } = task;
   const containerRef = useRef();
 
-  const { mutate } = useMutation({
+  const { mutate, data, isPending } = useMutation({
     mutationFn: upsertSteps
   })
 
+  useEffect(() => {
+    if (data?.steps) {
+      setTaskSteps(data.steps);
+    }
+  }, [data, setTaskSteps]);
 
   function handleStartEditing() {
     setEdition(prev => ({ ...prev, isEditing: true, }));
@@ -36,35 +56,20 @@ export default function StepSetter() {
 
   function handleAddStep() {
     if (edition.description.trim() === "") return;
-
-    const newStep = {
-      id: null,
-      description: edition.description,
-    };
-
     addTaskStep(edition.description);
 
     if (mode === 'UPDATE' && id) {
-      const updatedSteps = [...(task.steps || []), newStep];
-      mutate({ id, steps: updatedSteps });
+      mutate({ id, steps: addTaskStepHelper(steps, edition.description) });
     };
 
-    setEdition(prev => ({
-      ...prev,
-      description: "",
-      isEditing: false,
-    }));
+    setEdition({ description: "", isEditing: false });
   };
 
-
   function handleRemoveStep(index) {
-    const updatedSteps = [...task.steps];
-    updatedSteps.splice(index, 1);
-
     removeTaskStep(index);
 
     if (mode === 'UPDATE' && id) {
-      mutate({ id, steps: updatedSteps });
+      mutate({ id, steps: removeTaskStepHelper(steps, index) });
     };
   };
 
@@ -78,15 +83,18 @@ export default function StepSetter() {
     }
   };
 
+
   let stepsContent;
+
+  const sortedSteps = [...steps].sort((a, b) => a.index - b.index);
 
   if (steps && steps.length > 0) {
     stepsContent = (
-      task.steps.map((step, index) => (
+      sortedSteps.map((step) => (
         <Step
-          key={step.id ? step.id : step.description}
+          key={step.index}
           step={step}
-          index={index}
+          disabled={isPending}
           removeTaskStep={handleRemoveStep}
         />
       ))

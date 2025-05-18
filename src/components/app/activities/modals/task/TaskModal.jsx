@@ -7,7 +7,7 @@ import { ModalContext } from "../../../../../store/modal-context/modal-context";
 import Description from "../Description";
 import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";
-import { createTask, updateTask } from "../../../../../api/task";
+import { createTask, updateTask, upsertSteps } from "../../../../../api/task";
 import DateSetter from "../DateSetter";
 import { queryClient } from "../../../../../api/queryClient";
 import { isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpers/task";
@@ -45,6 +45,10 @@ export default function TaskModal({ ref }) {
     }
   });
 
+  const { mutate: mutateUpsertSteps } = useMutation({
+    mutationFn: upsertSteps
+  });
+
   useImperativeHandle(ref, () => {
     return {
       create() {
@@ -57,11 +61,13 @@ export default function TaskModal({ ref }) {
       },
 
       update() {
+        console.log('TaskModal update()')
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
-        if (id && 
+        if (id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
           && isTaskTimingValid(task)) {
           mutateUpdateTask({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
+          mutateUpsertSteps({ id: task.id, steps: task.steps });
         }
         reset();
       },

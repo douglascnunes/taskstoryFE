@@ -1,6 +1,6 @@
 import { getYearMonthNumber, isOnMonth } from "../date";
 import { DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY_VALUES } from "../enum";
-import { generateTaskInstances, isTaskLate, isTaskOnWeek, isTaskToday, updateTaskStatus } from "./task";
+import { generateTaskInstances, isTaskLate, isTaskOnWeek, isTaskToday, updateTaskCondiction } from "./task";
 
 
 export function generateInstances(activities, startOverviewDate, endOverviewDate) {
@@ -25,7 +25,7 @@ export function updateStatus(activityInstances) {
   activityInstances.forEach(activity => {
 
     if (activity.type === "TASK") {
-      activity.task.instance.status = updateTaskStatus(activity);
+      activity.task.instance.status = updateTaskCondiction(activity);
     };
   });
 
