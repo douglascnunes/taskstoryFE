@@ -19,8 +19,8 @@ export default function Step({ step, index, removeTaskStep }) {
 
   function handleClickCheckbox() {
     toggleStepCompletion(step.id);
-    if (task.instanceId) {
-      updateTaskInstance(id, task.instanceId, { stepCompletionStatus: task.stepCompletionStatus })
+    if (task.instance.id) {
+      updateTaskInstance(id, task.instance.id, { stepCompletionStatus: task.stepCompletionStatus })
     }
     else {
       createInstance(id, { finalDate: task.endPeriod, stepCompletionStatus: task.stepCompletionStatus });

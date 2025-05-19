@@ -54,7 +54,7 @@ export default function PanelCard({ activity }) {
   useEffect(() => {
     if (!isLoading && data) {
       // console.log('DATA---',data)
-      // loader(data);
+      loader(data);
     }
   }, [data, isLoading]);
 
