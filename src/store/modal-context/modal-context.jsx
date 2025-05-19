@@ -1,4 +1,5 @@
 import { createContext, useReducer } from "react";
+import { CONDICTION, STATUS } from "../../util/enum";
 
 
 export const ModalContext = createContext({
@@ -36,8 +37,11 @@ export const ModalContext = createContext({
   setTaskEndPeriod: () => { },
   setTaskFrequenceIntervalDays: () => { },
   setTaskFrequenceWeeklyDays: () => { },
+  setTaskSteps: () => { },
   addTaskStep: () => { },
   removeTaskStep: () => { },
+  moveTaskStepUp: () => { },
+  moveTaskStepDown: () => { },
   toggleStepCompletion: () => { },
   reset: () => { },
 });
@@ -75,32 +79,23 @@ function activityReducer(state, action) {
   };
 
   if (action.type === 'LOADER') {
-    const activity = action.payload;
+    const activity = action.payload.activity;
+    const instance = action.payload.instance;
     const type = String(activity.type).toLocaleLowerCase();
-
     activity.createdAt = activity.createdAt ? new Date(activity.createdAt) : null;
 
     if (type === 'task') {
+      // console.log('activity:\n', activity)
+      // console.log('instance:\n', instance)
+
+      activity.task.instance = activity.task.taskInstances ? activity.task.taskInstances[0] : null;
       activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : "";
       activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : "";
       activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? "";
       activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? [];
       activity.task.steps = activity.task.steps ?? [];
-      activity.task.instance = activity.task.instance ?? {};
-      activity.task.instance.stepCompletionStatus = activity.task.instance.stepCompletionStatus ?? [];
-
-      activity.task.instance = activity.task.instance ?? {
-        id: null,
-        finalDate: null,
-        completedOn: null,
-        status: null,
-        stepCompletionStatus: [],
-        taskId: activity.task.id ?? activity.id
-      };
-
-      activity.task.instance.stepCompletionStatus = activity.task.instance.stepCompletionStatus ?? [];
+      activity.task.instance = activity.task.instance ?? instance;
     };
-
 
     return {
       ...state,
@@ -112,13 +107,11 @@ function activityReducer(state, action) {
       keywords: activity.keywords || [],
       type,
 
-      // zera todos os tipos conhecidos primeiro, mantendo a estrutura limpa
       task: {},
       project: {},
       habit: {},
       goal: {},
 
-      // popula dinamicamente com base no type (ex: task: {...})
       [type]: {
         ...(activity[type] || {})
       }
@@ -141,31 +134,115 @@ function activityReducer(state, action) {
     return { ...state, task: { ...state.task, frequenceWeeklyDays: action.payload } };
   };
 
+  if (action.type === 'SET_TASK_STEPS') {
+    return {
+      ...state,
+      task: { ...state.task, steps: action.payload }
+    };
+  };
+
   if (action.type === 'ADD_TASK_STEP') {
     return {
       ...state, task: {
         ...state.task,
-        steps: [...state.task.steps, { id: null, description: action.payload }]
+        steps: [...state.task.steps, { id: null, description: action.payload, index: state.task.steps.length }]
       }
     };
   };
 
   if (action.type === 'REMOVE_TASK_STEP') {
+    const updatedSteps = state.task.steps
+      .filter((step) => step.index !== action.payload)
+      .map((step, newIndex) => ({
+        ...step,
+        index: newIndex
+      }));
+
     return {
-      ...state, task: {
+      ...state,
+      task: {
         ...state.task,
-        steps: state.task.steps.filter((_, i) => i !== action.payload)
+        steps: updatedSteps
       }
     };
   };
 
+  if (action.type === 'MOVE_TASK_STEP_UP') {
+    const idx = action.payload;
+    if (idx <= 0) return state;
+
+    const steps = state.task.steps.map(s => ({ ...s }));
+    const cur = steps.find(s => s.index === idx);
+    const prev = steps.find(s => s.index === idx - 1);
+    if (!cur || !prev) return state;
+
+    // Troca os índices
+    cur.index--;
+    prev.index++;
+
+    // Atualiza stepCompletionStatus
+    const completionStatus = [...(state.task.instance.stepCompletionStatus || [])];
+    const updatedStatus = completionStatus.map(index => {
+      if (index === idx) return idx - 1;
+      if (index === idx - 1) return idx;
+      return index;
+    });
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        steps,
+        instance: {
+          ...state.task.instance,
+          stepCompletionStatus: updatedStatus
+        }
+      }
+    };
+  }
+
+  if (action.type === 'MOVE_TASK_STEP_DOWN') {
+    const idx = action.payload;
+    const maxIndex = state.task.steps.length - 1;
+    if (idx >= maxIndex) return state;
+
+    const steps = state.task.steps.map(s => ({ ...s }));
+    const cur = steps.find(s => s.index === idx);
+    const next = steps.find(s => s.index === idx + 1);
+    if (!cur || !next) return state;
+
+    // Troca os índices
+    cur.index++;
+    next.index--;
+
+    // Atualiza stepCompletionStatus
+    const completionStatus = [...(state.task.instance.stepCompletionStatus || [])];
+    const updatedStatus = completionStatus.map(index => {
+      if (index === idx) return idx + 1;
+      if (index === idx + 1) return idx;
+      return index;
+    });
+
+    return {
+      ...state,
+      task: {
+        ...state.task,
+        steps,
+        instance: {
+          ...state.task.instance,
+          stepCompletionStatus: updatedStatus
+        }
+      }
+    };
+  }
+
 
   if (action.type === 'TOGGLE_STEP_COMPLETION') {
     const prevStatus = state.task.instance?.stepCompletionStatus || [];
-    const stepId = action.payload;
+    const index = action.payload;
 
-    const updatedStatus = prevStatus.includes(stepId)
-      ? prevStatus.filter(id => id !== stepId) : [...prevStatus, stepId];
+    const updatedStatus = prevStatus.includes(index)
+      ? prevStatus.filter(idx => idx !== index) : [...prevStatus, index];
 
     return {
       ...state,
@@ -278,6 +355,10 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'SET_TASK_FREQUENCE_WEEKLY_DAYS', payload: frequenceWeeklyDays });
   };
 
+  function handleSetTaskSteps(steps) {
+    activityDispatch({ type: 'SET_TASK_STEPS', payload: steps })
+  };
+
   function handleAddTaskStep(step) {
     activityDispatch({ type: 'ADD_TASK_STEP', payload: step });
   };
@@ -286,12 +367,20 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'REMOVE_TASK_STEP', payload: index });
   };
 
+  function handleMoveTaskStepUp(index) {
+    activityDispatch({ type: 'MOVE_TASK_STEP_UP', payload: index });
+  };
+
+  function handleMoveTaskStepDown(index) {
+    activityDispatch({ type: 'MOVE_TASK_STEP_DOWN', payload: index });
+  };
+
   function handleToggleStepCompletion(stepId) {
     activityDispatch({ type: 'TOGGLE_STEP_COMPLETION', payload: stepId });
   };
 
-  function handleLoader(activity) {
-    activityDispatch({ type: 'LOADER', payload: activity })
+  function handleLoader(activity, instance) {
+    activityDispatch({ type: 'LOADER', payload: { activity, instance } })
   };
 
   function handleReset() {
@@ -319,7 +408,10 @@ export default function ModalContextProvider({ children }) {
     setTaskEndPeriod: handleSetTaskEndPeriod,
     setTaskFrequenceIntervalDays: handleSetTaskFrequenceIntervalDays,
     setTaskFrequenceWeeklyDays: handleSetTaskFrequenceWeeklyDays,
+    setTaskStep: handleSetTaskSteps,
     addTaskStep: handleAddTaskStep,
+    moveTaskStepUp: handleMoveTaskStepUp,
+    moveTaskStepDown: handleMoveTaskStepDown,
     removeTaskStep: handleRemoveTaskStep,
     toggleStepCompletion: handleToggleStepCompletion,
     reset: handleReset,

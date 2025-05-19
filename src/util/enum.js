@@ -7,6 +7,13 @@ export const PROCRASTINATION_TYPE = [
 ];
 
 export const STATUS = [
+  'ACTIVE',  // Some models have this first value as default = [0]
+  'PAUSED',
+  'DELETED',
+  'TRASH',
+];
+
+export const CONDICTION = [
   'REFERENCE',
   'INCUBATION',
   'TODO',

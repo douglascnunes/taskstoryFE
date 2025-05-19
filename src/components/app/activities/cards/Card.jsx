@@ -1,8 +1,8 @@
 import styles from './Card.module.css';
 import KeywordTag from '../KeywordTag';
 import TaskCard from './task/TaskCard';
-import { STATES_CARD_COLORS } from '../../../../util/color';
-import { dataTagErrorSymbol, useQuery } from '@tanstack/react-query';
+import { CONDICTION_CARD_COLORS } from '../../../../util/color';
+import { useQuery } from '@tanstack/react-query';
 import { getActivity } from '../../../../api/activities';
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../../../../store/app-context';
@@ -16,7 +16,7 @@ export default function PanelCard({ activity }) {
   const { loader } = useContext(ModalContext);
   let content = null;
   let finalDate = null;
-  let status = null;
+  let condiction = null;
 
   const queryConfigMap = {
     TASK: {
@@ -34,37 +34,35 @@ export default function PanelCard({ activity }) {
   };
   const { queryFn, getParams } = queryConfigMap[activity.type] || defaultQueryConfig;
 
-  const { data, isLoading, refetch } = useQuery({
+  const { refetch } = useQuery({
     queryKey: [activity.type.toLowerCase(), activity.id],
     queryFn: ({ signal }) => queryFn(getParams({ signal, activity })),
     enabled: false,
   });
 
-  function handleClick(type) {
-    openModal('UPDATE', String(type).toUpperCase());
-    refetch();
-  }
+  async function handleClick() {
+    const result = await refetch();
+    
+    if (result.data && activity.type === 'TASK') {
+      loader(result.data, activity.task.instance);
+    };
+    openModal('UPDATE', String(activity.type).toUpperCase());
+  };
+
 
   if (activity.type === 'TASK') {
     finalDate = new Date(activity.task.instance.finalDate);
-    status = activity.task.instance.status;
+    condiction = activity.task.instance.condiction;
     content = <TaskCard task={activity.task} />
   };
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      // console.log('DATA---',data)
-      loader(data);
-    }
-  }, [data, isLoading]);
-
-  const bg = STATES_CARD_COLORS[status]?.cardColor;
+  const bg = CONDICTION_CARD_COLORS[condiction]?.cardColor;
 
   return (
     <div
       className={styles.cardContainer}
       style={{ backgroundColor: bg }}
-      onClick={() => handleClick(activity.type)}
+      onClick={handleClick}
     >
       <div className={styles.header}>
         <h3>{activity.title}</h3>
