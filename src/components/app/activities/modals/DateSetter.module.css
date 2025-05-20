@@ -4,17 +4,33 @@
   gap: 0.5rem;
 }
 
-.container div {
+.container .content {
   display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.container .content div {
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
-.container .show {
-  display: flex;
-  flex-direction: column;
+.container input {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  text-align: center;
+  height: 1.6rem;
+  width: 7rem;
+  border: 0.15rem solid #999;
+  border-radius: 0.3rem;
 }
+
 
 .container svg {
   width: 1.4rem;
@@ -24,15 +40,20 @@
 .container h3 {
   font-size: 1rem;
   font-weight: 700;
+  padding-top: 0.1rem;
 }
 
-.container p {
+.container span {
+  font-size: 0.9rem;
   color: #777;
   font-weight: 700;
-  cursor: pointer;
   margin: auto;
 }
 
-.container p:hover {
+.container span:hover {
   color: #aaa;
+}
+
+.container .notDefined {
+  color: #ce7e7e;
 }

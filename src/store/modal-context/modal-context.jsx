@@ -42,6 +42,7 @@ export const ModalContext = createContext({
   removeTaskStep: () => { },
   moveTaskStepUp: () => { },
   moveTaskStepDown: () => { },
+  setFinalDate: () => { },
   toggleStepCompletion: () => { },
   reset: () => { },
 });
@@ -85,9 +86,6 @@ function activityReducer(state, action) {
     activity.createdAt = activity.createdAt ? new Date(activity.createdAt) : null;
 
     if (type === 'task') {
-      // console.log('activity:\n', activity)
-      // console.log('instance:\n', instance)
-
       activity.task.instance = activity.task.taskInstances ? activity.task.taskInstances[0] : null;
       activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : "";
       activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : "";
@@ -234,7 +232,11 @@ function activityReducer(state, action) {
         }
       }
     };
-  }
+  };
+
+  if (action.type === 'SET_TASK_FINAL_DATE') {
+    return { ...state, task: { ...state.task, instance: { ...state.task.instance, finalDate: action.payload } } }
+  };
 
 
   if (action.type === 'TOGGLE_STEP_COMPLETION') {
@@ -379,6 +381,10 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'TOGGLE_STEP_COMPLETION', payload: stepId });
   };
 
+  function handleSetFinalDate(finalDate) {
+    activityDispatch({ type: 'SET_TASK_FINAL_DATE', payload: finalDate });
+  };
+
   function handleLoader(activity, instance) {
     activityDispatch({ type: 'LOADER', payload: { activity, instance } })
   };
@@ -413,6 +419,7 @@ export default function ModalContextProvider({ children }) {
     moveTaskStepUp: handleMoveTaskStepUp,
     moveTaskStepDown: handleMoveTaskStepDown,
     removeTaskStep: handleRemoveTaskStep,
+    setFinalDate: handleSetFinalDate,
     toggleStepCompletion: handleToggleStepCompletion,
     reset: handleReset,
   };
