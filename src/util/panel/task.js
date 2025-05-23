@@ -43,10 +43,9 @@ function structureTask(activity) {
 
 
 export function generateTaskInstances(activity, startOverviewDate, endOverviewDate) {
-  // console.log(activity)
   const { task, createdAt } = activity;
   const { taskInstances, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod } = task;
-
+  
   if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
     if (taskInstances.length === 0) {
       return [taskCopy(activity, new Date(endPeriod))];

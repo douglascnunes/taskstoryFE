@@ -1,36 +1,15 @@
 .container {
   display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
-
-.container .content {
-  display: flex;
   flex-direction: column;
-  text-align: center;
-  gap: 0.5rem;
-  cursor: pointer;
+  justify-content: space-between;
 }
 
-.container .content div {
+.container div {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
 }
-
-.container input {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #555;
-  text-align: center;
-  height: 1.6rem;
-  width: 7rem;
-  border: 0.15rem solid #999;
-  border-radius: 0.3rem;
-}
-
 
 .container svg {
   width: 1.4rem;

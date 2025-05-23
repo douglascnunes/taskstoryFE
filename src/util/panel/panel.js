@@ -20,12 +20,12 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
 
 
 
-export function updateStatus(activityInstances) {
+export function updateCondiction(activityInstances) {
 
   activityInstances.forEach(activity => {
 
     if (activity.type === "TASK") {
-      activity.task.instance.status = updateTaskCondiction(activity);
+      activity.task.instance.condiction = updateTaskCondiction(activity);
     };
   });
 
