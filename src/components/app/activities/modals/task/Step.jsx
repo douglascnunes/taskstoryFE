@@ -1,53 +1,22 @@
 import { useContext } from "react";
 import { AppContext } from "../../../../../store/app-context";
 import styles from "./Step.module.css";
-import { useMutation } from "@tanstack/react-query";
-import { createInstance, updateTaskInstance } from "../../../../../api/task";
+// import { useMutation } from "@tanstack/react-query";
+// import { createTaskInstance, updateTaskInstance } from "../../../../../api/task";
 import { ModalContext } from "../../../../../store/modal-context/modal-context";
-import { cleanObject } from "../../../../../util/api-helpers/activity";
+// import { cleanObject } from "../../../../../util/api-helpers/activity";
 
-
-function toggleStepCompletionHelper(prev, index) {
-  return prev.includes(index) ? prev.filter(idx => idx !== index) : [...prev, index];
-};
 
 
 export default function Step({ step, removeTaskStep }) {
-  const { mode } = useContext(AppContext);
+  const { mode, setIsInstanceChange } = useContext(AppContext);
   const { task, moveTaskStepUp, moveTaskStepDown, toggleStepCompletion } = useContext(ModalContext);
 
-  const { mutate: mutateCreate } = useMutation({ mutationFn: createInstance });
-  const { mutate: mutateUpdate } = useMutation({ mutationFn: updateTaskInstance });
-
-  const isChecked = task.instance.stepCompletionStatus.includes(step.index);
-
-  const syncInstance = (overrideStepCompletionStatus) => {
-    const cleanedInstance = cleanObject(task.instance);
-
-    const instancePayload = {
-      ...cleanedInstance,
-      ...(overrideStepCompletionStatus && { stepCompletionStatus: overrideStepCompletionStatus, }),
-    };
-
-    const payload = {
-      taskId: task.id,
-      instance: instancePayload,
-    };
-
-    if (!task.instance.id) {
-      mutateCreate(payload);
-    } else {
-      mutateUpdate({ ...payload, instanceId: task.instance.id });
-    }
-  };
+  const isChecked = task.instance.stepCompletionStatus.includes(step.id);
 
   const handleToggleStep = () => {
-    const updatedStatus = isChecked
-      ? task.instance.stepCompletionStatus.filter(i => i !== step.index)
-      : [...task.instance.stepCompletionStatus, step.index];
-
-    toggleStepCompletion(step.index);
-    syncInstance(updatedStatus);
+    toggleStepCompletion(step.id);
+    setIsInstanceChange(true);
   };
 
   const handleMoveStep = (direction) => {
@@ -56,8 +25,6 @@ export default function Step({ step, removeTaskStep }) {
     } else if (direction === 'down') {
       moveTaskStepDown(step.index);
     }
-
-    syncInstance(task.instance.stepCompletionStatus);
   };
 
 

@@ -1,21 +1,20 @@
 import { useContext, useImperativeHandle } from "react";
 import ImportDifficulPicker from "../ImportDifficulPicker";
-import PriorityTag from "../PriorityTag";
+import PriorityView from "../PriorityView";
 import modalStyles from "../Modal.module.css";
 import KeywordsSetter from "../KeywordsSetter";
 import { ModalContext } from "../../../../../store/modal-context/modal-context";
 import Description from "../Description";
 import Title from "../Title";
 import { useMutation } from "@tanstack/react-query";
-import { createTask, updateTask, upsertSteps } from "../../../../../api/task";
+import { createTaskInstance, createTask, updateTask, updateTaskInstance, upsertSteps } from "../../../../../api/task";
 import DateSetter from "../DateSetter";
 import { queryClient } from "../../../../../api/queryClient";
 import { isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpers/task";
 import StepSetter from "./StepSetter";
-import StatusTag from "../StatusTag";
-
-// steps
-
+import CondictionTag from "../CondictionTag";
+import { cleanObject } from "../../../../../util/api-helpers/activity"
+import { AppContext } from "../../../../../store/app-context";
 
 
 export default function TaskModal({ ref }) {
@@ -29,6 +28,7 @@ export default function TaskModal({ ref }) {
     task,
     reset,
   } = useContext(ModalContext);
+  const { isInstanceChange } = useContext(AppContext);
 
 
   const { mutate: mutateCreateTask } = useMutation({
@@ -40,13 +40,22 @@ export default function TaskModal({ ref }) {
 
   const { mutate: mutateUpdateTask } = useMutation({
     mutationFn: updateTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['activities', 'overview']);
-    }
+    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
   });
 
   const { mutate: mutateUpsertSteps } = useMutation({
-    mutationFn: upsertSteps
+    mutationFn: upsertSteps,
+    onSuccess: () => queryClient.invalidateQueries(['activities']),
+  });
+
+  const { mutate: createInstance } = useMutation({
+    mutationFn: createTaskInstance,
+    onSuccess: () => queryClient.invalidateQueries(['activities']),
+  });
+
+  const { mutate: updateInstance } = useMutation({
+    mutationFn: updateTaskInstance,
+    onSuccess: () => queryClient.invalidateQueries(['activities']),
   });
 
   useImperativeHandle(ref, () => {
@@ -55,23 +64,38 @@ export default function TaskModal({ ref }) {
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
 
         if ((title && importance && difficulty && keywords.length > 0 && isTaskTimingValid(task))) {
+          console.log('createTask')
           mutateCreateTask({ activity: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         };
         reset();
       },
-
       update() {
+        if (!task.instance.id && isInstanceChange) {
+          createInstance({ taskId: task.id, instance: cleanObject(task.instance) });
+        }
+        else if (isInstanceChange === true) {
+          console.log('updateInstance')
+          updateInstance({ taskId: task.id, instance: cleanObject(task.instance), instanceId: task.instance.id });
+        };
+
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
+
         if (id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
           && isTaskTimingValid(task)) {
+          console.log('updateTask')
+          console.log(cleanedTask)
           mutateUpdateTask({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
           mutateUpsertSteps({ id: task.id, steps: task.steps });
         }
+
         reset();
       },
     }
-  }, [id, title, description, importance, difficulty, keywords, task]);
+  }, [id, title, description, importance, difficulty, keywords,
+    task.endPeriod, task.frequenceIntervalDays, task.frequenceWeeklyDays, task.id, task.startPeriod, task.steps,
+    task.instance.completedOn, task.instance.finalDate, task.instance.id, task.instance.status, task.instance.stepCompletionStatus,
+    isInstanceChange]);
 
 
   return (
@@ -91,12 +115,12 @@ export default function TaskModal({ ref }) {
             </svg>
             <p>Tarefa</p>
           </div>
-          <StatusTag />
+          <CondictionTag />
         </div>
       </div>
       <div className={modalStyles.optionMenu}>
         <ImportDifficulPicker />
-        <PriorityTag />
+        <PriorityView />
         <DateSetter />
       </div>
       <Description

@@ -5,66 +5,72 @@ import { dateToYYYYMMDD, yyyymmddToDate } from '../../../../util/date.js';
 import { DAYS_OF_WEEK } from '../../../../util/enum.js';
 
 
-
 export default function DateModal({ isOpenModal, closeModal }) {
-  const {
-    task,
-    setTaskStartPeriod,
-    setTaskEndPeriod,
-    setTaskFrequenceIntervalDays,
-    setTaskFrequenceWeeklyDays,
-  } = useContext(ModalContext);
+  const { task } = useContext(ModalContext);
   const [mode, setMode] = useState(
-    (task.frequenceIntervalDays == true || task.frequenceWeeklyDays == true) ? 'MULTI' : 'SINGLE');
+    (task.frequenceIntervalDays == true || task.frequenceWeeklyDays == true) ? 'MULTI' : 'SINGLE')
+  const [date, setDate] = useState({
+    startPeriod: task.startPeriod ?? "",
+    endPeriod: task.endPeriod ?? "",
+    frequenceIntervalDays: task.frequenceIntervalDays ?? "",
+    frequenceWeeklyDays: task.frequenceWeeklyDays ?? [],
+  });
   const modalRef = useRef();
 
-
-  function toggleMode() {
-    setTaskStartPeriod("");
-    setTaskFrequenceIntervalDays("");
-    setTaskFrequenceWeeklyDays([]);
-    setMode(prev => {
-      if (prev === "SINGLE") return "MULTI"
-      else return "SINGLE"
-    })
+  function clearDate() {
+    setDate({
+      startPeriod: task.startPeriod ?? "",
+      endPeriod: task.endPeriod ?? "",
+      frequenceIntervalDays: task.frequenceIntervalDays ?? "",
+      frequenceWeeklyDays: task.frequenceWeeklyDays ?? [],
+    });
   };
 
+  function toggleMode() {
+    setMode(prev => prev === "SINGLE" ? "MULTI" : "SINGLE")
+  };
 
-  function clearData(field) {
-    if (field === "startPeriod") {
-      setTaskStartPeriod("");
-    }
-    else if (field === "endPeriod") {
-      setTaskEndPeriod("");
+  function handleSetData(field, value) {
+    if (field === "startPeriod" || field === "endPeriod") {
+      const valueDate = value ? yyyymmddToDate(value) : null;
+      const startDate = date.startPeriod ? new Date(date.startPeriod) : null;
+      const endDate = date.endPeriod ? new Date(date.endPeriod) : null;
+
+      if (field === "startPeriod" && (!endDate || valueDate < endDate)) {
+        setDate(prev => ({ ...prev, startPeriod: valueDate }));
+      };
+      if (field === "endPeriod" && (!startDate || valueDate > startDate)) {
+        setDate(prev => ({ ...prev, endPeriod: valueDate }));
+      };
+    };
+    if (field === "frequenceIntervalDays") {
+      setDate(prev => { return { ...prev, frequenceIntervalDays: value, frequenceWeeklyDays: [] } });
+    };
+    if (field === "frequenceWeeklyDays") {
+      setDate(prev => {
+        return {
+          ...prev, frequenceIntervalDays: "",
+          frequenceWeeklyDays: date.frequenceWeeklyDays.includes(value) ?
+            date.frequenceWeeklyDays.filter(d => d !== value) : [...date.frequenceWeeklyDays, value]
+        };
+      });
     };
   };
 
-  function handleSetPeriod(field, value) {
-    const valueDate = yyyymmddToDate(value);
-    const startDate = task.startPeriod ? new Date(task.startPeriod) : null;
-    const endDate = task.endPeriod ? new Date(task.endPeriod) : null;
-
-    if (field === "startPeriod" && (!endDate || valueDate < endDate)) {
-      setTaskStartPeriod(valueDate);
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        closeModal();
+      }
+    };
+    if (isOpenModal) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-    else if (field === "endPeriod" && (!startDate || valueDate > startDate)) {
-      setTaskEndPeriod(valueDate);
-    }
-  }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpenModal]);
 
-  function handleSetTaskFrequenceIntervalDays(value) {
-    setTaskFrequenceIntervalDays(value);
-    setTaskFrequenceWeeklyDays([]);
-  };
 
-  const toggleDay = (dayValue) => {
-    setTaskFrequenceIntervalDays("")
-    if (task.frequenceWeeklyDays.includes(dayValue)) {
-      setTaskFrequenceWeeklyDays(task.frequenceWeeklyDays.filter(d => d !== dayValue));
-    } else {
-      setTaskFrequenceWeeklyDays([...task.frequenceWeeklyDays, dayValue]);
-    }
-  };
+  if (!isOpenModal) return null;
 
 
   let content;
@@ -81,10 +87,10 @@ export default function DateModal({ isOpenModal, closeModal }) {
         <input
           type="date"
           id="date"
-          value={dateToYYYYMMDD(task.endPeriod)}
-          onChange={(e) => handleSetPeriod("endPeriod", e.target.value)}
+          value={date.endPeriod ? dateToYYYYMMDD(date.endPeriod) : ""}
+          onChange={(e) => handleSetData("endPeriod", e.target.value)}
         />
-        <button onClick={() => clearData("endPeriod")}>Limpar</button>
+        <button onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
       </div>
     )
   };
@@ -104,10 +110,10 @@ export default function DateModal({ isOpenModal, closeModal }) {
             <input
               type="date"
               id="date"
-              value={dateToYYYYMMDD(task.startPeriod)}
-              onChange={(e) => handleSetPeriod("startPeriod", e.target.value)}
+              value={dateToYYYYMMDD(date.startPeriod)}
+              onChange={(e) => handleSetData("startPeriod", e.target.value)}
             />
-            <button onClick={() => clearData("startPeriod")}>Limpar</button>
+            <button onClick={() => handleSetData("startPeriod", "")}>Limpar</button>
           </div>
           <div className={styles.finalDate}>
             <div>
@@ -119,10 +125,10 @@ export default function DateModal({ isOpenModal, closeModal }) {
             <input
               type="date"
               id="date"
-              value={dateToYYYYMMDD(task.endPeriod)}
-              onChange={(e) => handleSetPeriod("endPeriod", e.target.value)}
+              value={dateToYYYYMMDD(date.endPeriod)}
+              onChange={(e) => handleSetData("endPeriod", e.target.value)}
             />
-            <button onClick={() => clearData("endPeriod")}>Limpar</button>
+            <button onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
           </div>
           <div className={styles.frequenceIntervalDays}>
             <label htmlFor="frequenceIntervalDays">
@@ -133,8 +139,8 @@ export default function DateModal({ isOpenModal, closeModal }) {
               type="number"
               min="1"
               placeholder="Ex: 2"
-              value={task.frequenceIntervalDays}
-              onChange={(e) => handleSetTaskFrequenceIntervalDays(e.target.value)}
+              value={date.frequenceIntervalDays}
+              onChange={(e) => handleSetData("frequenceIntervalDays", e.target.value)}
             />
           </div>
           <div className={styles.frequenceWeeklyDays}>
@@ -143,13 +149,13 @@ export default function DateModal({ isOpenModal, closeModal }) {
               {DAYS_OF_WEEK.map(day => (
                 <button
                   key={day.value}
-                  onClick={() => toggleDay(day.value)}
+                  onClick={() => handleSetData("frequenceWeeklyDays", day.value)}
                   style={{
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #ccc',
-                    backgroundColor: task.frequenceWeeklyDays?.includes(day.value) ? '#4CAF50' : '#f0f0f0',
-                    color: task.frequenceWeeklyDays?.includes(day.value) ? '#fff' : '#333',
+                    backgroundColor: date.frequenceWeeklyDays?.includes(day.value) ? '#4CAF50' : '#f0f0f0',
+                    color: date.frequenceWeeklyDays?.includes(day.value) ? '#fff' : '#333',
                     cursor: 'pointer'
                   }}
                   type="button"
@@ -162,38 +168,28 @@ export default function DateModal({ isOpenModal, closeModal }) {
         </div>
       </div>
     )
-  }
-
-  useEffect(() => {
-    const handleClickOutside = e => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
-        closeModal();
-      }
-    };
-    if (isOpenModal) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpenModal, closeModal]);
-
-  if (!isOpenModal) return null;
+  };
 
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal} ref={modalRef}>
-        <div className={styles.buttonOptions}>
-          <button
-            disabled={mode === "SINGLE"}
-            onClick={toggleMode}
-          >Tarefa Única</button>
-          <button
-            disabled={mode === "MULTI"}
-            onClick={toggleMode}
-          >Tarefas Periódicas</button>
-        </div>
-        <div>
-          {content}
-        </div>
-      </ div>
-    </div>
+    <>
+      <div className={styles.overlay}>
+        <div className={styles.modal} ref={modalRef}>
+          <div className={styles.buttonOptions}>
+            <button
+              disabled={mode === "SINGLE"}
+              onClick={toggleMode}
+            >Tarefa Única</button>
+            <button
+              disabled={mode === "MULTI"}
+              onClick={toggleMode}
+            >Tarefas Periódicas</button>
+          </div>
+          <div>
+            {content}
+          </div>
+        </ div>
+      </div>
+    </>
   )
 };

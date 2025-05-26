@@ -2,46 +2,51 @@ import { useContext, useState } from "react"
 import { ModalContext } from "../../../../store/modal-context/modal-context"
 import styles from './DateSetter.module.css';
 import DateModal from "./DateModal";
-import { dateToYYYYMMDD, yyyymmddToDate } from "../../../../util/date";
 import { AppContext } from "../../../../store/app-context";
-import { createInstance, updateTaskInstance } from "../../../../api/task";
-import { cleanObject } from "../../../../util/api-helpers/activity";
-import { useMutation } from "@tanstack/react-query";
 
 
 export default function DateSetter() {
   const { mode } = useContext(AppContext);
   const { type, task, setFinalDate } = useContext(ModalContext);
-  const [isOpenKeywordModal, setIsOpenKeywordModal] = useState(false);
+  const [isOpenDateModal, setIsOpenDateModal] = useState(false);
 
   function openDateModal() {
-    setIsOpenKeywordModal(true);
+    setIsOpenDateModal(true);
   };
 
   function closeDateModal() {
-    setIsOpenKeywordModal(false);
+    setIsOpenDateModal(false);
   };
 
-  let spanContent;
+  let spanContent = "";
 
-  if (task.frequenceIntervalDays) {
-    const days = parseInt(task.frequenceIntervalDays);
+  const hasInterval = !!task.frequenceIntervalDays;
+  const hasWeekly = task.frequenceWeeklyDays.length > 0;
+  const hasEnd = !!task.endPeriod;
+
+  if (hasInterval) {
+    const days = parseInt(task.frequenceIntervalDays, 10);
     spanContent = `A cada ${days} dia${days > 1 ? 's' : ''}`;
-  } else if (task.frequenceWeeklyDays.length > 0) {
+  } else if (hasWeekly) {
     const times = task.frequenceWeeklyDays.length;
-    spanContent = `${times} vez${times > 1 ? 'es' : ''} na Sem.`;
-  } 
-  if (task.endPeriod) {
-    spanContent += `até ${task.endPeriod}.`; 
-  } else {
-    setDateLabel = <span className={styles.notDefined}>Não Definido</span>;
+    spanContent = `${times} vez${times > 1 ? 'es' : ''} na Sem`;
+  };
+
+  if (hasEnd && (hasInterval || hasWeekly)) {
+    spanContent += ` até ${task.endPeriod.toLocaleDateString()}`;
+  } else if (hasEnd) {
+    spanContent = `Termina em ${task.endPeriod.toLocaleDateString()}`;
+  };
+
+  if (!hasInterval && !hasWeekly && !hasEnd) {
+    spanContent = "Não definido";
   };
 
 
   return (
     <>
       <DateModal
-        isOpenModal={isOpenKeywordModal}
+        isOpenModal={isOpenDateModal}
         closeModal={closeDateModal}
       />
       <div className={styles.container} onClick={openDateModal}>
@@ -51,7 +56,7 @@ export default function DateSetter() {
           </svg>
           <h3>Período e repetição</h3>
         </div>
-          <span>{spanContent}</span>
+        <span>{spanContent}</span>
       </div>
     </>
   )

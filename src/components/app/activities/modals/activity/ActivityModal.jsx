@@ -1,7 +1,7 @@
 import { useContext, useImperativeHandle } from "react";
 import SpecializationMenu from "./SpecializationMenu";
 import ImportDifficulPicker from "../ImportDifficulPicker";
-import PriorityTag from "../PriorityTag";
+import PriorityView from "../PriorityView";
 import modalStyles from "../Modal.module.css";
 import KeywordsSetter from "../KeywordsSetter";
 import { ModalContext } from "../../../../../store/modal-context/modal-context";
@@ -11,7 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createActivity, updateActivity } from "../../../../../api/activities";
 import { queryClient } from "../../../../../api/queryClient";
 import { preProcessActivity } from "../../../../../util/api-helpers/activity";
-import StatusTag from "../StatusTag";
+import CondictionTag from "../CondictionTag";
 
 
 export default function ActivityModal({ ref }) {
@@ -81,13 +81,13 @@ export default function ActivityModal({ ref }) {
 
             <p>Atividade</p>
           </div>
-          <StatusTag />
+          <CondictionTag />
         </div>
       </div>
       <SpecializationMenu />
       <div className={modalStyles.optionMenu}>
         <ImportDifficulPicker />
-        <PriorityTag />
+        <PriorityView />
       </div>
       <Description
         name="description"

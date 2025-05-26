@@ -1,13 +1,15 @@
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 0.8rem;
 }
+
 
 .container div {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -26,7 +28,10 @@
   font-size: 0.9rem;
   color: #777;
   font-weight: 700;
-  margin: auto;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  width: 13rem;
 }
 
 .container span:hover {

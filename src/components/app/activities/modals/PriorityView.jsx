@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY_VALUES } from "../../../../util/enum";
-import styles from "./PriorityTag.module.css";
+import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY } from "../../../../util/enum";
+import styles from "./PriorityView.module.css";
 import { ModalContext } from "../../../../store/modal-context/modal-context";
 
-export default function PriorityTag() {
+export default function PriorityView() {
   const {
     importance,
     difficulty,
@@ -16,7 +16,7 @@ export default function PriorityTag() {
 
   if (importanceValue && difficultyValue) {
     const priorityValue = (importanceValue + difficultyValue) / 2;
-    priority = Object.entries(PRIORITY_VALUES).find(([key, value]) => {
+    priority = Object.entries(PRIORITY).find(([key, value]) => {
       return priorityValue >= value[1] && priorityValue < value[2];
     });
   };
@@ -31,7 +31,7 @@ export default function PriorityTag() {
       </div>
       {priority && (
         <div className={`${styles.priorityTagContainer} ${styles[priority[0].toLowerCase()]}`}>
-          <span className={styles.priorityTag}>{PRIORITY_VALUES[priority[0]][0]}</span>
+          <span className={styles.priorityTag}>{PRIORITY[priority[0]][0]}</span>
         </div>
       )}
       {!priority && (

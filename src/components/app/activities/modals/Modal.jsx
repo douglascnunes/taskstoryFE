@@ -18,8 +18,16 @@ export default function Modal() {
         closeModal();
       };
     };
-    if (isOpenModal) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    if (isOpenModal) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'hidden'; // <--- trava o scroll
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = ''; // <--- libera o scroll
+    };
   }, [isOpenModal, closeModal]);
 
 

@@ -14,10 +14,7 @@ function addTaskStepHelper(prevSteps, description) {
 function removeTaskStepHelper(prevSteps, index) {
   return prevSteps
     .filter((step) => step.index !== index)
-    .map((step, newIndex) => ({
-      ...step,
-      index: newIndex
-    }));
+    .map((step, newIndex) => ({ ...step, index: newIndex }));
 };
 
 export default function StepSetter() {
@@ -33,18 +30,15 @@ export default function StepSetter() {
     removeTaskStep
   } = useContext(ModalContext);
   const { mode } = useContext(AppContext);
-  const { id, steps } = task;
+  const { steps } = task;
   const containerRef = useRef();
 
-  const { mutate, data, isPending } = useMutation({
-    mutationFn: upsertSteps
-  })
-
-  useEffect(() => {
-    if (data?.steps) {
-      setTaskSteps(data.steps);
-    }
-  }, [data, setTaskSteps]);
+  const { mutate, isPending } = useMutation({
+    mutationFn: upsertSteps,
+    onSuccess: (data) => {
+      setTaskSteps(data.steps)
+    },
+  });
 
   function handleStartEditing() {
     setEdition(prev => ({ ...prev, isEditing: true, }));
@@ -56,11 +50,14 @@ export default function StepSetter() {
 
   function handleAddStep() {
     if (edition.description.trim() === "") return;
-    addTaskStep(edition.description);
 
-    if (mode === 'UPDATE' && id) {
-      mutate({ id, steps: addTaskStepHelper(steps, edition.description) });
-    };
+    if (mode === 'UPDATE' && task.id) {
+      mutate({ id: task.id, steps: addTaskStepHelper(steps, edition.description) });
+    }
+    else {
+      addTaskStep(edition.description);
+    }
+
 
     setEdition({ description: "", isEditing: false });
   };
@@ -68,8 +65,8 @@ export default function StepSetter() {
   function handleRemoveStep(index) {
     removeTaskStep(index);
 
-    if (mode === 'UPDATE' && id) {
-      mutate({ id, steps: removeTaskStepHelper(steps, index) });
+    if (mode === 'UPDATE' && task.id) {
+      mutate({ id: task.id, steps: removeTaskStepHelper(steps, index) });
     };
   };
 
