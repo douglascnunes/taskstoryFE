@@ -1,5 +1,5 @@
 import { getYearMonthNumber, isOnMonth } from "../date";
-import { DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY_VALUES } from "../enum";
+import { DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY } from "../enum";
 import { generateTaskInstances, isTaskLate, isTaskOnWeek, isTaskToday, updateTaskCondiction } from "./task";
 
 
@@ -62,7 +62,7 @@ export function filterPriorityActivities(activityInstances) {
     const difficultyValue = DIFFICULTY_VALUES[activity.difficulty][1];
     const priorityValue = (importanceValue + difficultyValue) / 2;
     const isMaxOrUrgent = ['MAXIMUM', 'URGENT'].some(key => {
-      const [, min, max] = PRIORITY_VALUES[key];
+      const [, min, max] = PRIORITY[key];
       return priorityValue >= min && priorityValue <= max;
     });
 

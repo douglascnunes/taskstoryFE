@@ -14,10 +14,10 @@ import {
 
 
 export default function Panel({ activities, mode, startOverviewDate, endOverviewDate }) {
-
   let activityInstances = generateInstances(activities, startOverviewDate, endOverviewDate);
-
+  // console.log('panel',activityInstances)
   activityInstances = updateCondiction(activityInstances);
+
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);
   activityInstances = remainingLateActivities;
 

@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import { CONDICTION, STATUS } from "../../util/enum";
+import { updateTaskCondiction } from "../../util/panel/task";
 
 
 export const ModalContext = createContext({
@@ -37,6 +37,7 @@ export const ModalContext = createContext({
   setTaskEndPeriod: () => { },
   setTaskFrequenceIntervalDays: () => { },
   setTaskFrequenceWeeklyDays: () => { },
+  setTaskPeriodFrequency: () => { },
   setTaskSteps: () => { },
   addTaskStep: () => { },
   removeTaskStep: () => { },
@@ -93,8 +94,9 @@ function activityReducer(state, action) {
       activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? [];
       activity.task.steps = activity.task.steps ?? [];
       activity.task.instance = activity.task.instance ?? instance;
+      activity.task.instance.condiction = updateTaskCondiction(activity);
     };
-
+    // console.log('modal-contexnt: ',activity.task)
     return {
       ...state,
       id: activity.id,
@@ -130,6 +132,10 @@ function activityReducer(state, action) {
 
   if (action.type === 'SET_TASK_FREQUENCE_WEEKLY_DAYS') {
     return { ...state, task: { ...state.task, frequenceWeeklyDays: action.payload } };
+  };
+
+  if (action.type === 'SET_TASK_PERIOD_FREQUENCY') {
+    return { ...state, task: { ...state.task, ...action.payload } }
   };
 
   if (action.type === 'SET_TASK_STEPS') {
@@ -241,10 +247,10 @@ function activityReducer(state, action) {
 
   if (action.type === 'TOGGLE_STEP_COMPLETION') {
     const prevStatus = state.task.instance?.stepCompletionStatus || [];
-    const index = action.payload;
+    const stepId = action.payload;
 
-    const updatedStatus = prevStatus.includes(index)
-      ? prevStatus.filter(idx => idx !== index) : [...prevStatus, index];
+    const updatedStatus = prevStatus.includes(stepId)
+      ? prevStatus.filter(id => id !== stepId) : [...prevStatus, stepId];
 
     return {
       ...state,
@@ -275,6 +281,7 @@ function activityReducer(state, action) {
         frequenceIntervalDays: "",
         frequenceWeeklyDays: [],
         steps: [],
+        updateMode: null,
         instance: {
           id: null,
           finalDate: "",
@@ -357,6 +364,10 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'SET_TASK_FREQUENCE_WEEKLY_DAYS', payload: frequenceWeeklyDays });
   };
 
+  function handleSetTaskPeriodFrequency(periodFrequencyValues) {
+    activityDispatch({ type: 'SET_TASK_PERIOD_FREQUENCY', payload: periodFrequencyValues });
+  };
+
   function handleSetTaskSteps(steps) {
     activityDispatch({ type: 'SET_TASK_STEPS', payload: steps })
   };
@@ -389,6 +400,7 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'LOADER', payload: { activity, instance } })
   };
 
+
   function handleReset() {
     activityDispatch({ type: 'RESET' });
   };
@@ -414,7 +426,8 @@ export default function ModalContextProvider({ children }) {
     setTaskEndPeriod: handleSetTaskEndPeriod,
     setTaskFrequenceIntervalDays: handleSetTaskFrequenceIntervalDays,
     setTaskFrequenceWeeklyDays: handleSetTaskFrequenceWeeklyDays,
-    setTaskStep: handleSetTaskSteps,
+    setTaskPeriodFrequency: handleSetTaskPeriodFrequency,
+    setTaskSteps: handleSetTaskSteps,
     addTaskStep: handleAddTaskStep,
     moveTaskStepUp: handleMoveTaskStepUp,
     moveTaskStepDown: handleMoveTaskStepDown,

@@ -7,7 +7,6 @@ export async function getTask({ signal, id, instanceId }) {
   const token = getAuthToken();
 
   const instanceIdParams = instanceId ? ('/' + instanceId) : '';
-
   const response = await fetch(url + 'tasks/' + id + instanceIdParams, {
     signal,
     headers: { 'Authorization': 'Bearer ' + token }
@@ -89,7 +88,7 @@ export async function upsertSteps({ signal, id, steps }) {
 
 
 
-export async function createInstance({ signal, taskId, instance }) {
+export async function createTaskInstance({ signal, taskId, instance }) {
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + taskId + '/instance', {

@@ -13,40 +13,23 @@ export const STATUS = [
   'TRASH',
 ];
 
-export const CONDICTION = [
-  'REFERENCE',
-  'INCUBATION',
-  'TODO',
-  'TODO_LATE',
-  'WAITING',
-  'WAITING_LATE',
-  'DOING',
-  'DOING_LATE',
-  'COMPLETED',
-  'COMPLETED_LATE',
-  'PAUSED',
-  'PAUSED_LATE',
-  'DELETED',
-  'TRASH',
-];
-
-// Label, DivColor, PColor
-export const STATUS_NAME = [
-  ['Referência', '#cccccc', '#4d4d4d'],
-  ['Incubação', '#d9cabf', '#8f6e56'],
-  ['A Fazer', '#f5e0a3', '#635836'],
-  ['A fazer (Atrasado)', '#f5b8a3', '$cf4517'],
-  ['Esperando', '#bbbbbb', '#888888'],
-  ['Esperando (Atrasado)', '#bbbbbb', '#888888'],
-  ['Fazendo', '#bbbbbb', '#888888'],
-  ['Fazendo (Atrasado)', '#bbbbbb', '#888888'],
-  ['Concluído', '#bbbbbb', '#888888'],
-  ['Concluído (Atrasado)', '#bbbbbb', '#888888'],
-  ['Pausado', '#bbbbbb', '#888888'],
-  ['Pausado (Atrasado)', '#bbbbbb', '#888888'],
-  ['Deletado', '#bbbbbb', '#888888'],
-  ['Excluído', '#bbbbbb', '#888888'],
-];
+// Label_text, Tag_Color, Label_Color, Card_Color
+export const CONDICTION = {
+  REFERENCE: ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9'],
+  INCUBATION: ['Incubação', '#d9cabf', '#8f6e56'],
+  TODO: ['A Fazer', '#f5e0a3', '#635836', '#f9efd2'],
+  TODO_LATE: ['A fazer (Atrasado)', '#f5b8a3', '#cf4517', '#eccfc6'],
+  WAITING: ['Esperando', '#bbbbbb', '#888888'],
+  WAITING_LATE: ['Esperando (Atrasado)', '#bbbbbb', '#888888'],
+  DOING: ['Fazendo', '#a3daf5', '#365463', '#a3daf5'],
+  DOING_LATE: ['Fazendo (Atrasado)', '#a3b1f5', '#363e63', '#a3b1f5'],
+  DONE: ['Concluído', '#bbbbbb', '#888888', '#93eca2'],
+  DONE_LATE: ['Concluído (Atrasado)', '#bbbbbb', '#888888', '#75bd81'],
+  PAUSED: ['Pausado', '#bbbbbb', '#888888'],
+  PAUSED_LATE: ['Pausado (Atrasado)', '#bbbbbb', '#888888'],
+  DELETED: ['Deletado', '#bbbbbb', '#888888'],
+  TRASH: ['Excluído', '#bbbbbb', '#888888', '#808080'],
+};
 
 
 
@@ -83,13 +66,14 @@ export const DIFFICULTY_VALUES = {
   HIGH: ['Difícil', 3],
 };
 
-export const PRIORITY_VALUES = {
-  MINIMAL: ['Mínima', 1, 1.5],
-  LOW: ['Baixa', 1.5, 2],
-  MEDIUM: ['Média', 2, 2.5],
-  HIGH: ['Alta', 2.5, 3],
-  MAXIMUM: ['Máxima', 3, 3.5],
-  URGENT: ['Urgente', 999, 999],
+// Label, MinRange, MaxRange, divColor, labelColor
+export const PRIORITY = {
+  MINIMAL: ['Mínima', 1, 1.5, "#b34db3", "#ffccff"],
+  LOW: ['Baixa', 1.5, 2, "#5c85d6", "#142952"],
+  MEDIUM: ['Média', 2, 2.5, "#5cd685", "#145229"],
+  HIGH: ['Alta', 2.5, 3, "#d6c25c", "#524714"],
+  MAXIMUM: ['Máxima', 3, 3.5, "#d65c5c", "#521414"],
+  URGENT: ['Urgente', 999, 999, "#1a1a1a", "#cccccc"],
 };
 
 export const MONTHS_NAME = [

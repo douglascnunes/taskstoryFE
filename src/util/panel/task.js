@@ -8,9 +8,9 @@ function taskCopy(activity, finalDate) {
     task: {
       ...activity.task,
       instance: {
-        finalDate: new Date(finalDate),
+        finalDate: finalDate,
         status: STATUS[0], // ACTIVE
-        condiction: CONDICTION[2], // TODO
+        condiction: "TODO",
         completedOn: null,
         stepCompletionStatus: [],
         // priorityEvolved: 0,
@@ -20,17 +20,17 @@ function taskCopy(activity, finalDate) {
   };
 };
 
-function structureTask(activity) {
-  const instance = activity.task.taskInstances[0];
+function structureTask(activity, index) {
+  const instance = activity.task.taskInstances[index];
   const newTask = {
     ...activity,
     task: {
       ...activity.task,
       instance: {
         id: instance.id ?? null,
-        finalDate: new Date(instance.finalDate),
+        finalDate: instance.finalDate,
         status: instance.status ?? STATUS[0], // ACTIVE
-        condiction: CONDICTION[2], // TODO
+        condiction: "TODO",
         completedOn: instance.completedOn ?? null,
         stepCompletionStatus: instance.stepCompletionStatus ?? [],
         taskId: activity.task.id
@@ -45,13 +45,13 @@ function structureTask(activity) {
 export function generateTaskInstances(activity, startOverviewDate, endOverviewDate) {
   const { task, createdAt } = activity;
   const { taskInstances, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod } = task;
-  
+
   if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
     if (taskInstances.length === 0) {
       return [taskCopy(activity, new Date(endPeriod))];
     }
     else {
-      return [structureTask(activity)]
+      return [structureTask(activity, 0)]
     }
   }
 
@@ -70,9 +70,21 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
     const end = taskEnd && taskEnd < overviewEnd ? taskEnd : overviewEnd;
 
     while (current <= end) {
-      activityInstances.push(taskCopy(activity, new Date(current)));
+      if (taskInstances.length > 0) {
+        const index = taskInstances
+          .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
+        if (index !== -1) {
+          activityInstances.push(structureTask(activity, index));
+        } else {
+          activityInstances.push(taskCopy(activity, new Date(current)));
+        }
+      } else {
+        activityInstances.push(taskCopy(activity, new Date(current)));
+      }
+
       current.setDate(current.getDate() + frequenceIntervalDays);
-    };
+    }
+
     return activityInstances;
   };
 
@@ -108,20 +120,23 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 export function updateTaskCondiction(activity) {
   const today = new Date();
   const { task } = activity;
-  const completedOn = task.instance.completedOn;
+  const { completedOn, stepCompletionStatus } = task.instance;
 
   if (compareDatesOnly(new Date(task.instance.finalDate), today) < 0) {
-    if (completedOn === null) return CONDICTION[3]; // TODO_LATE
-    // if (current === CONDICTION[4]) return CONDICTION[5]; // WAITING → WAITING_LATE
-    // if (current === CONDICTION[6]) return CONDICTION[7]; // DOING → DOING_LATE
-  };
+    if (stepCompletionStatus.length > 0) return "DOING_LATE";
+    if (completedOn === null) return "TODO_LATE";
+  }
+  else {
+    if (stepCompletionStatus.length > 0) return "DOING";
+  }
 
-  return CONDICTION[2]; // TODO
+  return "TODO";
 };
 
 
 export function isTaskLate(activity) {
-  return activity.task.instance.condiction === CONDICTION[3]
+  const taskCondiction = activity.task.instance.condiction
+  return taskCondiction === "TODO_LATE" || taskCondiction === "DOING_LATE"
 };
 
 
