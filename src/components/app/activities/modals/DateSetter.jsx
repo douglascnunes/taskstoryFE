@@ -2,12 +2,10 @@ import { useContext, useState } from "react"
 import { ModalContext } from "../../../../store/modal-context/modal-context"
 import styles from './DateSetter.module.css';
 import DateModal from "./DateModal";
-import { AppContext } from "../../../../store/app-context";
 
 
 export default function DateSetter() {
-  const { mode } = useContext(AppContext);
-  const { type, task, setFinalDate } = useContext(ModalContext);
+  const { type, task } = useContext(ModalContext);
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
 
   function openDateModal() {

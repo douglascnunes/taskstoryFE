@@ -5,11 +5,9 @@ export const AppContext = createContext({
   isOpenModal: null,
   mode: null,
   type: null,
-  isInstanceChange: false,
   openModal: () => { },
   closeModal: () => { },
   setMode: () => { },
-  setIsInstanceChange: () => { },
 });
 
 
@@ -29,17 +27,12 @@ function appReducer(state, action) {
       isOpenModal: false,
       mode: null,
       type: null,
-      isInstanceChange: false,
     };
   };
 
   if (action.type === 'SET_MODE') {
     return { ...state, mode: action.payload }
   };
-
-  if (action.type === 'SET_IS_INSTANCE_CHANGE') {
-    return { ...state, isInstanceChange: action.payload }
-  }
 };
 
 
@@ -49,7 +42,6 @@ export default function AppContextProvider({ children }) {
     isOpenModal: false,
     mode: null,
     type: null,
-    isInstanceChange: false,
   };
 
   const [appState, appDispatch] = useReducer(appReducer, initialState);
@@ -66,20 +58,14 @@ export default function AppContextProvider({ children }) {
     appDispatch({ type: 'SET_MODE', payload: mode });
   };
 
-  function handleIsInstanceChange(value) {
-    appDispatch({ type: 'SET_IS_INSTANCE_CHANGE', payload: value });
-  };
-
 
   const ctxValue = {
     isOpenModal: appState.isOpenModal,
     mode: appState.mode,
     type: appState.type,
-    isInstanceChange: appState.isInstanceChange,
     openModal: handleOpenModal,
     closeModal: handleCloseModal,
     setMode: handleSetMode,
-    setIsInstanceChange: handleIsInstanceChange,
   };
 
   return <AppContext.Provider value={ctxValue}>

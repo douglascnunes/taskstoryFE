@@ -47,7 +47,7 @@ export async function createTask({ signal, activity }) {
 
 export async function updateTask({ signal, activity }) {
   const token = getAuthToken();
-
+  console.log(activity);
   const response = await fetch(url + 'tasks/' + activity.id, {
     signal,
     method: 'PATCH',

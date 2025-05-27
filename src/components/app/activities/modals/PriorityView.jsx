@@ -4,10 +4,7 @@ import styles from "./PriorityView.module.css";
 import { ModalContext } from "../../../../store/modal-context/modal-context";
 
 export default function PriorityView() {
-  const {
-    importance,
-    difficulty,
-  } = useContext(ModalContext);
+  const { importance, difficulty } = useContext(ModalContext);
 
   const importanceValue = IMPORTANCE_VALUES[importance]?.[1];
   const difficultyValue = DIFFICULTY_VALUES[difficulty]?.[1];

@@ -1,5 +1,5 @@
 .cardContainer {
-  border: 0.15rem solid #404040;
+  border: 0.15rem solid hsla(0, 0%, 75%, 1);
   border-radius: 8px;
   padding: 0.4rem 0.6rem;
   background-color: #f9f9f9;
@@ -18,10 +18,10 @@
 
 .description {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #555555;
   text-align: left;
-  line-height: 1.2rem;
+  line-height: 1rem;
   margin-bottom: 1rem;
 }
 

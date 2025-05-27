@@ -2,6 +2,12 @@ import { createContext, useReducer } from "react";
 import { updateTaskCondiction } from "../../util/panel/task";
 
 
+function hasChanged(prev, next) {
+  return JSON.stringify(prev) !== JSON.stringify(next);
+}
+
+
+
 export const ModalContext = createContext({
   id: null,
   title: null,
@@ -26,6 +32,8 @@ export const ModalContext = createContext({
       // priorityEvolved: null,
     }
   },
+  isActivityChange: false,
+  isInstanceChange: false,
   setTitle: () => { },
   setDescription: () => { },
   setImportance: () => { },
@@ -51,34 +59,60 @@ export const ModalContext = createContext({
 
 function activityReducer(state, action) {
   if (action.type === 'SET_TITLE') {
-    return { ...state, title: action.payload }
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.title, action.payload),
+      title: action.payload
+    }
   };
 
   if (action.type === 'SET_DESCRIPTION') {
-    return { ...state, description: action.payload }
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.description, action.payload),
+      description: action.payload
+    }
   };
 
   if (action.type === 'SET_IMPORTANCE') {
-    return { ...state, importance: action.payload };
-  };
-
-  if (action.type === 'SET_DIFFICULTY') {
-    return { ...state, difficulty: action.payload };
-  };
-
-  if (action.type === 'TOGGLE_KEYWORDS') {
-    const exists = state.keywords.some(k => k.id === action.payload.id);
     return {
       ...state,
-      keywords: exists
-        ? state.keywords.filter(k => k.id !== action.payload.id)
-        : [...state.keywords, action.payload],
+      isActivityChange: hasChanged(state.importance, action.payload),
+      importance: action.payload
     };
   };
 
-  if (action.type === 'SET_TYPE') {
-    return { ...state, type: action.payload };
+  if (action.type === 'SET_DIFFICULTY') {
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.difficulty, action.payload) || state.isActivityChange,
+      difficulty: action.payload
+    };
   };
+
+
+  if (action.type === 'TOGGLE_KEYWORDS') {
+    const exists = state.keywords.some(k => k.id === action.payload.id);
+    const newKeywords = exists
+      ? state.keywords.filter(k => k.id !== action.payload.id)
+      : [...state.keywords, action.payload];
+
+    return {
+      ...state,
+      isActivityChange: JSON.stringify(state.keywords) !== JSON.stringify(newKeywords) || state.isActivityChange,
+      keywords: newKeywords
+    };
+  }
+
+
+  if (action.type === 'SET_TYPE') {
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.type, action.payload) || state.isActivityChange,
+      type: action.payload
+    };
+  }
+
 
   if (action.type === 'LOADER') {
     const activity = action.payload.activity;
@@ -106,6 +140,8 @@ function activityReducer(state, action) {
       difficulty: activity.difficulty,
       keywords: activity.keywords || [],
       type,
+      isActivityChange: false,
+      isInstanceChange: false,
 
       task: {},
       project: {},
@@ -119,44 +155,111 @@ function activityReducer(state, action) {
   };
 
   if (action.type === 'SET_TASK_START_PERIOD') {
-    return { ...state, task: { ...state.task, startPeriod: action.payload } };
-  };
+    const newValue = new Date(action.payload);
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.task.startPeriod, newValue),
+      task: {
+        ...state.task,
+        startPeriod: newValue
+      }
+    };
+  }
 
   if (action.type === 'SET_TASK_END_PERIOD') {
-    return { ...state, task: { ...state.task, endPeriod: action.payload } };
-  };
+    const newValue = new Date(action.payload);
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.task.endPeriod, newValue),
+      task: {
+        ...state.task,
+        endPeriod: newValue
+      }
+    };
+  }
 
   if (action.type === 'SET_TASK_FREQUENCE_INTERVAL_DAYS') {
-    return { ...state, task: { ...state.task, frequenceIntervalDays: action.payload } };
-  };
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.task.frequenceIntervalDays, action.payload),
+      task: {
+        ...state.task,
+        frequenceIntervalDays: action.payload
+      }
+    };
+  }
 
   if (action.type === 'SET_TASK_FREQUENCE_WEEKLY_DAYS') {
-    return { ...state, task: { ...state.task, frequenceWeeklyDays: action.payload } };
-  };
+    const days = state.task.frequenceWeeklyDays || [];
+    const updated = days.includes(action.payload)
+      ? days.filter(d => d !== action.payload)
+      : [...days, action.payload];
+
+    return {
+      ...state,
+      isActivityChange: hasChanged(days, updated),
+      task: {
+        ...state.task,
+        frequenceWeeklyDays: updated
+      }
+    };
+  }
 
   if (action.type === 'SET_TASK_PERIOD_FREQUENCY') {
-    return { ...state, task: { ...state.task, ...action.payload } }
-  };
+    return {
+      ...state,
+      isActivityChange: hasChanged(
+        {
+          startPeriod: state.task.startPeriod,
+          endPeriod: state.task.endPeriod,
+          frequenceIntervalDays: state.task.frequenceIntervalDays,
+          frequenceWeeklyDays: state.task.frequenceWeeklyDays
+        },
+        {
+          ...state.task,
+          ...action.payload
+        }
+      ),
+      task: {
+        ...state.task,
+        ...action.payload
+      }
+    };
+  }
 
   if (action.type === 'SET_TASK_STEPS') {
     return {
       ...state,
-      task: { ...state.task, steps: action.payload }
-    };
-  };
-
-  if (action.type === 'ADD_TASK_STEP') {
-    return {
-      ...state, task: {
+      isActivityChange: hasChanged(state.task.steps, action.payload),
+      task: {
         ...state.task,
-        steps: [...state.task.steps, { id: null, description: action.payload, index: state.task.steps.length }]
+        steps: action.payload
       }
     };
-  };
+  }
+
+  if (action.type === 'ADD_TASK_STEP') {
+    const newSteps = [
+      ...state.task.steps,
+      {
+        id: null,
+        description: action.payload,
+        index: state.task.steps.length
+      }
+    ];
+    return {
+      ...state,
+      isActivityChange: true,
+      task: {
+        ...state.task,
+        steps: newSteps
+      }
+    };
+  }
 
   if (action.type === 'REMOVE_TASK_STEP') {
     const updatedSteps = state.task.steps
-      .filter((step) => step.index !== action.payload)
+      .filter(step => step.index !== action.payload)
       .map((step, newIndex) => ({
         ...step,
         index: newIndex
@@ -164,12 +267,13 @@ function activityReducer(state, action) {
 
     return {
       ...state,
+      isActivityChange: true,
       task: {
         ...state.task,
         steps: updatedSteps
       }
     };
-  };
+  }
 
   if (action.type === 'MOVE_TASK_STEP_UP') {
     const idx = action.payload;
@@ -180,11 +284,9 @@ function activityReducer(state, action) {
     const prev = steps.find(s => s.index === idx - 1);
     if (!cur || !prev) return state;
 
-    // Troca os índices
     cur.index--;
     prev.index++;
 
-    // Atualiza stepCompletionStatus
     const completionStatus = [...(state.task.instance.stepCompletionStatus || [])];
     const updatedStatus = completionStatus.map(index => {
       if (index === idx) return idx - 1;
@@ -194,6 +296,7 @@ function activityReducer(state, action) {
 
     return {
       ...state,
+      isActivityChange: true,
       task: {
         ...state.task,
         steps,
@@ -215,11 +318,9 @@ function activityReducer(state, action) {
     const next = steps.find(s => s.index === idx + 1);
     if (!cur || !next) return state;
 
-    // Troca os índices
     cur.index++;
     next.index--;
 
-    // Atualiza stepCompletionStatus
     const completionStatus = [...(state.task.instance.stepCompletionStatus || [])];
     const updatedStatus = completionStatus.map(index => {
       if (index === idx) return idx + 1;
@@ -229,6 +330,7 @@ function activityReducer(state, action) {
 
     return {
       ...state,
+      isActivityChange: true,
       task: {
         ...state.task,
         steps,
@@ -238,11 +340,21 @@ function activityReducer(state, action) {
         }
       }
     };
-  };
+  }
 
   if (action.type === 'SET_TASK_FINAL_DATE') {
-    return { ...state, task: { ...state.task, instance: { ...state.task.instance, finalDate: action.payload } } }
-  };
+    return {
+      ...state,
+      isActivityChange: hasChanged(state.task.instance?.finalDate, action.payload),
+      task: {
+        ...state.task,
+        instance: {
+          ...state.task.instance,
+          finalDate: action.payload
+        }
+      }
+    };
+  }
 
 
   if (action.type === 'TOGGLE_STEP_COMPLETION') {
@@ -254,6 +366,7 @@ function activityReducer(state, action) {
 
     return {
       ...state,
+      isInstanceChange: true,
       task: {
         ...state.task,
         instance: {
@@ -290,6 +403,8 @@ function activityReducer(state, action) {
           stepCompletionStatus: [],
         }
       },
+      isActivityChange: false,
+      isInstanceChange: false,
     };
   }
 };
@@ -319,6 +434,8 @@ export default function ModalContextProvider({ children }) {
         stepCompletionStatus: [],
       }
     },
+    isActivityChange: false,
+    isInstanceChange: false,
   };
 
 
@@ -414,6 +531,8 @@ export default function ModalContextProvider({ children }) {
     keywords: activityState.keywords,
     type: activityState.type,
     task: activityState.task,
+    isActivityChange: activityState.isActivityChange,
+    isInstanceChange: activityState.isInstanceChange,
     setTitle: handleSetTitle,
     setDescription: handleSetDescription,
     setImportance: handleSetImportance,
