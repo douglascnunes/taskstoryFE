@@ -62,12 +62,20 @@ export function compareIsoDates(dateStr1, dateStr2) {
 
 
 export function compareDatesOnly(date1, date2) {
+  if (!(date1 instanceof Date)) {
+    date1 = yyyymmddToDate(date1);
+  }
+  if (!(date2 instanceof Date)) {
+    date2 = yyyymmddToDate(date2);
+  }
   const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
   const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
   if (d1.getTime() > d2.getTime()) return 1;   // date1 > date2
   if (d1.getTime() < d2.getTime()) return -1;  // date1 < date2
-  return 0;                                     // date1 == date2
+  return 0;                                    // date1 == date2
 };
+
 
 
 export function isOnWeek(date) {

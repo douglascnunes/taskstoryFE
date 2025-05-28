@@ -49,9 +49,16 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
   if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
     if (taskInstances.length === 0) {
       return [taskCopy(activity, new Date(endPeriod))];
-    }
-    else {
-      return [structureTask(activity, 0)]
+    } else {
+      const index = taskInstances.findIndex(instance =>
+        compareDatesOnly(new Date(instance.finalDate), new Date(endPeriod)) === 0
+      );
+
+      if (index !== -1) {
+        return [structureTask(activity, index)];
+      } else {
+        return [taskCopy(activity, new Date(endPeriod))];
+      }
     }
   }
 

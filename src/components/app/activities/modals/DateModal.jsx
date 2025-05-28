@@ -11,30 +11,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
   } = useContext(ModalContext);
   const [mode, setMode] = useState(
     (task.frequenceIntervalDays == true || task.frequenceWeeklyDays == true) ? 'MULTI' : 'SINGLE')
-  // const [date, setDate] = useState({
-  //   startPeriod: task.startPeriod ?? "",
-  //   endPeriod: task.endPeriod ?? "",
-  //   frequenceIntervalDays: task.frequenceIntervalDays ?? "",
-  //   frequenceWeeklyDays: task.frequenceWeeklyDays ?? [],
-  // });
   const modalRef = useRef();
-
-  // function save() {
-  //   console.log(mode)
-  //   if (mode === "SINGLE") {
-  //     setTaskStartPeriod("");
-  //     // setTaskEndPeriod(date.endPeriod ? new Date(date.endPeriod) : "");
-  //     setTaskFrequenceIntervalDays("");
-  //     setTaskFrequenceWeeklyDays([]);
-  // console.log("SINGLE: ", task)
-  // } else if (mode === "MULTI") {
-  //   setTaskStartPeriod(date.startPeriod ? new Date(date.startPeriod) : "")
-  //   setTaskEndPeriod(date.endPeriod ? new Date(date.endPeriod) : "");
-  //   setTaskFrequenceIntervalDays(date.frequenceIntervalDays ?? "");
-  //   setTaskFrequenceWeeklyDays(date.frequenceWeeklyDays.length > 0 ? date.frequenceWeeklyDays : []);
-  //   console.log("MULTI: ", task)
-  // };
-  // };
 
   function toggleMode() {
     setMode(prev => prev === "SINGLE" ? "MULTI" : "SINGLE")
@@ -46,16 +23,17 @@ export default function DateModal({ isOpenModal, closeModal }) {
       const startDate = task.startPeriod ?? null;
       const endDate = task.endPeriod ?? null;
 
-      if (field === "startPeriod" && (!endDate || compareDatesOnly(valueDate, endDate) <= 0)) {
+      if (field === "startPeriod" && (!endDate || compareDatesOnly(valueDate, endDate) < 0)) {
         setTaskStartPeriod(valueDate);
       };
-      if (field === "endPeriod" && (!startDate || compareDatesOnly(valueDate, startDate) >= 0)) {
+      if (field === "endPeriod" && (!startDate || compareDatesOnly(valueDate, startDate) > 0)) {
+        console.log(valueDate)
         setTaskEndPeriod(valueDate);
       };
     };
     if (field === "frequenceIntervalDays") {
       setTaskFrequenceIntervalDays(value);
-      setTaskFrequenceWeeklyDays([]);
+      setTaskFrequenceWeeklyDays(null);
     };
     if (field === "frequenceWeeklyDays") {
       setTaskFrequenceIntervalDays("");
@@ -69,7 +47,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
         if (mode === "SINGLE") {
           setTaskStartPeriod("");
           setTaskFrequenceIntervalDays("");
-          setTaskFrequenceWeeklyDays([]);
+          setTaskFrequenceWeeklyDays(null);
         };
         closeModal();
       }

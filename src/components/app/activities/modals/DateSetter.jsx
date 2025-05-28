@@ -5,7 +5,7 @@ import DateModal from "./DateModal";
 
 
 export default function DateSetter() {
-  const { type, task } = useContext(ModalContext);
+  const { task } = useContext(ModalContext);
   const [isOpenDateModal, setIsOpenDateModal] = useState(false);
 
   function openDateModal() {
@@ -31,9 +31,9 @@ export default function DateSetter() {
   };
 
   if (hasEnd && (hasInterval || hasWeekly)) {
-    spanContent += ` até ${task.endPeriod.toLocaleDateString()}`;
+    spanContent += ` até ${new Date(task.endPeriod).toLocaleDateString()}`;
   } else if (hasEnd) {
-    spanContent = `Termina em ${task.endPeriod.toLocaleDateString()}`;
+    spanContent = `Termina em ${new Date(task.endPeriod).toLocaleDateString()}`;
   };
 
   if (!hasInterval && !hasWeekly && !hasEnd) {

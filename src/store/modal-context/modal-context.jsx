@@ -1,5 +1,6 @@
 import { createContext, useReducer } from "react";
 import { updateTaskCondiction } from "../../util/panel/task";
+import { yyyymmddToDate } from "../../util/date";
 
 
 function hasChanged(prev, next) {
@@ -155,7 +156,7 @@ function activityReducer(state, action) {
   };
 
   if (action.type === 'SET_TASK_START_PERIOD') {
-    const newValue = new Date(action.payload);
+    const newValue = action.payload !== "" ? yyyymmddToDate(action.payload) : "";
     return {
       ...state,
       isActivityChange: hasChanged(state.task.startPeriod, newValue),
@@ -167,7 +168,8 @@ function activityReducer(state, action) {
   }
 
   if (action.type === 'SET_TASK_END_PERIOD') {
-    const newValue = new Date(action.payload);
+    const newValue = action.payload !== "" ? yyyymmddToDate(action.payload) : "";
+    console.log(newValue)
     return {
       ...state,
       isActivityChange: hasChanged(state.task.endPeriod, newValue),
@@ -176,7 +178,7 @@ function activityReducer(state, action) {
         endPeriod: newValue
       }
     };
-  }
+  };
 
   if (action.type === 'SET_TASK_FREQUENCE_INTERVAL_DAYS') {
     return {
@@ -200,10 +202,10 @@ function activityReducer(state, action) {
       isActivityChange: hasChanged(days, updated),
       task: {
         ...state.task,
-        frequenceWeeklyDays: updated
+        frequenceWeeklyDays: action.payload ? updated : [],
       }
     };
-  }
+  };
 
   if (action.type === 'SET_TASK_PERIOD_FREQUENCY') {
     return {

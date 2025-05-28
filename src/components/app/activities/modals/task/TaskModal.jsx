@@ -26,10 +26,9 @@ export default function TaskModal({ ref }) {
     difficulty,
     keywords,
     task,
+    isActivityChange, isInstanceChange,
     reset,
   } = useContext(ModalContext);
-  const { isActivityChange, isInstanceChange } = useContext(AppContext);
-
 
   const { mutate: mutateCreateTask } = useMutation({
     mutationFn: createTask,
@@ -80,6 +79,7 @@ export default function TaskModal({ ref }) {
 
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
 
+        console.log(isActivityChange)
         if (isActivityChange && id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
           && isTaskTimingValid(task)) {
@@ -88,9 +88,6 @@ export default function TaskModal({ ref }) {
           mutateUpdateTask({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
           mutateUpsertSteps({ id: task.id, steps: task.steps });
         }
-        else {
-          console.log(isActivityChange)
-        }
 
         reset();
       },
@@ -98,7 +95,7 @@ export default function TaskModal({ ref }) {
   }, [id, title, description, importance, difficulty, keywords,
     task.endPeriod, task.frequenceIntervalDays, task.frequenceWeeklyDays, task.id, task.startPeriod, task.steps,
     task.instance.completedOn, task.instance.finalDate, task.instance.id, task.instance.status, task.instance.stepCompletionStatus,
-    isInstanceChange]);
+    isActivityChange, isInstanceChange]);
 
 
   return (
