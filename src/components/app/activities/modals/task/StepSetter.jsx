@@ -89,7 +89,7 @@ export default function StepSetter() {
     stepsContent = (
       sortedSteps.map((step) => (
         <Step
-          key={step.index}
+          key={step.id ?? `new-${step.index}`}
           step={step}
           disabled={isPending}
           removeTaskStep={handleRemoveStep}

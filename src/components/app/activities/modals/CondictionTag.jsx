@@ -1,5 +1,5 @@
 import styles from './CondictionTag.module.css';
-import { CONDICTION } from '../../../../util/enum.js';
+import { CONDICTION } from '../../../../util/enum.jsx';
 import { useContext } from 'react';
 import { ModalContext } from '../../../../store/modal-context/modal-context.jsx';
 import { AppContext } from '../../../../store/app-context.jsx';

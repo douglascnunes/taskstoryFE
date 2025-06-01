@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import styles from './DateModal.module.css';
 import { ModalContext } from '../../../../store/modal-context/modal-context.jsx';
-import { compareDatesOnly, dateToYYYYMMDD, yyyymmddToDate } from '../../../../util/date.js';
-import { DAYS_OF_WEEK } from '../../../../util/enum.js';
+import { compareDatesOnly, dateToYYYYMMDD } from '../../../../util/date.js';
+import { DAYS_OF_WEEK } from '../../../../util/enum.jsx';
 
 
 export default function DateModal({ isOpenModal, closeModal }) {
@@ -27,7 +27,6 @@ export default function DateModal({ isOpenModal, closeModal }) {
         setTaskStartPeriod(valueDate);
       };
       if (field === "endPeriod" && (!startDate || compareDatesOnly(valueDate, startDate) > 0)) {
-        console.log(valueDate)
         setTaskEndPeriod(valueDate);
       };
     };

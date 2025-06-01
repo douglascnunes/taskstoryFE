@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY } from "../../../../util/enum";
+import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY } from "../../../../util/enum.jsx";
 import styles from "./PriorityView.module.css";
 import { ModalContext } from "../../../../store/modal-context/modal-context";
 

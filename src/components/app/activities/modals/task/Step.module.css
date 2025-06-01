@@ -39,14 +39,19 @@
 }
 
 .description {
-  margin: 0;
   font-size: 1rem;
-  color: #333;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: text;
+  box-shadow: none;
 }
 
-/* .stepContainer input[type="checkbox"]:hover {
-  border-color: #888;
-} */
+.description:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom: none;
+}
 
 .stepContainer input[type="checkbox"]:focus {
   outline: none;
@@ -65,8 +70,11 @@
   margin-left: auto;
 }
 
-.removeButton,.removeButton:hover {
+.removeButton,
+.removeButton:hover {
   cursor: pointer;
   background-color: transparent;
   padding: 0;
-};
+}
+
+;

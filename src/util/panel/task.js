@@ -1,5 +1,5 @@
 import { compareDatesOnly, isOnWeek } from "../date";
-import { CONDICTION, STATUS } from "../enum";
+import { STATUS } from "../enum.jsx";
 
 
 function taskCopy(activity, finalDate) {
@@ -50,15 +50,8 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
     if (taskInstances.length === 0) {
       return [taskCopy(activity, new Date(endPeriod))];
     } else {
-      const index = taskInstances.findIndex(instance =>
-        compareDatesOnly(new Date(instance.finalDate), new Date(endPeriod)) === 0
-      );
-
-      if (index !== -1) {
-        return [structureTask(activity, index)];
-      } else {
-        return [taskCopy(activity, new Date(endPeriod))];
-      }
+      taskInstances[0].finalDate = new Date(endPeriod);
+      return [structureTask(activity, 0)];
     }
   }
 
@@ -70,30 +63,50 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
     const overviewStart = new Date(startOverviewDate);
     while (current < overviewStart) {
       current.setDate(current.getDate() + frequenceIntervalDays);
-    };
+    }
 
     const taskEnd = endPeriod ? new Date(endPeriod) : null;
     const overviewEnd = new Date(endOverviewDate);
     const end = taskEnd && taskEnd < overviewEnd ? taskEnd : overviewEnd;
 
+    const addedDates = [];
+
     while (current <= end) {
+      let added = false;
       if (taskInstances.length > 0) {
         const index = taskInstances
           .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
         if (index !== -1) {
           activityInstances.push(structureTask(activity, index));
-        } else {
-          activityInstances.push(taskCopy(activity, new Date(current)));
+          addedDates.push(current.toDateString());
+          added = true;
         }
-      } else {
+      }
+
+      if (!added) {
         activityInstances.push(taskCopy(activity, new Date(current)));
+        addedDates.push(current.toDateString());
       }
 
       current.setDate(current.getDate() + frequenceIntervalDays);
     }
 
+    const remaining = taskInstances.filter(instance => {
+      const instanceDate = new Date(instance.finalDate);
+      return !addedDates.includes(instanceDate.toDateString());
+    });
+
+    for (const instance of remaining) {
+      const index = taskInstances.findIndex(i =>
+        compareDatesOnly(new Date(i.finalDate), new Date(instance.finalDate)) === 0
+      );
+      if (index !== -1) {
+        activityInstances.push(structureTask(activity, index));
+      }
+    }
+
     return activityInstances;
-  };
+  }
 
 
   if (frequenceWeeklyDays && frequenceWeeklyDays.length > 0) {

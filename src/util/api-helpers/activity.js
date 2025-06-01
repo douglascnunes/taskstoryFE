@@ -8,14 +8,9 @@ export function preProcessActivity(keywords) {
 export function cleanObject(object) {
   const cleanedObject = {};
   for (const [key, value] of Object.entries(object)) {
-    const hasLength = typeof value === 'string' || Array.isArray(value);
-    if (
-      value !== null &&
-      value !== undefined &&
-      (hasLength ? value.length > 0 : true)
-    ) {
+    if (value !== null && value !== undefined) {
       cleanedObject[key] = value;
-    };
-  };
+    }
+  }
   return cleanedObject;
 };

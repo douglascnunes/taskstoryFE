@@ -1,6 +1,6 @@
 import Section from "./Section";
 import style from './Panel.module.css';
-import { SECTION_NAMES } from "../../../util/enum";
+import { SECTION_NAMES } from "../../../util/enum.jsx";
 import {
   filterLateActivities,
   filterMonthActivities,
@@ -15,7 +15,7 @@ import {
 
 export default function Panel({ activities, mode, startOverviewDate, endOverviewDate }) {
   let activityInstances = generateInstances(activities, startOverviewDate, endOverviewDate);
-  // console.log('panel',activityInstances)
+
   activityInstances = updateCondiction(activityInstances);
 
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);

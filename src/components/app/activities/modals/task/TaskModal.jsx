@@ -14,7 +14,7 @@ import { isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpe
 import StepSetter from "./StepSetter";
 import CondictionTag from "../CondictionTag";
 import { cleanObject } from "../../../../../util/api-helpers/activity"
-import { AppContext } from "../../../../../store/app-context";
+
 
 
 export default function TaskModal({ ref }) {
@@ -63,7 +63,6 @@ export default function TaskModal({ ref }) {
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
 
         if ((title && importance && difficulty && keywords.length > 0 && isTaskTimingValid(task))) {
-          console.log('createTask')
           mutateCreateTask({ activity: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
         };
         reset();
@@ -73,18 +72,14 @@ export default function TaskModal({ ref }) {
           createInstance({ taskId: task.id, instance: cleanObject(task.instance) });
         }
         else if (isInstanceChange === true) {
-          console.log('updateInstance')
           updateInstance({ taskId: task.id, instance: cleanObject(task.instance), instanceId: task.instance.id });
         };
 
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
 
-        console.log(isActivityChange)
         if (isActivityChange && id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
           && isTaskTimingValid(task)) {
-          console.log('updateTask')
-          console.log(cleanedTask)
           mutateUpdateTask({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...cleanedTask } });
           mutateUpsertSteps({ id: task.id, steps: task.steps });
         }

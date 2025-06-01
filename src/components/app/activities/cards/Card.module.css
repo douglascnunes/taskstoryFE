@@ -52,15 +52,49 @@
   gap: 0.3rem;
   align-items: center;
   width: auto;
-  /* margin-left: auto; */
+}
+
+.dates p {
+  color: #666666;
+  font-weight: 500;
+  margin-top: 0.1rem;
 }
 
 .dates svg {
   width: 1rem;
   height: 1rem;
   margin-left: auto;
+  stroke: #666666;
 }
 
 .cardContainer:hover {
   filter: brightness(1.05);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.iconLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.iconLabel p {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666666;
+  text-transform: uppercase;
+  margin-top: 0.1rem;
+}
+
+.iconLabel svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke: #666666;
 }

@@ -9,7 +9,7 @@ import { AppContext } from '../../../../store/app-context';
 import { ModalContext } from '../../../../store/modal-context/modal-context';
 import { getActivity } from '../../../../api/activities';
 import { getTask } from '../../../../api/task';
-import { CONDICTION } from '../../../../util/enum';
+import { ACTIVITY_TYPE, CONDICTION } from '../../../../util/enum.jsx';
 import PriorityTag from '../PriorityTag';
 
 
@@ -90,24 +90,31 @@ export default function PanelCard({ activity }) {
           <KeywordTag keyword={kw} key={i} />
         ))}
       </div>
-
-      {finalDate && (
-        <div className={styles.dates}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            strokeWidth={1.5} stroke="currentColor" className="size-6"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 
-              0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <p>
-            {finalDate.toLocaleDateString("pt-br", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })}
+      <div className={styles.footer}>
+        <div className={styles.iconLabel}>
+          {ACTIVITY_TYPE[activity.type].icon}
+          <p className={styles.type}>
+            {ACTIVITY_TYPE[activity.type].label}
           </p>
         </div>
-      )}
-    </div>
+        {finalDate && (
+          <div className={styles.dates}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              strokeWidth={1.5} stroke="currentColor" className="size-6"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 
+              0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <p>
+              {finalDate.toLocaleDateString("pt-br", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+          </div>
+        )}
+      </div>
+    </div >
   );
 }

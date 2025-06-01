@@ -25,7 +25,7 @@ export async function getTask({ signal, id, instanceId }) {
 
 export async function createTask({ signal, activity }) {
   const token = getAuthToken();
-
+  console.log('createTask');
   const response = await fetch(url + 'tasks', {
     signal,
     method: 'POST',
@@ -46,8 +46,9 @@ export async function createTask({ signal, activity }) {
 
 
 export async function updateTask({ signal, activity }) {
+  console.log('updateTask');
   const token = getAuthToken();
-  console.log(activity);
+
   const response = await fetch(url + 'tasks/' + activity.id, {
     signal,
     method: 'PATCH',
@@ -67,6 +68,7 @@ export async function updateTask({ signal, activity }) {
 
 
 export async function upsertSteps({ signal, id, steps }) {
+  console.log('upsertSteps');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + id + '/steps', {
@@ -89,6 +91,7 @@ export async function upsertSteps({ signal, id, steps }) {
 
 
 export async function createTaskInstance({ signal, taskId, instance }) {
+  console.log('createTaskInstance');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + taskId + '/instance', {
@@ -111,6 +114,7 @@ export async function createTaskInstance({ signal, taskId, instance }) {
 
 
 export async function updateTaskInstance({ signal, taskId, instanceId, instance }) {
+  console.log('updateTaskInstance');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + taskId + '/instance/' + instanceId, {

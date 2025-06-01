@@ -9,14 +9,13 @@ import { ModalContext } from "../../../../../store/modal-context/modal-context";
 
 
 export default function Step({ step, removeTaskStep }) {
-  const { mode, setIsInstanceChange } = useContext(AppContext);
-  const { task, moveTaskStepUp, moveTaskStepDown, toggleStepCompletion } = useContext(ModalContext);
+  const { mode } = useContext(AppContext);
+  const { task, moveTaskStepUp, moveTaskStepDown, toggleStepCompletion, setTaskStepDescription } = useContext(ModalContext);
 
   const isChecked = task.instance.stepCompletionStatus.includes(step.id);
 
   const handleToggleStep = () => {
     toggleStepCompletion(step.id);
-    setIsInstanceChange(true);
   };
 
   const handleMoveStep = (direction) => {
@@ -27,16 +26,25 @@ export default function Step({ step, removeTaskStep }) {
     }
   };
 
+  function handleDescriptionChange(value) {
+    setTaskStepDescription(step.index, value);
+  };
 
   return (
     <div className={styles.stepContainer}>
       <input
         type="checkbox"
-        disabled={mode === 'CREATE'}
+        disabled={mode === 'CREATE' || !step.id}
         checked={isChecked}
         onChange={handleToggleStep}
       />
-      <p className={styles.description}>{step.description}</p>
+      <input
+        type="text"
+        className={styles.description}
+        value={step.description}
+        onChange={(e) => handleDescriptionChange(e.target.value)}
+        placeholder="Descrição do passo..."
+      />
 
       <div className={styles.actions}>
         <button className={styles.removeButton} onClick={() => handleMoveStep('up')}>

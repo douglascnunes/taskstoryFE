@@ -1,6 +1,5 @@
-import { redirect, useSubmit } from "react-router-dom";
-import { PROCRASTINATION_TYPE } from "./enum";
-import { useEffect } from "react";
+import { redirect } from "react-router-dom";
+import { PROCRASTINATION_TYPE } from "./enum.jsx";
 
 
 export function getTokenDuration() {

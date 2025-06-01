@@ -52,6 +52,7 @@ export const ModalContext = createContext({
   removeTaskStep: () => { },
   moveTaskStepUp: () => { },
   moveTaskStepDown: () => { },
+  setTaskStepDescription: () => { },
   setFinalDate: () => { },
   toggleStepCompletion: () => { },
   reset: () => { },
@@ -169,7 +170,6 @@ function activityReducer(state, action) {
 
   if (action.type === 'SET_TASK_END_PERIOD') {
     const newValue = action.payload !== "" ? yyyymmddToDate(action.payload) : "";
-    console.log(newValue)
     return {
       ...state,
       isActivityChange: hasChanged(state.task.endPeriod, newValue),
@@ -289,26 +289,16 @@ function activityReducer(state, action) {
     cur.index--;
     prev.index++;
 
-    const completionStatus = [...(state.task.instance.stepCompletionStatus || [])];
-    const updatedStatus = completionStatus.map(index => {
-      if (index === idx) return idx - 1;
-      if (index === idx - 1) return idx;
-      return index;
-    });
-
     return {
       ...state,
       isActivityChange: true,
       task: {
         ...state.task,
         steps,
-        instance: {
-          ...state.task.instance,
-          stepCompletionStatus: updatedStatus
-        }
       }
     };
   }
+
 
   if (action.type === 'MOVE_TASK_STEP_DOWN') {
     const idx = action.payload;
@@ -323,26 +313,46 @@ function activityReducer(state, action) {
     cur.index++;
     next.index--;
 
-    const completionStatus = [...(state.task.instance.stepCompletionStatus || [])];
-    const updatedStatus = completionStatus.map(index => {
-      if (index === idx) return idx + 1;
-      if (index === idx + 1) return idx;
-      return index;
-    });
-
     return {
       ...state,
       isActivityChange: true,
       task: {
         ...state.task,
         steps,
-        instance: {
-          ...state.task.instance,
-          stepCompletionStatus: updatedStatus
-        }
       }
     };
   }
+
+  if (action.type === "SET_TASK_STEP_DESCRIPTION") {
+    const { index, description } = action.payload;
+
+    // Segurança contra índice inválido
+    if (index < 0 || index >= state.task.steps.length) {
+      return state;
+    }
+
+    const prevStep = state.task.steps[index];
+
+    const updatedStep = {
+      ...prevStep,
+      description,
+    };
+
+    const updatedSteps = state.task.steps.map((step, i) =>
+      i === index ? updatedStep : step
+    );
+
+    return {
+      ...state,
+      isActivityChange: hasChanged(prevStep.description, description),
+      task: {
+        ...state.task,
+        steps: updatedSteps,
+      },
+    };
+  }
+
+
 
   if (action.type === 'SET_TASK_FINAL_DATE') {
     return {
@@ -507,6 +517,10 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'MOVE_TASK_STEP_DOWN', payload: index });
   };
 
+  function handleSetTaskStepDescription(index, newDescription) {
+    activityDispatch({ type: "SET_TASK_STEP_DESCRIPTION", payload: { index, description: newDescription } });
+  }
+
   function handleToggleStepCompletion(stepId) {
     activityDispatch({ type: 'TOGGLE_STEP_COMPLETION', payload: stepId });
   };
@@ -552,6 +566,7 @@ export default function ModalContextProvider({ children }) {
     addTaskStep: handleAddTaskStep,
     moveTaskStepUp: handleMoveTaskStepUp,
     moveTaskStepDown: handleMoveTaskStepDown,
+    setTaskStepDescription: handleSetTaskStepDescription,
     removeTaskStep: handleRemoveTaskStep,
     setFinalDate: handleSetFinalDate,
     toggleStepCompletion: handleToggleStepCompletion,

@@ -1,5 +1,5 @@
 import { getYearMonthNumber, isOnMonth } from "../date";
-import { DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY } from "../enum";
+import { DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY } from "../enum.jsx";
 import { generateTaskInstances, isTaskLate, isTaskOnWeek, isTaskToday, updateTaskCondiction } from "./task";
 
 

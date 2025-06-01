@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import styles from "./FloatingActionButton.module.css";
 import { AppContext } from "../../../store/app-context";
-import { ACITIVITIES_MENU } from "../../../util/enum";
+import { ACTIVITY_TYPE } from "../../../util/enum.jsx";
 
 
 export default function FloatingActionButton() {
@@ -17,17 +17,21 @@ export default function FloatingActionButton() {
     openModal('CREATE', String(value).toUpperCase());
   };
 
+  const visibleItemLimit = 2;
+
+  const limitedEntries = Object.entries(ACTIVITY_TYPE).slice(0, visibleItemLimit);
+
   return (
     <div className={styles.fabContainer}>
       {isOpen && (
         <ul className={styles.menu}>
-          {ACITIVITIES_MENU.map((item) => (
+          {limitedEntries.map(([key, { label }]) => (
             <li
-              key={item[0]}
+              key={key}
               className={styles.menuItem}
-              onClick={() => handleChoice(item[1])}
+              onClick={() => handleChoice(key)}
             >
-              {item[0]}
+              {label}
             </li>
           ))}
         </ul>
@@ -37,4 +41,4 @@ export default function FloatingActionButton() {
       </button>
     </div>
   );
-};
+}
