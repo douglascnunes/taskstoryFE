@@ -323,24 +323,21 @@ function activityReducer(state, action) {
     };
   }
 
+
   if (action.type === "SET_TASK_STEP_DESCRIPTION") {
-    const { index, description } = action.payload;
+    const { id, description } = action.payload;
 
-    // Segurança contra índice inválido
-    if (index < 0 || index >= state.task.steps.length) {
-      return state;
-    }
+    const prevStep = state.task.steps.find(step => step.id === id) || {};
 
-    const prevStep = state.task.steps[index];
-
-    const updatedStep = {
-      ...prevStep,
-      description,
-    };
-
-    const updatedSteps = state.task.steps.map((step, i) =>
-      i === index ? updatedStep : step
-    );
+    const updatedSteps = state.task.steps.map(step => {
+      if (step.id === id) {
+        return {
+          ...step,
+          description: description,
+        };
+      }
+      return step;
+    });
 
     return {
       ...state,
@@ -350,8 +347,7 @@ function activityReducer(state, action) {
         steps: updatedSteps,
       },
     };
-  }
-
+  };
 
 
   if (action.type === 'SET_TASK_FINAL_DATE') {
@@ -517,8 +513,8 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'MOVE_TASK_STEP_DOWN', payload: index });
   };
 
-  function handleSetTaskStepDescription(index, newDescription) {
-    activityDispatch({ type: "SET_TASK_STEP_DESCRIPTION", payload: { index, description: newDescription } });
+  function handleSetTaskStepDescription(id, newDescription) {
+    activityDispatch({ type: "SET_TASK_STEP_DESCRIPTION", payload: { id: id, description: newDescription } });
   }
 
   function handleToggleStepCompletion(stepId) {

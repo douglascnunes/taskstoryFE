@@ -1,0 +1,16 @@
+.statusContainer {
+  background-color: #dddddd;
+  height: 1.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  align-content: center;
+  box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
+  border: 0.1rem solid #bbbbbb;
+}
+
+.statusContainer p {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #999999;
+  text-align: center;
+}

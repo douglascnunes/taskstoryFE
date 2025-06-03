@@ -13,6 +13,23 @@ export function cleanTask(task) {
   return cleanedTask;
 };
 
+
+export function cleanTaskInstance(task) {
+  const cleanedInstance = {};
+  for (const [key, value] of Object.entries(task)) {
+    const hasLength = typeof value === 'string' || Array.isArray(value);
+    if (
+      value !== null &&
+      value !== undefined &&
+      (hasLength ? value.length > 0 : true)
+    ) {
+      cleanedInstance[key] = value;
+    };
+  };
+  return cleanedInstance;
+};
+
+
 export function isTaskTimingValid(task) {
   const hasSomeTiming = task.endPeriod || task.frequenceIntervalDays || task.frequenceWeeklyDays;
   const isNotMixingFrequencies = (task.frequenceIntervalDays == true && task.frequenceWeeklyDays == true);

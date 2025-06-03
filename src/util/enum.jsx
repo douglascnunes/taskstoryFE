@@ -15,20 +15,34 @@ export const STATUS = [
 
 // Label_text, Tag_Color, Label_Color, Card_Color
 export const CONDICTION = {
-  REFERENCE: ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9'],
-  INCUBATION: ['Incubação', '#d9cabf', '#8f6e56'],
-  TODO: ['A Fazer', '#f5e0a3', '#635836', '#f4ebbe'],
-  TODO_LATE: ['A fazer (Atrasado)', '#f5b8a3', '#cf4517', '#eccfc6'],
-  WAITING: ['Esperando', '#bbbbbb', '#888888'],
-  WAITING_LATE: ['Esperando (Atrasado)', '#bbbbbb', '#75b6d7'],
-  DOING: ['Fazendo', '#a3daf5', '#365463', '#bee2f4'],
-  DOING_LATE: ['Fazendo (Atrasado)', '#a3b1f5', '#363e63', '#a3b1f5'],
-  DONE: ['Concluído', '#a3f5b1', '#36633e', '#bef4c7'],
-  DONE_LATE: ['Concluído (Atrasado)', '#bbbbbb', '#888888', '#75bd81'],
-  PAUSED: ['Pausado', '#bbbbbb', '#888888'],
-  PAUSED_LATE: ['Pausado (Atrasado)', '#bbbbbb', '#888888'],
-  DELETED: ['Deletado', '#bbbbbb', '#888888'],
-  TRASH: ['Excluído', '#bbbbbb', '#888888', '#808080'],
+  REFERENCE:
+    ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9'],
+  INCUBATION:
+    ['Incubação', '#d9cabf', '#8f6e56'],
+  TODO:
+    ['A Fazer', '#f5e0a3', '#635836', '#f4ebbe'],
+  TODO_LATE:
+    ['A fazer com atraso', '#f5b8a3', '#cf4517', '#eccfc6'],
+  WAITING:
+    ['Esperando', '#bbbbbb', '#888888'],
+  WAITING_LATE:
+    ['Esperando com atraso', '#bbbbbb', '#75b6d7'],
+  DOING:
+    ['Fazendo', '#a3daf5', '#365463', '#bee2f4'],
+  DOING_LATE:
+    ['Fazendo com atraso', '#8c9df2', '#363e63', '#bac4f7'],
+  DONE:
+    ['Concluído', '#a3f5b1', '#36633e', '#99e6a6'],
+  DONE_LATE:
+    ['Concluído com atraso', '#b3ccb7', '#36633e', '#94b89a'],
+  PAUSED:
+    ['Pausado', '#bbbbbb', '#888888'],
+  PAUSED_LATE:
+    ['Pausado com atraso', '#bbbbbb', '#888888'],
+  DELETED:
+    ['Deletado', '#bbbbbb', '#888888'],
+  TRASH:
+    ['Excluído', '#bbbbbb', '#888888', '#808080'],
 };
 
 

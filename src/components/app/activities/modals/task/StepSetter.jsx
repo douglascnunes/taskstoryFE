@@ -5,6 +5,7 @@ import Step from "./Step";
 import { AppContext } from "../../../../../store/app-context";
 import { useMutation } from "@tanstack/react-query";
 import { upsertSteps } from "../../../../../api/task";
+import { queryClient } from "../../../../../api/queryClient";
 
 
 function addTaskStepHelper(prevSteps, description) {
@@ -18,16 +19,13 @@ function removeTaskStepHelper(prevSteps, index) {
 };
 
 export default function StepSetter() {
-  const [edition, setEdition] = useState({
-    isEditing: false,
-    description: "",
-  });
-
+  const [edition, setEdition] = useState({ isEditing: false, description: "" });
   const {
     task,
     setTaskSteps,
     addTaskStep,
-    removeTaskStep
+    removeTaskStep,
+    toggleStepCompletion,
   } = useContext(ModalContext);
   const { mode } = useContext(AppContext);
   const { steps } = task;
@@ -37,6 +35,7 @@ export default function StepSetter() {
     mutationFn: upsertSteps,
     onSuccess: (data) => {
       setTaskSteps(data.steps)
+      queryClient.invalidateQueries(['activities', 'overview'])
     },
   });
 
@@ -62,8 +61,10 @@ export default function StepSetter() {
     setEdition({ description: "", isEditing: false });
   };
 
-  function handleRemoveStep(index) {
+  function handleRemoveStep(index, id) {
     removeTaskStep(index);
+    toggleStepCompletion(id)
+    
 
     if (mode === 'UPDATE' && task.id) {
       mutate({ id: task.id, steps: removeTaskStepHelper(steps, index) });

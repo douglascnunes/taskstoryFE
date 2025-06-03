@@ -14,6 +14,7 @@ import { isTaskTimingValid, preProcessTask } from "../../../../../util/api-helpe
 import StepSetter from "./StepSetter";
 import CondictionTag from "../CondictionTag";
 import { cleanObject } from "../../../../../util/api-helpers/activity"
+import { ACTIVITY_TYPE } from "../../../../../util/enum";
 
 
 
@@ -32,9 +33,7 @@ export default function TaskModal({ ref }) {
 
   const { mutate: mutateCreateTask } = useMutation({
     mutationFn: createTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['activities', 'overview']);
-    }
+    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview'])
   });
 
   const { mutate: mutateUpdateTask } = useMutation({
@@ -44,17 +43,17 @@ export default function TaskModal({ ref }) {
 
   const { mutate: mutateUpsertSteps } = useMutation({
     mutationFn: upsertSteps,
-    onSuccess: () => queryClient.invalidateQueries(['activities']),
+    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
   });
 
   const { mutate: createInstance } = useMutation({
     mutationFn: createTaskInstance,
-    onSuccess: () => queryClient.invalidateQueries(['activities']),
+    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
   });
 
   const { mutate: updateInstance } = useMutation({
     mutationFn: updateTaskInstance,
-    onSuccess: () => queryClient.invalidateQueries(['activities']),
+    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
   });
 
   useImperativeHandle(ref, () => {
@@ -74,9 +73,9 @@ export default function TaskModal({ ref }) {
         else if (isInstanceChange === true) {
           updateInstance({ taskId: task.id, instance: cleanObject(task.instance), instanceId: task.instance.id });
         };
-
+        // console.log("task", task);
         const [createdAt, cleanedTask, keywordsId] = preProcessTask(task, keywords);
-
+        // console.log("cleanedTask", cleanedTask);
         if (isActivityChange && id &&
           (title !== "" || description !== "" || importance || difficulty || keywords.length > 0 || cleanedTask)
           && isTaskTimingValid(task)) {
@@ -105,10 +104,8 @@ export default function TaskModal({ ref }) {
         />
         <div className={modalStyles.information}>
           <div className={modalStyles.modalType}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
-            </svg>
-            <p>Tarefa</p>
+            {ACTIVITY_TYPE['TASK'].icon}
+            <p>{ACTIVITY_TYPE['TASK'].label}</p>
           </div>
           <CondictionTag />
         </div>

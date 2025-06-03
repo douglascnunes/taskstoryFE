@@ -45,6 +45,7 @@
   background-color: transparent;
   cursor: text;
   box-shadow: none;
+  width: 100%;
 }
 
 .description:focus {

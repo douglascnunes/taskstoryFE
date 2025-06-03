@@ -11,6 +11,8 @@ import { getActivity } from '../../../../api/activities';
 import { getTask } from '../../../../api/task';
 import { ACTIVITY_TYPE, CONDICTION } from '../../../../util/enum.jsx';
 import PriorityTag from '../PriorityTag';
+import CondictionTag from './CondictionTag.jsx';
+import TrashButton from './TrashButton.jsx';
 
 
 const activityConfigMap = {
@@ -18,6 +20,7 @@ const activityConfigMap = {
     component: (activity) => <TaskCard task={activity.task} />,
     getFinalDate: (activity) => new Date(activity.task.instance.finalDate),
     getCondiction: (activity) => activity.task.instance.condiction,
+    getTask: (activity) => activity.task,
     queryFn: getTask,
     getParams: ({ signal, activity }) => ({
       signal,
@@ -78,6 +81,17 @@ export default function PanelCard({ activity }) {
     >
       <div className={styles.header}>
         <h3>{activity.title}</h3>
+        <div className={styles.iconLabel}>
+          {ACTIVITY_TYPE[activity.type].icon}
+          <p className={styles.type}>
+            {ACTIVITY_TYPE[activity.type].label}
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.status}>
+        <CondictionTag task={config.getTask(activity)} />
+        <TrashButton task={config.getTask(activity)} />
         <PriorityTag importance={activity.importance} difficulty={activity.difficulty} />
       </div>
 
@@ -91,12 +105,6 @@ export default function PanelCard({ activity }) {
         ))}
       </div>
       <div className={styles.footer}>
-        <div className={styles.iconLabel}>
-          {ACTIVITY_TYPE[activity.type].icon}
-          <p className={styles.type}>
-            {ACTIVITY_TYPE[activity.type].label}
-          </p>
-        </div>
         {finalDate && (
           <div className={styles.dates}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

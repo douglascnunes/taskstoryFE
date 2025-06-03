@@ -15,7 +15,6 @@ import {
 
 export default function Panel({ activities, mode, startOverviewDate, endOverviewDate }) {
   let activityInstances = generateInstances(activities, startOverviewDate, endOverviewDate);
-
   activityInstances = updateCondiction(activityInstances);
 
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);

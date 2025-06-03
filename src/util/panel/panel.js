@@ -14,7 +14,7 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
       };
     };
   });
-
+  
   return activityInstances;
 };
 

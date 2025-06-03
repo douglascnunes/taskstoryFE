@@ -20,8 +20,14 @@ function taskCopy(activity, finalDate) {
   };
 };
 
+
 function structureTask(activity, index) {
   const instance = activity.task.taskInstances[index];
+
+  const StepsId = activity.task.steps.map(step => step.id);
+  const filteredStepsStatus = instance.stepCompletionStatus.filter(status => StepsId.includes(status));
+  instance.stepCompletionStatus = filteredStepsStatus;
+
   const newTask = {
     ...activity,
     task: {
@@ -44,16 +50,26 @@ function structureTask(activity, index) {
 
 export function generateTaskInstances(activity, startOverviewDate, endOverviewDate) {
   const { task, createdAt } = activity;
-  const { taskInstances, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod } = task;
+  const { taskInstances, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod, deletedInstances } = task;
+
 
   if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
-    if (taskInstances.length === 0) {
-      return [taskCopy(activity, new Date(endPeriod))];
-    } else {
-      taskInstances[0].finalDate = new Date(endPeriod);
-      return [structureTask(activity, 0)];
+    let wasDeleted;
+    if (deletedInstances && deletedInstances.length > 0) {
+      wasDeleted = deletedInstances.some(deletedDate => {
+        return compareDatesOnly(new Date(deletedDate), endPeriod) === 0;
+      });
+    };
+    if (!wasDeleted) {
+      if (taskInstances.length === 0) {
+        return [taskCopy(activity, new Date(endPeriod))];
+      }
+      else {
+        taskInstances[0].finalDate = new Date(endPeriod);
+        return [structureTask(activity, 0)];
+      }
     }
-  }
+  };
 
 
   if (frequenceIntervalDays) {
@@ -73,21 +89,28 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 
     while (current <= end) {
       let added = false;
-      if (taskInstances.length > 0) {
-        const index = taskInstances
-          .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
-        if (index !== -1) {
-          activityInstances.push(structureTask(activity, index));
+      let wasDeleted;
+      if (deletedInstances && deletedInstances.length > 0) {
+        wasDeleted = deletedInstances.some(deletedDate => {
+          return compareDatesOnly(new Date(deletedDate), current) === 0;
+        });
+      };
+      if (!wasDeleted) {
+        if (taskInstances.length > 0) {
+          const index = taskInstances
+            .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
+          if (index !== -1) {
+            activityInstances.push(structureTask(activity, index));
+            addedDates.push(current.toDateString());
+            added = true;
+          }
+        }
+
+        if (!added) {
+          activityInstances.push(taskCopy(activity, new Date(current)));
           addedDates.push(current.toDateString());
-          added = true;
         }
       }
-
-      if (!added) {
-        activityInstances.push(taskCopy(activity, new Date(current)));
-        addedDates.push(current.toDateString());
-      }
-
       current.setDate(current.getDate() + frequenceIntervalDays);
     }
 
@@ -112,6 +135,8 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
   if (frequenceWeeklyDays && frequenceWeeklyDays.length > 0) {
     const activityInstances = [];
 
+    const addedDates = [];
+
     const current = new Date(startPeriod || createdAt);
     const overviewStart = new Date(startOverviewDate);
     while (current < overviewStart) {
@@ -123,10 +148,44 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
     const end = taskEnd && taskEnd < overviewEnd ? taskEnd : overviewEnd;
 
     while (current <= end) {
-      if (frequenceWeeklyDays.includes(current.getDay())) {
-        activityInstances.push(taskCopy(activity, new Date(current)));
+      let added = false;
+      let wasDeleted;
+      if (deletedInstances && deletedInstances.length > 0) {
+        wasDeleted = deletedInstances.some(deletedDate => {
+          return compareDatesOnly(new Date(deletedDate), current) === 0;
+        });
+      };
+      if (!wasDeleted && frequenceWeeklyDays.includes(current.getDay())) {
+        if (taskInstances.length > 0) {
+          const index = taskInstances
+            .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
+          if (index !== -1) {
+            activityInstances.push(structureTask(activity, index));
+            addedDates.push(current.toDateString());
+            added = true;
+          }
+        }
+
+        if (!added) {
+          activityInstances.push(taskCopy(activity, new Date(current)));
+          addedDates.push(current.toDateString());
+        }
       }
       current.setDate(current.getDate() + 1);
+    }
+
+    const remaining = taskInstances.filter(instance => {
+      const instanceDate = new Date(instance.finalDate);
+      return !addedDates.includes(instanceDate.toDateString());
+    });
+
+    for (const instance of remaining) {
+      const index = taskInstances.findIndex(i =>
+        compareDatesOnly(new Date(i.finalDate), new Date(instance.finalDate)) === 0
+      );
+      if (index !== -1) {
+        activityInstances.push(structureTask(activity, index));
+      }
     }
 
     return activityInstances;
@@ -137,10 +196,17 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 };
 
 
+
 export function updateTaskCondiction(activity) {
+  // console.log("updateTaskCondiction", activity);
   const today = new Date();
   const { task } = activity;
   const { completedOn, stepCompletionStatus } = task.instance;
+
+  if (completedOn) {
+    if (compareDatesOnly(new Date(completedOn), new Date(task.instance.finalDate)) <= 0) return 'DONE';
+    else return 'DONE_LATE';
+  };
 
   if (compareDatesOnly(new Date(task.instance.finalDate), today) < 0) {
     if (stepCompletionStatus.length > 0) return "DOING_LATE";
