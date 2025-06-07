@@ -15,6 +15,7 @@ import StepSetter from "./StepSetter";
 import CondictionTag from "../CondictionTag";
 import { cleanObject } from "../../../../../util/api-helpers/activity"
 import { ACTIVITY_TYPE } from "../../../../../util/enum";
+import TrashButton from "./TrashButton";
 
 
 
@@ -102,6 +103,7 @@ export default function TaskModal({ ref }) {
           value={title}
           setFunction={setTitle}
         />
+        <TrashButton task={task} />
         <div className={modalStyles.information}>
           <div className={modalStyles.modalType}>
             {ACTIVITY_TYPE['TASK'].icon}

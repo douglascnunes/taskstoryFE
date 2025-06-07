@@ -1,0 +1,18 @@
+.container {
+  /* background-color: hsl(0, 0%, 100%, 0.3); */
+  height: 1.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
+  border: 0.1rem solid #bbbbbb;
+  width: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+
+.container svg {
+  /* width: 2rem; */
+  stroke: #666666;
+  height: 1.2rem;
+}

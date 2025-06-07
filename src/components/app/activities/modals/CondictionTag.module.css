@@ -4,6 +4,11 @@
   width: 6rem;
   border-radius: 0.5rem;
   align-content: center;
+  cursor: pointer;
+}
+
+.statusContainer:hover {
+  filter: brightness(1.2);
 }
 
 .statusContainer p {

@@ -4,27 +4,53 @@ import { CONDICTION } from '../../../../util/enum.jsx';
 import { ModalContext } from '../../../../store/modal-context/modal-context.jsx';
 import { AppContext } from '../../../../store/app-context.jsx';
 import { compareDatesOnly } from '../../../../util/date.js';
+import { useMutation } from '@tanstack/react-query';
+import { createTaskInstance, updateTaskInstance } from '../../../../api/task.js';
+import { queryClient } from '../../../../api/queryClient.js';
+
+
 
 export default function CondictionTag({ divSize }) {
   const { task } = useContext(ModalContext);
   const { mode, type: modalType } = useContext(AppContext);
+  const { instance } = task;
 
   const [condiction, setCondiction] = useState("REFERENCE");
+
+  const { mutate: createInstance } = useMutation({
+    mutationFn: createTaskInstance,
+    onSuccess: () => queryClient.invalidateQueries(['activities']),
+  });
+
+  const { mutate: updateInstance } = useMutation({
+    mutationFn: updateTaskInstance,
+    onSuccess: () => queryClient.invalidateQueries(['activities']),
+  });
+
+  function toggleCompleted(e) {
+    e.stopPropagation()
+    instance.completedOn = instance.completedOn ? undefined : new Date().toISOString();
+
+    if (task.id && !task.instance.id) {
+      createInstance({ taskId: task.id, instance: instance });
+    } else if (task.id) {
+      updateInstance({ taskId: task.id, instance: instance, instanceId: instance.id });
+    }
+  };
 
   useEffect(() => {
     let newCondiction = "REFERENCE";
 
     if (mode === 'CREATE') {
       if (modalType === 'TASK') {
-        const isNoEndPeriod = !task.endPeriod;
-        const isNoInterval = !task.frequenceIntervalDays;
+
         const isNoWeekly = !task.frequenceWeeklyDays || task.frequenceWeeklyDays.length === 0;
 
-        if (isNoEndPeriod && isNoInterval && isNoWeekly) {
+        if (!task.endPeriod && !task.frequenceIntervalDays && (isNoWeekly)) {
           newCondiction = "INCUBATION";
         } else if (task.endPeriod && compareDatesOnly(task.endPeriod, new Date()) < 0) {
           newCondiction = "TODO_LATE";
-        } else if (!isNoEndPeriod || !isNoInterval || !isNoWeekly) {
+        } else if (task.endPeriod || task.frequenceWeeklyDays || !isNoWeekly) {
           newCondiction = "TODO";
         }
       }
@@ -32,12 +58,15 @@ export default function CondictionTag({ divSize }) {
       if (modalType === 'TASK') {
         const isLate = compareDatesOnly(new Date(task.instance.finalDate), new Date()) < 0;
         const isDoing = task.instance.stepCompletionStatus.length > 0;
+        const isDone = !!task.instance.completedOn;
 
         if (isLate) {
-          if (isDoing) newCondiction = "DOING_LATE";
+          if (isDone) newCondiction = "DONE_LATE";
+          else if (isDoing) newCondiction = "DOING_LATE";
           else newCondiction = "TODO_LATE";
         } else {
-          if (isDoing) newCondiction = "DOING";
+          if (isDone) newCondiction = "DONE";
+          else if (isDoing) newCondiction = "DOING";
           else newCondiction = "TODO";
         }
       }
@@ -52,6 +81,7 @@ export default function CondictionTag({ divSize }) {
     task.frequenceWeeklyDays,
     task.instance?.condiction,
     task.instance.stepCompletionStatus,
+    task.instance?.completedOn
   ]);
 
   const [label, bgColor = "#ccc", textColor = "#333", fontSize = "1rem"] = CONDICTION[condiction] ?? ["Indefinido", "#eee", "#000", "1rem"];
@@ -59,6 +89,7 @@ export default function CondictionTag({ divSize }) {
   return (
     <div
       className={styles.statusContainer}
+      onClick={(e) => toggleCompleted(e)}
       style={{
         backgroundColor: bgColor,
         fontSize,
