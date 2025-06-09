@@ -11,6 +11,11 @@
   filter: brightness(1.2);
 }
 
+.statusContainer:disabled {
+  filter: brightness(0.5);
+  cursor: not-allowed;
+}
+
 .statusContainer p {
   font-weight: 700;
   color: #999999;

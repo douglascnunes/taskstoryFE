@@ -11,15 +11,18 @@ import { queryClient } from '../../../../api/queryClient.js';
 
 
 export default function CondictionTag({ divSize }) {
-  const { task } = useContext(ModalContext);
+  const { id, title, description, importance, difficulty, keywords, type, task, loader } = useContext(ModalContext);
   const { mode, type: modalType } = useContext(AppContext);
   const { instance } = task;
 
   const [condiction, setCondiction] = useState("REFERENCE");
 
-  const { mutate: createInstance } = useMutation({
+  const { isPending, mutate: createInstance } = useMutation({
     mutationFn: createTaskInstance,
-    onSuccess: () => queryClient.invalidateQueries(['activities']),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['activities'])
+      loader({id, title, description, importance, difficulty, keywords, type, task}, data.instance);
+    },
   });
 
   const { mutate: updateInstance } = useMutation({
@@ -87,9 +90,10 @@ export default function CondictionTag({ divSize }) {
   const [label, bgColor = "#ccc", textColor = "#333", fontSize = "1rem"] = CONDICTION[condiction] ?? ["Indefinido", "#eee", "#000", "1rem"];
 
   return (
-    <div
+    <button
       className={styles.statusContainer}
       onClick={(e) => toggleCompleted(e)}
+      disabled={isPending}
       style={{
         backgroundColor: bgColor,
         fontSize,
@@ -98,6 +102,6 @@ export default function CondictionTag({ divSize }) {
       }}
     >
       <p style={{ color: textColor }}>{label}</p>
-    </div>
+    </button>
   );
 }

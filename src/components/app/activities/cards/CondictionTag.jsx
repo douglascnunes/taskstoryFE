@@ -9,12 +9,12 @@ import { useMutation } from '@tanstack/react-query';
 export default function CondictionTag({ task }) {
   const { instance } = task;
 
-  const { mutate: createInstance } = useMutation({
+  const { isPending: createPending, mutate: createInstance } = useMutation({
     mutationFn: createTaskInstance,
     onSuccess: () => queryClient.invalidateQueries(['activities']),
   });
 
-  const { mutate: updateInstance } = useMutation({
+  const { isPending: updatePending, mutate: updateInstance } = useMutation({
     mutationFn: updateTaskInstance,
     onSuccess: () => queryClient.invalidateQueries(['activities']),
   });
@@ -22,7 +22,6 @@ export default function CondictionTag({ task }) {
   function toggleCompleted(e) {
     e.stopPropagation()
     instance.completedOn = instance.completedOn ? undefined : new Date().toISOString();
-    console.log('instance.completedOn', instance.completedOn);
 
     if (task.id && !task.instance.id) {
       createInstance({ taskId: task.id, instance: instance });
@@ -34,16 +33,17 @@ export default function CondictionTag({ task }) {
   const [label, bgColor = "#ccc", textColor = "#333", fontSize = "1rem"] = CONDICTION[instance.condiction] ?? ["Indefinido", "#eee", "#000", "1rem"];
 
   return (
-    <div
+    <button
       className={styles.statusContainer}
       style={{
         backgroundColor: bgColor,
         fontSize,
         color: textColor,
       }}
+      disabled={createPending || updatePending}
       onClick={(e) => toggleCompleted(e)}
     >
       <p style={{ color: textColor }}>{label}</p>
-    </div>
+    </button>
   );
 }

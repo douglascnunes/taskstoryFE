@@ -22,6 +22,7 @@ export async function action({ request }) {
     email: data.get('email'),
     birthdate: data.get('birthdate'),
     password: data.get('password'),
+    avatar: data.get('avatar'),
     confirmPassword: data.get('confirmPassword')
   }
 

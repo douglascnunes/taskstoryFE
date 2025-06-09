@@ -46,14 +46,12 @@ export function checkAuthLoader() {
 
 export function checkProcrastinationType() {
   const procrastinationType = localStorage.getItem('procrastinationType');
+  const validKeys = Object.keys(PROCRASTINATION_TYPE);
 
-  if (!procrastinationType ||
-    procrastinationType === PROCRASTINATION_TYPE[0] ||
-    !PROCRASTINATION_TYPE.includes(procrastinationType)
-  ) {
+  if (!procrastinationType || procrastinationType === 'NOTDEFINED' || !validKeys.includes(procrastinationType)) {
     throw redirect('/onboarding');
-  };
-};
+  }
+}
 
 export function authenticateStorage({ token, procrastinationType }) {
   localStorage.setItem('token', token);

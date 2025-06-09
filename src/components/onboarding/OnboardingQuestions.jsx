@@ -8,14 +8,15 @@ import { OnboardingContext } from "../../store/onboarding-context";
 function OnboardingQuestion() {
   const { answers } = useContext(OnboardingContext);
 
-  const { data: questions } = useQuery({
+  const { isPending, data: questions } = useQuery({
     queryKey: ['questions'],
     queryFn: ({ signal }) => fetchQuestions({ signal })
   });
 
   return (
     <div className="container">
-      {questions.map(question => {
+      {isPending && <p>Carregando perguntas...</p>}
+      {!isPending && questions && questions.map(question => {
         const idx = questions.indexOf(question);
         return (
           <Question 

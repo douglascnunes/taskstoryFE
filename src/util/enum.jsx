@@ -1,10 +1,10 @@
-export const PROCRASTINATION_TYPE = [
-  'NOTDEFINED',
-  'SUPERPROCRASTINATOR',
-  'PERFECTIONIST',
-  'DISORGANIZED',
-  'ANTIPROCRASTINATOR',
-];
+export const PROCRASTINATION_TYPE = {
+  NOTDEFINED: ['Não Definido'],
+  SUPERPROCRASTINATOR: ['Superprocrastinador'],
+  PERFECTIONIST: ['Perfeccionista'],
+  DISORGANIZED: ['Desorganizado'],
+  ANTIPROCRASTINATOR: ['Antiprocrastinador'],
+}
 
 export const STATUS = [
   'ACTIVE',  // Some models have this first value as default = [0]
@@ -121,3 +121,19 @@ export const DAYS_OF_WEEK = [
   { label: "Sex", value: 5 },
   { label: "Sáb", value: 6 },
 ];
+
+
+// [ Perfil_300x300 ]
+export const AVATAR = {
+  WARRIOR: ['warrior.png'],
+  WIZARD: ['wizard.png'],
+  ARCHER: ['archer.png'],
+  THIEF: ['thief.png'],
+  PIRATE: ['pirate.png'],
+  BLUE_SNAIL: ['blue_snail.png'],
+  ORANGE_MUSHROOM: ['orange_mushroom.png'],
+  SLIME: ['slime.png'],
+  PIG: ['pig.png'],
+}
+
+export const IMAGEM_PERFIL_DEFAULT = ['default.png'];

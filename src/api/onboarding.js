@@ -9,7 +9,7 @@ export async function fetchQuestions({ signal }) {
 
   const { questions } = await response.json();
 
-  return questions.default;
+  return questions;
 };
 
 export async function fetchAreasOfLife({ signal }) {

@@ -1,0 +1,43 @@
+.container {
+  width: 100%;
+  max-width: 15rem;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;;
+  margin-bottom: 0.2rem;
+  color: #333;
+}
+
+.procrastinationType {
+  margin-left: 0.5rem;
+}
+
+.progressBar {
+  height: 0.8rem;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.level {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #666;
+}
+
+.procrastinationType{
+  font-size: 0.8rem;
+  font-weight: 500;;
+  color: #999;
+  font-style: italic;
+}

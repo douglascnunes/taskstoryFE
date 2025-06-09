@@ -2,9 +2,11 @@ import { createContext, useReducer } from "react";
 
 
 export const AppContext = createContext({
+  user: null,
   isOpenModal: null,
   mode: null,
   type: null,
+  loadUser: () => { },
   openModal: () => { },
   closeModal: () => { },
   setMode: () => { },
@@ -12,6 +14,10 @@ export const AppContext = createContext({
 
 
 function appReducer(state, action) {
+  if (action.type === 'LOAD_USER') {
+    return { ...state, user: action.payload };
+  };
+
   if (action.type === 'OPEN_MODAL') {
     return {
       ...state,
@@ -39,12 +45,17 @@ function appReducer(state, action) {
 
 export default function AppContextProvider({ children }) {
   const initialState = {
+    user: null,
     isOpenModal: false,
     mode: null,
     type: null,
   };
 
   const [appState, appDispatch] = useReducer(appReducer, initialState);
+
+  function handleLoadUser(user) {
+    appDispatch({ type: 'LOAD_USER', payload: user });
+  };
 
   function handleOpenModal(mode, type) {
     appDispatch({ type: 'OPEN_MODAL', payload: { mode, type } });
@@ -60,9 +71,11 @@ export default function AppContextProvider({ children }) {
 
 
   const ctxValue = {
+    user: appState.user,
     isOpenModal: appState.isOpenModal,
     mode: appState.mode,
     type: appState.type,
+    loadUser: handleLoadUser,
     openModal: handleOpenModal,
     closeModal: handleCloseModal,
     setMode: handleSetMode,

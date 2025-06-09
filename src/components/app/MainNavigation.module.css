@@ -50,3 +50,22 @@
 button {
   margin: 0;
 }
+
+/* PERFIL AREA */
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.profile:hover {
+  filter: brightness(1.1);
+}
+
+.profile img {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 20%;
+}

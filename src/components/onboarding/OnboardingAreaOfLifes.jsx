@@ -14,7 +14,7 @@ function OnboardingAreaOfLife() {
     queryKey: ['areasoflife'],
     queryFn: ({ signal }) => fetchAreasOfLife({ signal })
   })
-
+  console.log(areasOfLife);
 
   return (
     <div>
