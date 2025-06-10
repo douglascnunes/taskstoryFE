@@ -202,7 +202,7 @@ function activityReducer(state, action) {
       isActivityChange: hasChanged(days, updated),
       task: {
         ...state.task,
-        frequenceWeeklyDays: action.payload ? updated : [],
+        frequenceWeeklyDays: updated,
       }
     };
   };
@@ -325,19 +325,36 @@ function activityReducer(state, action) {
 
 
   if (action.type === "SET_TASK_STEP_DESCRIPTION") {
-    const { id, description } = action.payload;
+    const { mode, identifier, description } = action.payload;
 
-    const prevStep = state.task.steps.find(step => step.id === id) || {};
+    const prevStep = state.task.steps.find(step =>
+      mode === 'index' ? false : step.id === identifier
+    ) || {};
 
-    const updatedSteps = state.task.steps.map(step => {
-      if (step.id === id) {
-        return {
-          ...step,
-          description: description,
-        };
-      }
-      return step;
-    });
+    let updatedSteps = [];
+
+    if (mode === 'index') {
+      const index = identifier;
+      updatedSteps = state.task.steps.map((step, idx) => {
+        if (idx === index) {
+          return {
+            ...step,
+            description: description,
+          };
+        }
+        return step;
+      });
+    } else {
+      updatedSteps = state.task.steps.map(step => {
+        if (step.id === identifier) {
+          return {
+            ...step,
+            description: description,
+          };
+        }
+        return step;
+      });
+    }
 
     return {
       ...state,
@@ -348,6 +365,7 @@ function activityReducer(state, action) {
       },
     };
   };
+
 
 
   if (action.type === 'SET_TASK_FINAL_DATE') {
@@ -513,8 +531,8 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'MOVE_TASK_STEP_DOWN', payload: index });
   };
 
-  function handleSetTaskStepDescription(id, newDescription) {
-    activityDispatch({ type: "SET_TASK_STEP_DESCRIPTION", payload: { id: id, description: newDescription } });
+  function handleSetTaskStepDescription(mode, identifier, newDescription) {
+    activityDispatch({ type: "SET_TASK_STEP_DESCRIPTION", payload: { mode: mode, identifier: identifier, description: newDescription } });
   }
 
   function handleToggleStepCompletion(stepId) {

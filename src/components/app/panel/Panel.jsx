@@ -8,6 +8,7 @@ import {
   filterTodayActivities,
   filterWeekActivities,
   generateInstances,
+  orderActivities,
   updateCondiction,
 } from "../../../util/panel/panel";
 
@@ -16,6 +17,9 @@ import {
 export default function Panel({ activities, mode, startOverviewDate, endOverviewDate }) {
   let activityInstances = generateInstances(activities, startOverviewDate, endOverviewDate);
   activityInstances = updateCondiction(activityInstances);
+
+  // let [activitiesOrder, remainingOrderActivities] = orderActivities(activityInstances);
+  // activityInstances = remainingOrderActivities;
 
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);
   activityInstances = remainingLateActivities;

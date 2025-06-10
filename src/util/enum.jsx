@@ -13,36 +13,36 @@ export const STATUS = [
   'TRASH',
 ];
 
-// Label_text, Tag_Color, Label_Color, Card_Color
+// LabelText, TagColor, LabelColor, CardColor, OrderValue
 export const CONDICTION = {
   REFERENCE:
-    ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9'],
+    ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9', 0],
   INCUBATION:
-    ['Incubação', '#d9cabf', '#8f6e56'],
+    ['Incubação', '#d9cabf', '#8f6e56', 0],
   TODO:
-    ['A Fazer', '#f5e0a3', '#635836', '#f4ebbe'],
+    ['A Fazer', '#f5e0a3', '#635836', '#f4ebbe', 3],
   TODO_LATE:
-    ['A fazer com atraso', '#f5b8a3', '#cf4517', '#eccfc6'],
+    ['A fazer com atraso', '#f5b8a3', '#cf4517', '#eccfc6', 6],
   WAITING:
-    ['Esperando', '#bbbbbb', '#888888'],
+    ['Esperando', '#bbbbbb', '#888888', '#d0d0d0', 0],
   WAITING_LATE:
-    ['Esperando com atraso', '#bbbbbb', '#75b6d7'],
+    ['Esperando com atraso', '#bbbbbb', '#75b6d7', '#d0d0d0', 0],
   DOING:
-    ['Fazendo', '#a3daf5', '#365463', '#bee2f4'],
+    ['Fazendo', '#a3daf5', '#365463', '#bee2f4', 5],
   DOING_LATE:
-    ['Fazendo com atraso', '#8c9df2', '#363e63', '#bac4f7'],
+    ['Fazendo com atraso', '#8c9df2', '#363e63', '#bac4f7', 7],
   DONE:
-    ['Concluído', '#a3f5b1', '#36633e', '#99e6a6'],
+    ['Concluído', '#a3f5b1', '#36633e', '#99e6a6', 1],
   DONE_LATE:
-    ['Concluído com atraso', '#b3ccb7', '#36633e', '#94b89a'],
+    ['Concluído com atraso', '#b3ccb7', '#36633e', '#94b89a', 2],
   PAUSED:
-    ['Pausado', '#bbbbbb', '#888888'],
+    ['Pausado', '#bbbbbb', '#888888', '#d0d0d0', 0],
   PAUSED_LATE:
-    ['Pausado com atraso', '#bbbbbb', '#888888'],
+    ['Pausado com atraso', '#bbbbbb', '#888888', '#d0d0d0', 0],
   DELETED:
-    ['Deletado', '#bbbbbb', '#888888'],
+    ['Deletado', '#bbbbbb', '#888888', '#d0d0d0', 0],
   TRASH:
-    ['Excluído', '#bbbbbb', '#888888', '#808080'],
+    ['Excluído', '#bbbbbb', '#888888', '#808080', 0],
 };
 
 
@@ -53,6 +53,7 @@ export const SECTION_NAMES = [
   'HOJE',
   'PROXIMOS 7 DIAS',
 ];
+
 
 export const ACTIVITY_TYPE = {
   ACTIVITY: {
@@ -96,14 +97,14 @@ export const DIFFICULTY_VALUES = {
   HIGH: ['Difícil', 3],
 };
 
-// Label, MinRange, MaxRange, divColor, labelColor
+// Label, MinRange, MaxRange, divColor, labelColor, OrderValue
 export const PRIORITY = {
-  MINIMAL: ['Mínima', 1, 1.5, "#b34db3", "#ffccff"],
-  LOW: ['Baixa', 1.5, 2, "#5c85d6", "#142952"],
-  MEDIUM: ['Média', 2, 2.5, "#5cd685", "#145229"],
-  HIGH: ['Alta', 2.5, 3, "#d6c25c", "#524714"],
-  MAXIMUM: ['Máxima', 3, 3.5, "#d65c5c", "#521414"],
-  URGENT: ['Urgente', 999, 999, "#1a1a1a", "#cccccc"],
+  MINIMAL: ['Mínima', 1, 1.5, "#b34db3", "#ffccff", 1],
+  LOW: ['Baixa', 1.5, 2, "#5c85d6", "#142952", 2],
+  MEDIUM: ['Média', 2, 2.5, "#5cd685", "#145229", 3],
+  HIGH: ['Alta', 2.5, 3, "#d6c25c", "#524714", 4],
+  MAXIMUM: ['Máxima', 3, 3.5, "#d65c5c", "#521414", 5],
+  URGENT: ['Urgente', 999, 999, "#1a1a1a", "#cccccc", 6],
 };
 
 export const MONTHS_NAME = [

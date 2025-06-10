@@ -14,9 +14,27 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
       };
     };
   });
-  
+
   return activityInstances;
 };
+
+
+
+export function orderActivities(activityInstances) {
+  activityInstances.map(activity => {
+    let orderValue = 0;
+
+    const importanceValue = IMPORTANCE_VALUES[activity.importance]?.[1];
+    const difficultyValue = DIFFICULTY_VALUES[activity.difficulty]?.[1];
+
+    if (importanceValue && difficultyValue) {
+      const priorityValue = (importanceValue + difficultyValue) / 2;
+      const foundPriority = Object.entries(PRIORITY).find(
+        ([, [label, min, max]]) => priorityValue >= min && priorityValue < max
+      );
+    }
+  })
+}
 
 
 

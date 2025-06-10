@@ -24,7 +24,8 @@ export default function Step({ step, removeTaskStep }) {
   };
 
   function handleDescriptionChange(value) {
-    setTaskStepDescription(step.id, value);
+    if (!step.id) setTaskStepDescription('index', step.index, value);
+    else setTaskStepDescription('id', step.id, value);
   };
 
   return (
