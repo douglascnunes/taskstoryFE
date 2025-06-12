@@ -15,7 +15,7 @@ export const ModalContext = createContext({
   description: null,
   importance: null,
   difficulty: null,
-  keywords: [],
+  keywords: null,
   type: null,
   task: {
     id: null,
@@ -23,14 +23,13 @@ export const ModalContext = createContext({
     endPeriod: null,
     frequenceIntervalDays: null,
     frequenceWeeklyDays: null,
-    steps: [],
+    steps: null,
     instance: {
       id: null,
       finalDate: null,
       completedOn: null,
       status: null,
       stepCompletionStatus: null,
-      // priorityEvolved: null,
     }
   },
   isActivityChange: false,
@@ -55,6 +54,8 @@ export const ModalContext = createContext({
   setTaskStepDescription: () => { },
   setFinalDate: () => { },
   toggleStepCompletion: () => { },
+  setIsActivityChange: () => { },
+  setIsInstanceChange: () => { },
   reset: () => { },
 });
 
@@ -94,17 +95,24 @@ function activityReducer(state, action) {
 
 
   if (action.type === 'TOGGLE_KEYWORDS') {
-    const exists = state.keywords.some(k => k.id === action.payload.id);
+    const currentKeywords = state.keywords ?? []; // garante que seja um array
+    const exists = currentKeywords.some(k => k.id === action.payload.id);
+
+    if (exists && currentKeywords.length === 1) {
+      return state;
+    }
+
     const newKeywords = exists
-      ? state.keywords.filter(k => k.id !== action.payload.id)
-      : [...state.keywords, action.payload];
+      ? currentKeywords.filter(k => k.id !== action.payload.id)
+      : [...currentKeywords, action.payload];
 
     return {
       ...state,
-      isActivityChange: JSON.stringify(state.keywords) !== JSON.stringify(newKeywords) || state.isActivityChange,
+      isActivityChange: JSON.stringify(currentKeywords) !== JSON.stringify(newKeywords) || state.isActivityChange,
       keywords: newKeywords
     };
   }
+
 
 
   if (action.type === 'SET_TYPE') {
@@ -124,11 +132,11 @@ function activityReducer(state, action) {
 
     if (type === 'task') {
       activity.task.instance = activity.task.taskInstances ? activity.task.taskInstances[0] : null;
-      activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : "";
-      activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : "";
-      activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? "";
-      activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? [];
-      activity.task.steps = activity.task.steps ?? [];
+      activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : null;
+      activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : null;
+      activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? null;
+      activity.task.frequenceWeeklyDays = activity.task.frequenceWeeklyDays ?? null;
+      activity.task.steps = activity.task.steps ?? null;
       activity.task.instance = activity.task.instance ?? instance;
       activity.task.instance.condiction = updateTaskCondiction(activity);
     };
@@ -157,7 +165,7 @@ function activityReducer(state, action) {
   };
 
   if (action.type === 'SET_TASK_START_PERIOD') {
-    const newValue = action.payload !== "" ? yyyymmddToDate(action.payload) : "";
+    const newValue = action.payload ? yyyymmddToDate(action.payload) : null;
     return {
       ...state,
       isActivityChange: hasChanged(state.task.startPeriod, newValue),
@@ -169,7 +177,7 @@ function activityReducer(state, action) {
   }
 
   if (action.type === 'SET_TASK_END_PERIOD') {
-    const newValue = action.payload !== "" ? yyyymmddToDate(action.payload) : "";
+    const newValue = action.payload ? yyyymmddToDate(action.payload) : null;
     return {
       ...state,
       isActivityChange: hasChanged(state.task.endPeriod, newValue),
@@ -192,6 +200,18 @@ function activityReducer(state, action) {
   }
 
   if (action.type === 'SET_TASK_FREQUENCE_WEEKLY_DAYS') {
+    if (action.payload === null) {
+      const frequenceWeeklyDays = state.task.frequenceWeeklyDays;
+      return {
+        ...state,
+        isActivityChange: hasChanged(frequenceWeeklyDays, []),
+        task: {
+          ...state.task,
+          frequenceWeeklyDays: [],
+        }
+      };
+    }
+
     const days = state.task.frequenceWeeklyDays || [];
     const updated = days.includes(action.payload)
       ? days.filter(d => d !== action.payload)
@@ -403,30 +423,37 @@ function activityReducer(state, action) {
     };
   };
 
+  if (action.type === 'SET_ISACTIVITYCHANGE') {
+    return { ...state, isActivityChange: action.payload, }
+  };
+
+  if (action.type === 'SET_ISINSTANCECHANGE') {
+    return { ...state, isInstanceChange: action.payload, }
+  };
+
 
   if (action.type === 'RESET') {
     return {
       id: null,
-      title: "",
-      description: "",
+      title: null,
+      description: null,
       importance: "MEDIUM",
       difficulty: "MEDIUM",
-      keywords: [],
+      keywords: null,
       type: null,
       task: {
         id: null,
-        startPeriod: "",
-        endPeriod: "",
-        frequenceIntervalDays: "",
-        frequenceWeeklyDays: [],
-        steps: [],
-        updateMode: null,
+        startPeriod: null,
+        endPeriod: null,
+        frequenceIntervalDays: null,
+        frequenceWeeklyDays: null,
+        steps: null,
         instance: {
           id: null,
-          finalDate: "",
-          completedOn: "",
+          finalDate: null,
+          completedOn: null,
           status: null,
-          stepCompletionStatus: [],
+          stepCompletionStatus: null,
         }
       },
       isActivityChange: false,
@@ -436,28 +463,31 @@ function activityReducer(state, action) {
 };
 
 
+
+
+
 export default function ModalContextProvider({ children }) {
   const initialState = {
     id: null,
-    title: "",
-    description: "",
+    title: null,
+    description: null,
     importance: "MEDIUM",
     difficulty: "MEDIUM",
-    keywords: [],
+    keywords: null,
     type: null,
     task: {
       id: null,
-      startPeriod: "",
-      endPeriod: "",
-      frequenceIntervalDays: "",
-      frequenceWeeklyDays: [],
-      steps: [],
+      startPeriod: null,
+      endPeriod: null,
+      frequenceIntervalDays: null,
+      frequenceWeeklyDays: null,
+      steps: null,
       instance: {
         id: null,
-        finalDate: "",
-        completedOn: "",
+        finalDate: null,
+        completedOn: null,
         status: null,
-        stepCompletionStatus: [],
+        stepCompletionStatus: null,
       }
     },
     isActivityChange: false,
@@ -547,6 +577,13 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'LOADER', payload: { activity, instance } })
   };
 
+  function handleSetIsActivityChange(value) {
+    activityDispatch({ type: 'SET_ISACTIVITYCHANGE', payload: value })
+  };
+
+  function handleSetIsInstanceChange(value) {
+    activityDispatch({ type: 'SET_ISINSTANCECHANGE', payload: value })
+  };
 
   function handleReset() {
     activityDispatch({ type: 'RESET' });
@@ -584,6 +621,8 @@ export default function ModalContextProvider({ children }) {
     removeTaskStep: handleRemoveTaskStep,
     setFinalDate: handleSetFinalDate,
     toggleStepCompletion: handleToggleStepCompletion,
+    setIsActivityChange: handleSetIsActivityChange,
+    setIsInstanceChange: handleSetIsInstanceChange,
     reset: handleReset,
   };
 

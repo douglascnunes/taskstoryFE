@@ -21,8 +21,8 @@ export default function Panel({ activities, mode, startOverviewDate, endOverview
   // let [activitiesOrder, remainingOrderActivities] = orderActivities(activityInstances);
   // activityInstances = remainingOrderActivities;
 
-  let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);
-  activityInstances = remainingLateActivities;
+  // let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);
+  // activityInstances = remainingLateActivities;
 
   let [activitiesPriority, remainingPriorityActivities] = filterPriorityActivities(activityInstances);
   activityInstances = remainingPriorityActivities;
@@ -82,7 +82,7 @@ export default function Panel({ activities, mode, startOverviewDate, endOverview
       <>
         <div className={style.panel}>
           {sectionMonthsBefore}
-          <Section activities={activitiesLate} monthName={SECTION_NAMES[0]} year="" />
+          {/* <Section activities={activitiesLate} monthName={SECTION_NAMES[0]} year="" /> */}
           <Section activities={activitiesPriority} monthName={SECTION_NAMES[1]} year="" />
           <Section activities={activitiesToday} monthName={SECTION_NAMES[2]} year="" />
           <Section activities={activitiesWeek} monthName={SECTION_NAMES[3]} year="" />

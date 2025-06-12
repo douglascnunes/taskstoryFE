@@ -19,7 +19,7 @@ export default function DateSetter() {
   let spanContent = "";
 
   const hasInterval = !!task.frequenceIntervalDays;
-  const hasWeekly = task.frequenceWeeklyDays.length > 0;
+  const hasWeekly = (task.frequenceWeeklyDays && task.frequenceWeeklyDays.length > 0);
   const hasEnd = !!task.endPeriod;
 
   if (hasInterval) {

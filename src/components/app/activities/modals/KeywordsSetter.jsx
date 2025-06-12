@@ -36,7 +36,7 @@ export default function KeywordsSetter() {
             keywords.map((keyword) => (
               <KeywordTag key={keyword.id} keyword={keyword} />
             ))}
-          {keywords.length === 0 && (
+          {!keywords || (keywords && keywords.length === 0) && (
             <div className={styles.nokeywords}>
               <p>Atividade sem Palavras-Chave</p>
             </div>

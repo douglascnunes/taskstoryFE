@@ -84,7 +84,7 @@ export default function StepSetter() {
 
   let stepsContent;
 
-  const sortedSteps = [...steps].sort((a, b) => a.index - b.index);
+  const sortedSteps = [...steps ?? []].sort((a, b) => a.index - b.index);
 
   if (steps && steps.length > 0) {
     stepsContent = (

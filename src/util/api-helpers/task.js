@@ -31,17 +31,31 @@ export function cleanTaskInstance(task) {
 
 
 export function isTaskTimingValid(task) {
-  const hasSomeTiming = task.endPeriod || task.frequenceIntervalDays || task.frequenceWeeklyDays;
-  const isNotMixingFrequencies = (task.frequenceIntervalDays == true && task.frequenceWeeklyDays == true);
+  const hasSomeTiming = task.endPeriod || task.frequenceIntervalDays || (task.frequenceWeeklyDays && task.frequenceWeeklyDays.length > 0);
+  const isNotMixingFrequencies = (task.frequenceIntervalDays == true && (task.frequenceWeeklyDays && task.frequenceWeeklyDays.length > 0));
   return hasSomeTiming && !isNotMixingFrequencies;
 };
 
 
 export function preProcessTask(task, keywords) {
-  task.startPeriod = task.startPeriod ? new Date(task.startPeriod) : null;
-  task.endPeriod = task.endPeriod ? new Date(task.endPeriod) : null;
   const createdAt = new Date();
-  const cleanedTask = cleanTask(task);
-  const keywordsId = keywords.map(k => k.id);
-  return [createdAt, cleanedTask, keywordsId];
+  const keywordsId = keywords ? keywords.map(k => k.id) : null;
+
+  if (!task.id) {
+    delete task.id;
+    delete task.instance;
+  }
+
+  if (task.startPeriod) new Date(task.startPeriod)
+  else delete task.startPeriod;
+
+  if (task.endPeriod) new Date(task.endPeriod)
+  else delete task.endPeriod;
+
+  if (!task.frequenceIntervalDays) delete task.frequenceIntervalDays;
+
+  if (!task.steps) delete task.steps;
+
+  if (!task.frequenceWeeklyDays || task.frequenceWeeklyDays.length < 1) delete task.frequenceWeeklyDays;
+  return [createdAt, keywordsId];
 };

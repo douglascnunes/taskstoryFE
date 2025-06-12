@@ -18,7 +18,7 @@ export const CONDICTION = {
   REFERENCE:
     ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9', 0],
   INCUBATION:
-    ['Incubação', '#d9cabf', '#8f6e56', 0],
+    ['Incubação', '#d9cabf', '#8f6e56', '#d9cabf', 0],
   TODO:
     ['A Fazer', '#f5e0a3', '#635836', '#f4ebbe', 3],
   TODO_LATE:

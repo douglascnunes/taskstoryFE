@@ -75,7 +75,7 @@ export default function KeywordsModal({ isOpenModal, closeModal }) {
     if (fetchedKeywords) {
       setRawKeywords(
         fetchedKeywords.filter(kw =>
-          !selectedKeywords.some(sel => sel.id === kw.id)
+          !(selectedKeywords ?? []).some(sel => sel.id === kw.id)
         )
       );
     }
@@ -169,14 +169,16 @@ export default function KeywordsModal({ isOpenModal, closeModal }) {
         </div>
         <h3 className={styles.title}>Palavras-Chave Adicionadas</h3>
         <div className={styles.keywordgrid}>
-          {selectedKeywords.length > 0 ? (
-            selectedKeywords.map((keyword) => {
-              return (
-                <a className={styles.keywordButton} key={keyword.id} onClick={() => toggleKeywords(keyword)}>
-                  <KeywordTag key={keyword.id} keyword={keyword} hoverColor={true} />
-                </a>
-              )
-            })
+          {(selectedKeywords ?? []).length > 0 ? (
+            (selectedKeywords ?? []).map((keyword) => (
+              <a
+                className={styles.keywordButton}
+                key={keyword.id}
+                onClick={() => toggleKeywords(keyword)}
+              >
+                <KeywordTag keyword={keyword} hoverColor={true} />
+              </a>
+            ))
           ) : (
             <div className={styles.nokeywords}>
               <p>Atividade sem Palavras-Chave</p>

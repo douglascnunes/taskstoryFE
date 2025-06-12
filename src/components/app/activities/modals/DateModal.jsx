@@ -7,7 +7,8 @@ import { DAYS_OF_WEEK } from '../../../../util/enum.jsx';
 
 export default function DateModal({ isOpenModal, closeModal }) {
   const { task,
-    setTaskStartPeriod, setTaskEndPeriod, setTaskFrequenceIntervalDays, setTaskFrequenceWeeklyDays
+    setTaskStartPeriod, setTaskEndPeriod, setTaskFrequenceIntervalDays, setTaskFrequenceWeeklyDays,
+    isActivityChange, setIsActivityChange,
   } = useContext(ModalContext);
   const [mode, setMode] = useState(
     (task.frequenceIntervalDays == true || task.frequenceWeeklyDays == true) ? 'MULTI' : 'SINGLE')
@@ -35,7 +36,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
       setTaskFrequenceWeeklyDays(null);
     };
     if (field === "frequenceWeeklyDays") {
-      setTaskFrequenceIntervalDays("");
+      setTaskFrequenceIntervalDays(null);
       setTaskFrequenceWeeklyDays(value);
     };
   };
@@ -44,9 +45,11 @@ export default function DateModal({ isOpenModal, closeModal }) {
     const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
         if (mode === "SINGLE") {
-          setTaskStartPeriod("");
-          setTaskFrequenceIntervalDays("");
+          const save_isActivityChange = isActivityChange
+          setTaskStartPeriod(null);
+          setTaskFrequenceIntervalDays(null);
           setTaskFrequenceWeeklyDays(null);
+          setIsActivityChange(save_isActivityChange);
         };
         closeModal();
       }
@@ -98,7 +101,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
             <input
               type="date"
               id="date"
-              value={dateToYYYYMMDD(task.startPeriod)}
+              value={task.startPeriod ? dateToYYYYMMDD(task.startPeriod) : ""}
               onChange={(e) => handleSetData("startPeriod", e.target.value)}
             />
             <button onClick={() => handleSetData("startPeriod", "")}>Limpar</button>
@@ -113,7 +116,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
             <input
               type="date"
               id="date"
-              value={dateToYYYYMMDD(task.endPeriod)}
+              value={task.endPeriod ? dateToYYYYMMDD(task.endPeriod) : ""}
               onChange={(e) => handleSetData("endPeriod", e.target.value)}
             />
             <button onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
@@ -127,7 +130,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
               type="number"
               min="1"
               placeholder="Ex: 2"
-              value={task.frequenceIntervalDays}
+              value={task.frequenceIntervalDays ? task.frequenceIntervalDays : ""}
               onChange={(e) => handleSetData("frequenceIntervalDays", e.target.value)}
             />
           </div>
