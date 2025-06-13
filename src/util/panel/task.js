@@ -1,10 +1,14 @@
 import { compareDatesOnly, isOnWeek } from "../date";
 import { STATUS } from "../enum.jsx";
+import { calcPriority } from "./activity.js";
 
 
 function taskCopy(activity, finalDate) {
+  const priority = calcPriority(activity);
+
   return {
     ...activity,
+    priority,
     task: {
       ...activity.task,
       instance: {
@@ -13,7 +17,6 @@ function taskCopy(activity, finalDate) {
         condiction: "TODO",
         completedOn: null,
         stepCompletionStatus: [],
-        // priorityEvolved: 0,
         taskId: activity.task.id
       }
     }
@@ -27,9 +30,11 @@ function structureTask(activity, index) {
   const StepsId = activity.task.steps.map(step => step.id);
   const filteredStepsStatus = instance.stepCompletionStatus.filter(status => StepsId.includes(status));
   instance.stepCompletionStatus = filteredStepsStatus;
+  const priority = calcPriority(activity);
 
   const newTask = {
     ...activity,
+    priority,
     task: {
       ...activity.task,
       instance: {
