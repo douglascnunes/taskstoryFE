@@ -1,6 +1,6 @@
 .statusContainer {
   background-color: #dddddd;
-  height: 1.5rem;
+  height: 1.3rem;
   width: 100%;
   border-radius: 0.5rem;
   align-content: center;
@@ -11,8 +11,8 @@
 }
 
 .statusContainer p {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: #999999;
   text-align: center;
 }

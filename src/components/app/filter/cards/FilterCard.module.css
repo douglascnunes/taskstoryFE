@@ -1,0 +1,10 @@
+.container {
+  font-size: 0.8rem;
+  font-weight: 600;
+  align-content: center;
+  height: 1.8rem;
+  width: 6rem;
+  border-radius: 0.4rem;
+  background-color: #555;
+}
+

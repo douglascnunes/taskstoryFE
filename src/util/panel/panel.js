@@ -1,5 +1,5 @@
 import { getYearMonthNumber, isOnMonth } from "../date";
-import { DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY } from "../enum.jsx";
+import { CONDICTION, DIFFICULTY_VALUES, IMPORTANCE_VALUES, MONTHS_NAME, PRIORITY } from "../enum.jsx";
 import { generateTaskInstances, isTaskLate, isTaskOnWeek, isTaskToday, updateTaskCondiction } from "./task";
 
 
@@ -21,20 +21,23 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
 
 
 function orderByPriority(activities) {
-  console.log(activities[0]);
   return activities.sort((a, b) => b.priority[1][5] - a.priority[1][5]);
 }
 
 function orderByCondiction(activities) {
-  return activities.sort((a, b) => b.task.instance.condiction[4] - a.task.instance.condiction[4]);
+  return activities.sort((a, b) => CONDICTION[b.task.instance.condiction][4] - CONDICTION[a.task.instance.condiction][4]);
 }
 
 
 export function orderActivities(activityInstances) {
-  const activitiesByPriority = orderByPriority(activityInstances);
-  const activitiesByCondiction = orderByCondiction(activitiesByPriority);
+  let orderedActivities = [];
 
-  return activitiesByCondiction;
+  if (activityInstances && activityInstances.length > 0) {
+    orderedActivities = orderByPriority(activityInstances);
+    orderedActivities = orderByCondiction(orderedActivities);
+  }
+
+  return orderedActivities;
 }
 
 

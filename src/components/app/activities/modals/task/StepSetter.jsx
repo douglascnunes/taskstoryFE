@@ -133,7 +133,7 @@ export default function StepSetter() {
           autoFocus
         />
         <button
-          className={styles.addStepButton}
+          className={`${styles.addStepButton} button`}
           onClick={handleAddStep}>
           Adicionar
         </button>

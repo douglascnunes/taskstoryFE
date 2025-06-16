@@ -4,39 +4,38 @@
   padding: 0.4rem 0.6rem;
   background-color: #f9f9f9;
   box-shadow: 0 0.3rem 0.4rem rgba(0, 0, 0, 0.2);
-  width: 18rem;
+  width: 100%;
   height: auto;
   cursor: pointer;
 }
 
-.container h3 {
-  font-size: 1rem;
+.title {
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #444444;
-  text-align: left;
+  color: #444;
 }
 
 .description {
   margin: 0;
   font-size: 0.8rem;
-  color: #555555;
+  color: #666;
   text-align: left;
   line-height: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .status {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
 }
 
 .keywords {
@@ -44,27 +43,25 @@
   flex-wrap: wrap;
   width: auto;
   gap: 0.5rem;
-  margin-bottom: 0.4rem;
 }
 
 .dates {
   display: flex;
-  font-size: 0.8rem;
   gap: 0.3rem;
   align-items: center;
   width: auto;
+
 }
 
 .dates p {
   color: #666666;
+  font-size: 0.8rem;
   font-weight: 500;
-  margin-top: 0.1rem;
 }
 
 .dates svg {
-  width: 1rem;
-  height: 1rem;
-  margin-left: auto;
+  width: 0.9rem;
+  height: 0.9rem;
   stroke: #666666;
 }
 
@@ -76,7 +73,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
 .iconLabel {
@@ -87,7 +84,7 @@
 }
 
 .iconLabel p {
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   font-weight: 600;
   color: #666666;
   text-transform: uppercase;

@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 1.8rem;
+  width: 8rem;
+  border-radius: 0.4rem;
+  background-color: #555;
+}
+
+
+.container>input[type="date"] {
+  all: unset;
+  font-size: 0.8rem;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+
+.container>input[type="date"]::-webkit-calendar-picker-indicator {
+  height: 1.2rem;
+  width: 1.2rem;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  color-scheme: dark;
+}

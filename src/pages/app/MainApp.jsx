@@ -1,14 +1,14 @@
-import { getOverview } from "../../api/activities";
 import Panel from "../../components/app/panel/Panel";
 import { useQuery } from "@tanstack/react-query";
 import FloatingActionButton from "../../components/app/panel/FloatingActionButton";
 import Modal from "../../components/app/activities/modals/Modal";
 import ModalContextProvider from "../../store/modal-context/modal-context";
-import { dateToYYYYMMDD } from "../../util/date";
 import { AppContext } from "../../store/app-context";
 import { getUser } from "../../api/user";
 import { useContext, useEffect } from "react";
-
+import FilterBar from "../../components/app/filter/FilterBar";
+import FloatingDateButton from "../../components/app/panel/FloatingDateButton";
+import styles from './MainApp.module.css';
 
 
 export default function MainApp() {
@@ -26,41 +26,16 @@ export default function MainApp() {
   }, [fetchedUser]);
 
 
-  let startDate = new Date();
-  startDate.setMonth(startDate.getMonth() - 2);
-  startDate = dateToYYYYMMDD(startDate);
-  let endDate = new Date();
-  endDate.setMonth(endDate.getMonth() + 2);
-  endDate = dateToYYYYMMDD(endDate);
-
-  const { data: fetchedActivities, isLoading, isError } = useQuery({
-    queryKey: ['activities', 'overview'],
-    queryFn: ({ signal }) => getOverview({ signal, startdateFilter: startDate, finaldateFilter: endDate }),
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 5, // 5 minutos
-  });
-
-  if (isLoading) return <div>Carregando...</div>;
-  if (isError) return <div>Erro ao carregar dados.</div>;
-
   return (
-    <ModalContextProvider>
-      <Modal />
-      <FloatingActionButton />
-      <Panel
-        activities={fetchedActivities.activities}
-        mode="overview"
-        startOverviewDate={fetchedActivities.startdate}
-        endOverviewDate={fetchedActivities.finaldate}
-      />
-    </ModalContextProvider>
+    <div className={styles.container}>
+      <ModalContextProvider>
+        <Modal />
+        <FloatingActionButton />
+        <FloatingDateButton type="start" />
+        <FloatingDateButton type="end" />
+        <FilterBar />
+        <Panel />
+      </ModalContextProvider>
+    </div>
   );
 };
-
-
-// export function loader() {
-//   return queryClient.fetchQuery({
-//     queryKey: ['activities', 'overview'],
-//     queryFn: ({ signal }) => getOverview({ signal })
-//   });
-// };

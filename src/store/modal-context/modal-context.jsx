@@ -262,11 +262,11 @@ function activityReducer(state, action) {
 
   if (action.type === 'ADD_TASK_STEP') {
     const newSteps = [
-      ...state.task.steps,
+      ...state.task.steps || [],
       {
         id: null,
         description: action.payload,
-        index: state.task.steps.length
+        index: state.task.steps?.length || 0
       }
     ];
     return {

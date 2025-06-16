@@ -60,37 +60,29 @@ export default function TaskModal({ ref }) {
   useImperativeHandle(ref, () => {
     return {
       create() {
-        console.log('task-before', task)
-
         const [createdAt, keywordsId] = preProcessTask(task, keywords);
-        console.log('task-after', task)
 
         if ((title && importance && difficulty && keywords.length > 0 && isTaskTimingValid(task))) {
           mutateCreateTask({ activity: { title, description, importance, difficulty, keywords: keywordsId, createdAt, ...task } });
         };
         reset();
       },
+
       update() {
-        console.log('update()')
         if (!task.instance.id && isInstanceChange) {
-          console.log('create-instance:')
           createInstance({ taskId: task.id, instance: cleanObject(task.instance) });
         }
         else if (isInstanceChange === true) {
           updateInstance({ taskId: task.id, instance: cleanObject(task.instance), instanceId: task.instance.id });
         };
-        console.log('task-before', task)
 
         const [createdAt, keywordsId] = preProcessTask(task, keywords);
         if (isActivityChange && id &&
           (title || description || importance || difficulty || (keywords && keywords.length > 0) || task)
           && isTaskTimingValid(task)) {
-          console.log('update-TASK:')
-          console.log('task-after', task)
           mutateUpdateTask({ activity: { id, title, description, importance, difficulty, keywords: keywordsId, createdAt, ...task } });
           mutateUpsertSteps({ id: task.id, steps: task.steps });
         }
-
         reset();
       },
     }

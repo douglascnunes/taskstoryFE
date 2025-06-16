@@ -80,7 +80,7 @@ export default function PanelCard({ activity }) {
       onClick={handleClick}
     >
       <div className={styles.header}>
-        <h3>{activity.title}</h3>
+        <h3 className={styles.title}>{activity.title}</h3>
         <div className={styles.iconLabel}>
           {ACTIVITY_TYPE[activity.type].icon}
           <p className={styles.type}>

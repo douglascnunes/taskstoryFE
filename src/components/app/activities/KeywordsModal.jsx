@@ -121,6 +121,7 @@ export default function KeywordsModal({ isOpenModal, closeModal }) {
             </select>
           )}
           <button
+            className="button"
             onClick={clearFilter}>
             Limpar Filtro
           </button>
@@ -164,6 +165,7 @@ export default function KeywordsModal({ isOpenModal, closeModal }) {
             </select>
           )}
           <button
+            className="button"
             onClick={() => mutate({ keyword: newKeyword })}
           >Criar</button>
         </div>

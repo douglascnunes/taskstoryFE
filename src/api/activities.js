@@ -9,6 +9,7 @@ export async function getOverview({ signal, startdateFilter, finaldateFilter }) 
   const params = new URLSearchParams();
   if (startdateFilter) params.append('startdate', startdateFilter);
   if (finaldateFilter) params.append('finaldate', finaldateFilter);
+  // console.log(`${url}overview?${params.toString()}`)
 
   const response = await fetch(`${url}overview?${params.toString()}`, {
     signal,

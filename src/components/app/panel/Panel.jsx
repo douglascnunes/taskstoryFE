@@ -1,3 +1,4 @@
+// Panel.jsx
 import Section from "./Section";
 import style from './Panel.module.css';
 import { SECTION_NAMES } from "../../../util/enum.jsx";
@@ -11,13 +12,32 @@ import {
   orderActivities,
   updateCondiction,
 } from "../../../util/panel/panel";
+import { useContext, } from "react";
+import { AppContext } from "../../../store/app-context";
+import { useQuery } from "@tanstack/react-query";
+import { getOverview } from "../../../api/activities";
 
 
 
-export default function Panel({ activities, mode, startOverviewDate, endOverviewDate }) {
-  let activityInstances = generateInstances(activities, startOverviewDate, endOverviewDate);
+export default function Panel() {
+  const { startDate, endDate } = useContext(AppContext);
+
+  const { data: fetchedActivities } = useQuery({
+    queryKey: ['activities', 'overview', startDate, endDate],
+    queryFn: ({ signal }) =>
+      getOverview({
+        signal,
+        startdateFilter: startDate,
+        finaldateFilter: endDate,
+      }),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+  });
+
+
+  let activityInstances = generateInstances(fetchedActivities?.activities || [], fetchedActivities?.startdate || startDate, fetchedActivities?.finaldate || endDate);
   activityInstances = updateCondiction(activityInstances);
-
   activityInstances = orderActivities(activityInstances);
 
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);
@@ -32,15 +52,15 @@ export default function Panel({ activities, mode, startOverviewDate, endOverview
   let [activitiesWeek, remainingWeekActivities] = filterWeekActivities(activityInstances);
   activityInstances = remainingWeekActivities;
 
-  let activitiesMonths = filterMonthActivities(activityInstances, startOverviewDate, endOverviewDate);
+  let activitiesMonths = filterMonthActivities(activityInstances, fetchedActivities?.startdate || startDate, fetchedActivities?.finaldate || endDate);
 
   const today = new Date();
-  let sectionMonthsBefore;
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
+
+  let sectionMonthsBefore;
   activitiesMonths.forEach(month => {
     const { month: m, year } = month.date;
-
     if (year < currentYear || (year === currentYear && m < currentMonth)) {
       sectionMonthsBefore = (
         <>
@@ -59,7 +79,6 @@ export default function Panel({ activities, mode, startOverviewDate, endOverview
   let sectionMonthsAfter;
   activitiesMonths.forEach(month => {
     const { month: m, year } = month.date;
-
     if (year > currentYear || (year === currentYear && m >= currentMonth)) {
       sectionMonthsAfter = (
         <>
@@ -75,23 +94,14 @@ export default function Panel({ activities, mode, startOverviewDate, endOverview
     }
   });
 
-
-  if (mode === "overview") {
-    return (
-      <>
-        <div className={style.panel}>
-          {sectionMonthsBefore}
-          <Section activities={activitiesLate} monthName={SECTION_NAMES[0]} year="" />
-          <Section activities={activitiesPriority} monthName={SECTION_NAMES[1]} year="" />
-          <Section activities={activitiesToday} monthName={SECTION_NAMES[2]} year="" />
-          <Section activities={activitiesWeek} monthName={SECTION_NAMES[3]} year="" />
-          {sectionMonthsAfter}
-        </div>
-      </>
-    );
-  }
-
   return (
-    <h1>PANEL</h1>
+    <div className={style.panel}>
+      {sectionMonthsBefore}
+      <Section activities={activitiesLate} monthName={SECTION_NAMES[0]} year="" />
+      <Section activities={activitiesPriority} monthName={SECTION_NAMES[1]} year="" />
+      <Section activities={activitiesToday} monthName={SECTION_NAMES[2]} year="" />
+      <Section activities={activitiesWeek} monthName={SECTION_NAMES[3]} year="" />
+      {sectionMonthsAfter}
+    </div>
   );
 };

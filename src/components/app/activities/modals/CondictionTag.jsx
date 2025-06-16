@@ -91,7 +91,7 @@ export default function CondictionTag({ divSize }) {
 
   return (
     <button
-      className={styles.statusContainer}
+      className={`${styles.statusContainer} button`}
       onClick={(e) => toggleCompleted(e)}
       disabled={isPending}
       style={{

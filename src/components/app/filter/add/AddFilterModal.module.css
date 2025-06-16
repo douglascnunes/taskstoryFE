@@ -1,0 +1,74 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+
+.modal {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 200px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  /* <- ALTERADO */
+  z-index: 1000;
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #666
+}
+
+.buttonCatList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.buttonCategory {
+  font-size: 0.8rem;
+  font-weight: 600;
+  height: 1.8rem;
+  width: 100%;
+  border: none;
+  border-radius: 0.3rem;
+  box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+.buttonCategory:hover {
+  filter: brightness(1.2);
+  cursor: pointer;
+}
+
+
+.condictionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.condictionList>button {
+  font-size: 0.8rem;
+  font-weight: 600;
+  height: 1.5rem;
+  width: 10rem;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.condictionList>button:hover {
+  filter: brightness(1.2);
+  cursor: pointer;
+}

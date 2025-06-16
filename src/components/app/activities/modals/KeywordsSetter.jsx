@@ -41,7 +41,7 @@ export default function KeywordsSetter() {
               <p>Atividade sem Palavras-Chave</p>
             </div>
           )}
-          <button className={styles.addKeywordButton} onClick={openKeywordModal}>+</button>
+          <button className={`${styles.addKeywordButton} button`} onClick={openKeywordModal}>+</button>
         </div>
       </div>
     </>

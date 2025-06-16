@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  overflow: hidden;
+  z-index: 995;
+  height: 2.5rem;
+  width: 95vw;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.labelBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  width: 7rem;
+  border-radius: 0.4rem;
+}
+
+.labelBar span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #999;
+}
+
+.labelBar svg {
+  height: 1.4rem;
+  stroke: #999;
+}
+
+.cardList {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}
+

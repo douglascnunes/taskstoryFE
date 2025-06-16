@@ -81,7 +81,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
           value={task.endPeriod ? dateToYYYYMMDD(task.endPeriod) : ""}
           onChange={(e) => handleSetData("endPeriod", e.target.value)}
         />
-        <button onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
+        <button className="button" onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
       </div>
     )
   };
@@ -104,7 +104,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
               value={task.startPeriod ? dateToYYYYMMDD(task.startPeriod) : ""}
               onChange={(e) => handleSetData("startPeriod", e.target.value)}
             />
-            <button onClick={() => handleSetData("startPeriod", "")}>Limpar</button>
+            <button className="button" onClick={() => handleSetData("startPeriod", "")}>Limpar</button>
           </div>
           <div className={styles.finalDate}>
             <div>
@@ -119,7 +119,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
               value={task.endPeriod ? dateToYYYYMMDD(task.endPeriod) : ""}
               onChange={(e) => handleSetData("endPeriod", e.target.value)}
             />
-            <button onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
+            <button className="button" onClick={() => handleSetData("endPeriod", "")}>Limpar</button>
           </div>
           <div className={styles.frequenceIntervalDays}>
             <label htmlFor="frequenceIntervalDays">
@@ -141,6 +141,7 @@ export default function DateModal({ isOpenModal, closeModal }) {
                 <button
                   key={day.value}
                   onClick={() => handleSetData("frequenceWeeklyDays", day.value)}
+                  className="button"
                   style={{
                     padding: '8px 12px',
                     borderRadius: '6px',
@@ -168,10 +169,12 @@ export default function DateModal({ isOpenModal, closeModal }) {
         <div className={styles.modal} ref={modalRef}>
           <div className={styles.buttonOptions}>
             <button
+              className="button"
               disabled={mode === "SINGLE"}
               onClick={toggleMode}
             >Tarefa Única</button>
             <button
+              className="button"
               disabled={mode === "MULTI"}
               onClick={toggleMode}
             >Tarefas Periódicas</button>

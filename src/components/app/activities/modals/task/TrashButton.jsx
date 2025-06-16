@@ -24,7 +24,6 @@ export default function TrashButton({ task }) {
   const { mutate: updateInstance } = useMutation({
     mutationFn: updateTaskInstance,
     onSuccess: () => {
-      console.log('Instance updated successfully');
       queryClient.invalidateQueries(['activities'])
       reset();
       closeModal();
