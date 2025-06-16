@@ -11,10 +11,14 @@ export default function FilterBar() {
   const { filterCondictions, filterPriorities, filterKeywords } = useContext(AppContext);
 
 
-  let filterButtonList =
-    filterCondictions.map(condiction => (
+  let filterButtonList = [
+    ...filterCondictions.map(condiction => (
       <FilterCard key={condiction} type="condiction" value={condiction} />
-    ))
+    )),
+    ...filterPriorities.map(priority => (
+      <FilterCard key={priority} type="priority" value={priority} />
+    )),
+  ];
 
 
   return (

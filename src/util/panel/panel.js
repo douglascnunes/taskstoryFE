@@ -20,28 +20,6 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
 
 
 
-function orderByPriority(activities) {
-  return activities.sort((a, b) => b.priority[1][5] - a.priority[1][5]);
-}
-
-function orderByCondiction(activities) {
-  return activities.sort((a, b) => CONDICTION[b.task.instance.condiction][4] - CONDICTION[a.task.instance.condiction][4]);
-}
-
-
-export function orderActivities(activityInstances) {
-  let orderedActivities = [];
-
-  if (activityInstances && activityInstances.length > 0) {
-    orderedActivities = orderByPriority(activityInstances);
-    orderedActivities = orderByCondiction(orderedActivities);
-  }
-
-  return orderedActivities;
-}
-
-
-
 export function updateCondiction(activityInstances) {
 
   activityInstances.forEach(activity => {
@@ -53,6 +31,48 @@ export function updateCondiction(activityInstances) {
 
   return activityInstances;
 };
+
+
+
+
+export function filterActivities(activities, filterCondictions, filterPriorities) {
+  let filterActivities = activities;
+
+  if (filterCondictions.length > 0) {
+    filterActivities = activities.filter(activity => {
+      if (activity.type === 'TASK') {
+        return filterCondictions.includes(activity.task.instance.condiction);
+      }
+    });
+
+    if (filterPriorities.length > 0) {
+      filterActivities = filterActivities.filter(activity => {
+        return filterPriorities.includes(activity.priority[0]);
+      }
+      );
+    }
+  }
+
+  return filterActivities;
+};
+
+
+
+function orderByPriority(activities) {
+  return activities.sort((a, b) => b.priority[1][5] - a.priority[1][5]);
+}
+
+function orderByCondiction(activities) {
+  return activities.sort((a, b) => CONDICTION[b.task.instance.condiction][4] - CONDICTION[a.task.instance.condiction][4]);
+}
+
+
+export function orderActivities(activityInstances) {
+  const activitiesByPriority = orderByPriority(activityInstances);
+  const activitiesByCondiction = orderByCondiction(activitiesByPriority);
+
+  return activitiesByCondiction;
+}
 
 
 

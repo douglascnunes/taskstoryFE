@@ -1,11 +1,11 @@
 // AddFilterModal.jsx
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./AddFilterModal.module.css";
-import { CONDICTION } from "../../../../util/enum";
+import { CONDICTION, PRIORITY } from "../../../../util/enum";
 import { AppContext } from "../../../../store/app-context";
 
 export default function AddFilterModal({ isOpenModal, closeModal }) {
-  const { toggleFilterCondiction } = useContext(AppContext);
+  const { toggleFilterCondiction, toggleFilterPriority } = useContext(AppContext);
   const [mode, setMode] = useState('start')
   const modalRef = useRef(null);
 
@@ -64,23 +64,49 @@ export default function AddFilterModal({ isOpenModal, closeModal }) {
 
   let choiceContent;
 
+  const availableCondictionKeys = ['TODO', 'TODO_LATE', 'DOING', 'DOING_LATE', 'DONE', 'DONE_LATE'];
+
   if (mode === 'condiction') {
     choiceContent = (
       <div className={styles.condictionList}>
         <p>Escolha uma Condição</p>
-        {Object.entries(CONDICTION).map(([key, [label, tagColor, labelColor, cardColor, orderValue]]) => (
-          <button
-            key={key}
-            style={{ backgroundColor: cardColor, color: labelColor, }}
-            onClick={() => toggleFilterCondiction(key)}
-          >
-            {label}
-          </button>
-        ))}
+        {Object.entries(CONDICTION).map(([key, [label, tagColor, labelColor, cardColor, orderValue]]) => {
+          if (availableCondictionKeys.includes(key)) {
+            return (
+              <button
+                key={key}
+                style={{ backgroundColor: cardColor, color: labelColor }}
+                onClick={() => toggleFilterCondiction(key)}
+              >
+                {label}
+              </button>
+            );
+          } else {
+            return null;
+          }
+        })}
       </div>
     );
   }
 
+  // Label, MinRange, MaxRange, divColor, labelColor, OrderValue
+  if (mode === 'priority') {
+    choiceContent = (
+      <div className={styles.condictionList}>
+        <p>Escolha uma Condição</p>
+        {Object.entries(PRIORITY).map(([key, [label, MinRange, MaxRange, divColor, labelColor, OrderValue]]) => (
+          <button
+            key={key}
+            style={{ backgroundColor: divColor, color: labelColor }}
+            onClick={() => toggleFilterPriority(key)}
+          >
+            {label}
+          </button>
+        )
+        )}
+      </div>
+    );
+  }
 
   if (!isOpenModal) {
     return null;

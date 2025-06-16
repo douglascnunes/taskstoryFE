@@ -3,6 +3,7 @@ import Section from "./Section";
 import style from './Panel.module.css';
 import { SECTION_NAMES } from "../../../util/enum.jsx";
 import {
+  filterActivities,
   filterLateActivities,
   filterMonthActivities,
   filterPriorityActivities,
@@ -20,7 +21,7 @@ import { getOverview } from "../../../api/activities";
 
 
 export default function Panel() {
-  const { startDate, endDate } = useContext(AppContext);
+  const { startDate, endDate, filterCondictions, filterPriorities } = useContext(AppContext);
 
   const { data: fetchedActivities } = useQuery({
     queryKey: ['activities', 'overview', startDate, endDate],
@@ -36,8 +37,17 @@ export default function Panel() {
   });
 
 
-  let activityInstances = generateInstances(fetchedActivities?.activities || [], fetchedActivities?.startdate || startDate, fetchedActivities?.finaldate || endDate);
+  let activityInstances = generateInstances(
+    fetchedActivities?.activities || [],
+    fetchedActivities?.startdate || startDate,
+    fetchedActivities?.finaldate || endDate
+  );
+
   activityInstances = updateCondiction(activityInstances);
+  
+
+  activityInstances = filterActivities(activityInstances, filterCondictions, filterPriorities);
+
   activityInstances = orderActivities(activityInstances);
 
   let [activitiesLate, remainingLateActivities] = filterLateActivities(activityInstances);

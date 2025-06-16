@@ -5,6 +5,11 @@
   height: 1.8rem;
   width: 6rem;
   border-radius: 0.4rem;
+  border: none;
   background-color: #555;
+  cursor: pointer;
 }
 
+.container:hover {
+  filter: brightness(1.1);
+}

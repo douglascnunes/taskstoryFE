@@ -31,6 +31,7 @@ export const AppContext = createContext({
   setMode: () => { },
   setFilterDate: () => { },
   toggleFilterCondiction: () => { },
+  toggleFilterPriority: () => { },
 });
 
 
@@ -91,8 +92,16 @@ function appReducer(state, action) {
 
 
   if (action.type === 'TOGGLE_FILTER_PRIORITY') {
-    return { ...state, mode: action.payload }
-  };
+    const key = action.payload;
+    const current = state.filterPriorities || [];
+
+    const updated = current.includes(key)
+      ? current.filter(item => item !== key)
+      : [...current, key];
+
+    return { ...state, filterPriorities: updated };
+  }
+
 
   if (action.type === 'TOGGLE_FILTER_KEYWORD') {
     return { ...state, mode: action.payload }
@@ -142,6 +151,10 @@ export default function AppContextProvider({ children }) {
     appDispatch({ type: 'TOGGLE_FILTER_CONDICTION', payload: value });
   };
 
+    function handleToggleFilterPriority(value) {
+    appDispatch({ type: 'TOGGLE_FILTER_PRIORITY', payload: value });
+  };
+
 
   const ctxValue = {
     user: appState.user,
@@ -158,7 +171,8 @@ export default function AppContextProvider({ children }) {
     closeModal: handleCloseModal,
     setMode: handleSetMode,
     setFilterDate: handleSetFilterDate,
-    toggleFilterCondiction: handleToggleFilterCondiction
+    toggleFilterCondiction: handleToggleFilterCondiction,
+    toggleFilterPriority: handleToggleFilterPriority,
   };
 
   return <AppContext.Provider value={ctxValue}>
