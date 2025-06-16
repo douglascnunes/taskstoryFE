@@ -36,25 +36,26 @@ export function updateCondiction(activityInstances) {
 
 
 export function filterActivities(activities, filterCondictions, filterPriorities) {
-  let filterActivities = activities;
+  let filteredActivities = activities;
 
   if (filterCondictions.length > 0) {
-    filterActivities = activities.filter(activity => {
+    filteredActivities = filteredActivities.filter(activity => {
       if (activity.type === 'TASK') {
         return filterCondictions.includes(activity.task.instance.condiction);
       }
+      return false;
     });
-
-    if (filterPriorities.length > 0) {
-      filterActivities = filterActivities.filter(activity => {
-        return filterPriorities.includes(activity.priority[0]);
-      }
-      );
-    }
   }
 
-  return filterActivities;
+  if (filterPriorities.length > 0) {
+    filteredActivities = filteredActivities.filter(activity => {
+      return filterPriorities.includes(activity.priority[0]);
+    });
+  }
+
+  return filteredActivities;
 };
+
 
 
 
