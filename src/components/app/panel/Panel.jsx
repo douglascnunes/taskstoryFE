@@ -21,7 +21,7 @@ import { getOverview } from "../../../api/activities";
 
 
 export default function Panel() {
-  const { startDate, endDate, filterCondictions, filterPriorities } = useContext(AppContext);
+  const { startDate, endDate, filterCondictions, filterPriorities, filterKeywords } = useContext(AppContext);
 
   const { data: fetchedActivities } = useQuery({
     queryKey: ['activities', 'overview', startDate, endDate],
@@ -46,7 +46,7 @@ export default function Panel() {
   activityInstances = updateCondiction(activityInstances);
   
 
-  activityInstances = filterActivities(activityInstances, filterCondictions, filterPriorities);
+  activityInstances = filterActivities(activityInstances, filterCondictions, filterPriorities, filterKeywords);
 
   activityInstances = orderActivities(activityInstances);
 

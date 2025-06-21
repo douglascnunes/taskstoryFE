@@ -1,0 +1,19 @@
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  filter: brightness(1.05);
+}
+
+.selected {
+  filter: contrast(2);
+  color: white;
+}

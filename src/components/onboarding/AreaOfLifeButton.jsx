@@ -1,24 +1,22 @@
 import { useContext } from "react";
 import { OnboardingContext } from "../../store/onboarding-context";
+import styles from "./AreaOfLifeButton.module.css";
+import { getColorFromAngle } from "../../util/helpers/keyword.js"; // Certifique-se de ter isso
 
-
-function AreaOfLifeButton({ children, colors, isSelected, type }) {
+function AreaOfLifeButton({ children, isSelected, type, colorAngle }) {
   const { updateAreOfLifeChoices } = useContext(OnboardingContext);
 
-  const styleButton = {
-    backgroundColor: isSelected ? colors[1] : colors[2],
-    outline: isSelected ? 'solid 0.2rem #1a1a1a ' : '',
-  }
-
+  const backgroundColor = getColorFromAngle(colorAngle);
 
   return (
     <button
       onClick={() => updateAreOfLifeChoices(type, children)}
-      style={styleButton}
+      className={`${styles.button} ${isSelected ? styles.selected : ''}`}
+      style={{ backgroundColor }}
     >
       {children}
     </button>
-  )
-};
+  );
+}
 
 export default AreaOfLifeButton;

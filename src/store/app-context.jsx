@@ -32,6 +32,7 @@ export const AppContext = createContext({
   setFilterDate: () => { },
   toggleFilterCondiction: () => { },
   toggleFilterPriority: () => { },
+  toggleFilterKeyword: () => { },
 });
 
 
@@ -70,11 +71,11 @@ function appReducer(state, action) {
 
     if (type === 'start' && compareDatesOnly(newDate, state.endDate) < 0) {
       return { ...state, startDate: newDate };
-    }
+    };
 
     if (type === 'end' && compareDatesOnly(newDate, state.startDate) > 0) {
       return { ...state, endDate: newDate };
-    }
+    };
 
     return state;
   }
@@ -104,8 +105,15 @@ function appReducer(state, action) {
 
 
   if (action.type === 'TOGGLE_FILTER_KEYWORD') {
-    return { ...state, mode: action.payload }
-  };
+    const id = action.payload;
+    const current = state.filterKeywords || [];
+
+    const updated = current.includes(id)
+      ? current.filter(item => item !== id)
+      : [...current, id];
+
+    return { ...state, filterKeywords: updated };
+  }
 };
 
 
@@ -151,9 +159,14 @@ export default function AppContextProvider({ children }) {
     appDispatch({ type: 'TOGGLE_FILTER_CONDICTION', payload: value });
   };
 
-    function handleToggleFilterPriority(value) {
+  function handleToggleFilterPriority(value) {
     appDispatch({ type: 'TOGGLE_FILTER_PRIORITY', payload: value });
   };
+
+  function handleToggleFilterKeyword(value) {
+    appDispatch({ type: 'TOGGLE_FILTER_KEYWORD', payload: value });
+  };
+
 
 
   const ctxValue = {
@@ -173,6 +186,7 @@ export default function AppContextProvider({ children }) {
     setFilterDate: handleSetFilterDate,
     toggleFilterCondiction: handleToggleFilterCondiction,
     toggleFilterPriority: handleToggleFilterPriority,
+    toggleFilterKeyword: handleToggleFilterKeyword,
   };
 
   return <AppContext.Provider value={ctxValue}>

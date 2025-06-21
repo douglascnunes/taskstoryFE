@@ -1,14 +1,8 @@
 import style from './KeywordTag.module.css';
+import { getColorFromAngle } from '../../../util/helpers/keyword.js';
 
 export default function KeywordTag({ keyword, hoverColor = false }) {
-  let hslColor = "";
-
-  if (keyword.colorAngle > 900) {
-    hslColor = `hsl(0, 0%, ${keyword.colorAngle - 900}%)`;
-  } else {
-    hslColor = `hsl(${keyword.colorAngle}, 50%, 50%)`;
-  }
-
+  const hslColor = getColorFromAngle(keyword.colorAngle);
   const className = `${style.keywordTag} ${hoverColor ? style.hoverable : ''}`;
 
   return (

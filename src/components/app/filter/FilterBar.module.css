@@ -1,16 +1,38 @@
 .container {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 2fr auto 1fr;
+  grid-template-rows: 1fr;
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
+  align-items: center;
+  justify-content: start;
+
   position: fixed;
   overflow: hidden;
   z-index: 995;
-  height: 2.5rem;
+  height: auto;
   width: 95vw;
-  padding: 0 0.5rem;
+  padding: 0.5rem 0.5rem;
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  transition: height 0.3s ease;
+}
+
+.container.expanded {
+  height: fit-content;
+}
+
+/* --- Seções --- */
+
+.fixedMenu {
+  grid-column: 1 / 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .labelBar {
@@ -23,21 +45,60 @@
   border-radius: 0.4rem;
 }
 
-.labelBar span {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #999;
-}
 
 .labelBar svg {
   height: 1.4rem;
   stroke: #999;
 }
 
-.cardList {
+.dates {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
   align-items: center;
 }
 
+.date {
+  display: flex;
+  flex-direction: row;
+  gap: 0.2rem;
+  align-items: center;
+}
+
+.date label {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 600;
+}
+
+
+.filterButtonList {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+
+  display: flex;
+  gap: 0.5rem;
+
+  overflow: hidden;
+  flex-wrap: wrap;
+  height: 1.8rem;
+  max-height: 1.8rem;
+}
+
+.container.expanded .filterButtonList {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  flex-wrap: wrap;
+  overflow: visible;
+  height: auto;
+  max-height: none;
+}
+
+
+.expandFiltersButton {
+  grid-column: 3 / 4;
+  grid-row: 1;
+  justify-self: end;
+  white-space: nowrap;
+  height: 1.8rem;
+}

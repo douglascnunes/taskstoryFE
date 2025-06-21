@@ -35,7 +35,7 @@ export function updateCondiction(activityInstances) {
 
 
 
-export function filterActivities(activities, filterCondictions, filterPriorities) {
+export function filterActivities(activities, filterCondictions, filterPriorities, filterKeywords) {
   let filteredActivities = activities;
 
   if (filterCondictions.length > 0) {
@@ -53,19 +53,29 @@ export function filterActivities(activities, filterCondictions, filterPriorities
     });
   }
 
+  if (filterKeywords.length > 0) {
+    filteredActivities = filteredActivities.filter(activity => {
+
+      if (!activity.keywords || activity.keywords.length === 0) return false;
+
+      return activity.keywords.some(keyword =>
+        filterKeywords.includes(keyword.id)
+      );
+    });
+  }
+
   return filteredActivities;
 };
 
 
 
-
 function orderByPriority(activities) {
   return activities.sort((a, b) => b.priority[1][5] - a.priority[1][5]);
-}
+};
 
 function orderByCondiction(activities) {
   return activities.sort((a, b) => CONDICTION[b.task.instance.condiction][4] - CONDICTION[a.task.instance.condiction][4]);
-}
+};
 
 
 export function orderActivities(activityInstances) {
@@ -73,7 +83,7 @@ export function orderActivities(activityInstances) {
   const activitiesByCondiction = orderByCondiction(activitiesByPriority);
 
   return activitiesByCondiction;
-}
+};
 
 
 

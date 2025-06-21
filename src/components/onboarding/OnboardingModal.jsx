@@ -2,12 +2,12 @@ import { useContext } from "react";
 import Modal from "../common/Modal";
 import { OnboardingContext } from "../../store/onboarding-context";
 import { ACCOUNT_NAMES } from '../../util/data';
-import { AREAOFLIFE_COLORS } from '../../util/color';
+import { getColorFromAngle } from '../../util/helpers/keyword.js';
 import style from './OnboardingModal.module.css';
 
 function OnboardingModal({ isOpen, onConfirm, onClose }) {
   const { accountType, areaOfLife } = useContext(OnboardingContext);
-  const accountText = ACCOUNT_NAMES.find(a => a[0] === accountType)
+  const accountText = ACCOUNT_NAMES.find(a => a[0] === accountType);
   const { desirable, mostPracticed } = areaOfLife;
 
   return (
@@ -20,35 +20,40 @@ function OnboardingModal({ isOpen, onConfirm, onClose }) {
     >
       <div className={style.modalDiv}>
         <p>Deseja confirmar as suas escolhas?</p>
+
         <div>
           <h1>Tipo de conta</h1>
           <strong>{accountText ? accountText[1] : ''}</strong>
         </div>
+
         <div>
           <h2>Áreas da vida mais praticadas</h2>
-          {mostPracticed.map(area => {
-            const colors = AREAOFLIFE_COLORS.find(a => a[0] === area)
-            return (
-              <p key={area} className={style.areaoflife} style={{ backgroundColor: colors[1] }}>
-                {area}
-              </p>
-            )
-          })}
+          {mostPracticed.map(area => (
+            <p
+              key={area.id}
+              className={style.areaoflife}
+              style={{ backgroundColor: getColorFromAngle(area.colorAngle) }}
+            >
+              {area.name}
+            </p>
+          ))}
         </div>
+
         <div>
-          <h2> Áreas da vida mais desejadas</h2>
-          {desirable.map(area => {
-            const colors = AREAOFLIFE_COLORS.find(a => a[0] === area)
-            return (
-              <p key={area} className={style.areaoflife} style={{ backgroundColor: colors[1] }}>
-                {area}
-              </p>
-            )
-          })}
+          <h2>Áreas da vida mais desejadas</h2>
+          {desirable.map(area => (
+            <p
+              key={area.id}
+              className={style.areaoflife}
+              style={{ backgroundColor: getColorFromAngle(area.colorAngle) }}
+            >
+              {area.name}
+            </p>
+          ))}
         </div>
       </div>
     </Modal>
-  )
-};
+  );
+}
 
 export default OnboardingModal;
