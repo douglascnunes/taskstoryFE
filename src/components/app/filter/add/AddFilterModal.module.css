@@ -12,23 +12,26 @@
   z-index: 999;
 }
 
-
 .modal {
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 1rem;
   min-width: 200px;
+  max-height: 80vh;              /* impede o modal de crescer além da tela */
+  overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   position: fixed;
-  /* <- ALTERADO */
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .title {
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #666
+  color: #666;
 }
 
 .buttonCatList {
@@ -52,23 +55,43 @@
   cursor: pointer;
 }
 
-
+/* scroll interno limitado para a lista de botões */
 .condictionList {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
+  overflow-y: auto;
+  max-height: 40vh;         /* ajustável: limite visível antes do scroll */
+  padding-right: 0.3rem;    /* para scroll não sobrepor conteúdo */
 }
 
-.condictionList>button {
+.condictionList > button {
   font-size: 0.8rem;
   font-weight: 600;
-  height: 1.5rem;
-  width: 10rem;
+  height: 1.8rem;
+  width: 80%;
   border: none;
   border-radius: 0.5rem;
 }
 
-.condictionList>button:hover {
+.condictionList > button:hover {
   filter: brightness(1.2);
   cursor: pointer;
+}
+
+.button {
+  margin-top: 1rem;
+  width: 80%;
+}
+
+/* seleção visual */
+.selected {
+  border: 2px solid #333;
+  filter: brightness(0.95);
+}
+
+
+.buttonCatList{
+  width: 100%;
 }

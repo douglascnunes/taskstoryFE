@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AddFilterModal from "./AddFilterModal";
+import styles from './AddFilterButton.module.css';
 
 
 export default function AddFilterButton() {
@@ -13,7 +14,7 @@ export default function AddFilterButton() {
   return (
     <>
       <button
-        className="button"
+        className={`${styles.button} button`}
         onClick={toggleModal}
       >
         +

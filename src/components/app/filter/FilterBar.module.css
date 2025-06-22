@@ -35,20 +35,11 @@
   align-items: center;
 }
 
-.labelBar {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #fff;
-  width: 7rem;
-  border-radius: 0.4rem;
-}
 
-
-.labelBar svg {
+.fixedMenu svg {
   height: 1.4rem;
   stroke: #999;
+  margin-right: 0.5rem;
 }
 
 .dates {

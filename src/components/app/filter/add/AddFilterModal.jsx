@@ -8,9 +8,12 @@ import { getColorFromAngle } from "../../../../util/helpers/keyword.js";
 
 export default function AddFilterModal({ isOpenModal, closeModal }) {
   const {
+    filterCondictions,
+    filterPriorities,
+    filterKeywords,
     toggleFilterCondiction,
     toggleFilterPriority,
-    toggleFilterKeyword
+    toggleFilterKeyword,
   } = useContext(AppContext);
 
   const [mode, setMode] = useState("start");
@@ -19,7 +22,6 @@ export default function AddFilterModal({ isOpenModal, closeModal }) {
   const { data: keywords } = useQuery({
     queryKey: ["keywords", localStorage.getItem("userId")],
     queryFn: ({ signal }) => getUserKeywords({ signal }),
-    staleTime: 1000 * 60 * 5,
   });
 
   useEffect(() => {
@@ -41,57 +43,27 @@ export default function AddFilterModal({ isOpenModal, closeModal }) {
     };
   }, [isOpenModal, closeModal]);
 
-  let buttonCategoryList = (
-    <div>
-      <h3 className={styles.title}>Escolha uma categoria de Filtro</h3>
-      <div className={styles.buttonCatList}>
-        <button
-          className={styles.buttonCategory}
-          style={{ backgroundColor: "#e08585" }}
-          onClick={() => setMode("condiction")}
-        >
-          Condição
-        </button>
-        <button
-          className={styles.buttonCategory}
-          style={{ backgroundColor: "#85e094" }}
-          onClick={() => setMode("priority")}
-        >
-          Prioridade
-        </button>
-        <button
-          className={styles.buttonCategory}
-          style={{ backgroundColor: "#85a3e0" }}
-          onClick={() => setMode("keyword")}
-        >
-          Palavra-Chave
-        </button>
-      </div>
-    </div>
-  );
-
-  let choiceContent;
-
   const availableCondictionKeys = ["TODO", "TODO_LATE", "DOING", "DOING_LATE", "DONE", "DONE_LATE"];
 
+  let choiceContent;
   if (mode === "condiction") {
     choiceContent = (
       <div className={styles.condictionList}>
         <p>Escolha uma Condição</p>
         {Object.entries(CONDICTION).map(([key, [label, tagColor, labelColor, cardColor]]) => {
-          if (availableCondictionKeys.includes(key)) {
-            return (
-              <button
-                key={key}
-                style={{ backgroundColor: cardColor, color: labelColor }}
-                onClick={() => toggleFilterCondiction(key)}
-              >
-                {label}
-              </button>
-            );
-          } else {
-            return null;
-          }
+          if (!availableCondictionKeys.includes(key)) return null;
+
+          const isSelected = filterCondictions.includes(key);
+          return (
+            <button
+              key={key}
+              className={`${isSelected ? styles.selected : ""}`}
+              style={{ backgroundColor: cardColor, color: labelColor }}
+              onClick={() => toggleFilterCondiction(key)}
+            >
+              {label}
+            </button>
+          );
         })}
       </div>
     );
@@ -101,15 +73,19 @@ export default function AddFilterModal({ isOpenModal, closeModal }) {
     choiceContent = (
       <div className={styles.condictionList}>
         <p>Escolha uma Prioridade</p>
-        {Object.entries(PRIORITY).map(([key, [label, , , divColor, labelColor]]) => (
-          <button
-            key={key}
-            style={{ backgroundColor: divColor, color: labelColor }}
-            onClick={() => toggleFilterPriority(key)}
-          >
-            {label}
-          </button>
-        ))}
+        {Object.entries(PRIORITY).map(([key, [label, , , divColor, labelColor]]) => {
+          const isSelected = filterPriorities.includes(key);
+          return (
+            <button
+              key={key}
+              className={`${isSelected ? styles.selected : ""}`}
+              style={{ backgroundColor: divColor, color: labelColor }}
+              onClick={() => toggleFilterPriority(key)}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
     );
   }
@@ -118,18 +94,22 @@ export default function AddFilterModal({ isOpenModal, closeModal }) {
     choiceContent = (
       <div className={styles.condictionList}>
         <p>Escolha uma Palavra-Chave</p>
-        {keywords.map((keyword) => (
-          <button
-            key={keyword.id}
-            style={{
-              backgroundColor: getColorFromAngle(keyword.colorAngle),
-              color: "#1a1a1a",
-            }}
-            onClick={() => toggleFilterKeyword(keyword.id)}
-          >
-            {keyword.name}
-          </button>
-        ))}
+        {keywords.map((keyword) => {
+          const isSelected = filterKeywords.includes(keyword.id);
+          return (
+            <button
+              key={keyword.id}
+              className={`${isSelected ? styles.selected : ""}`}
+              style={{
+                backgroundColor: getColorFromAngle(keyword.colorAngle),
+                color: "#1a1a1a",
+              }}
+              onClick={() => toggleFilterKeyword(keyword.id)}
+            >
+              {keyword.name}
+            </button>
+          );
+        })}
       </div>
     );
   }
@@ -139,8 +119,40 @@ export default function AddFilterModal({ isOpenModal, closeModal }) {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal} ref={modalRef}>
-        {mode === "start" && buttonCategoryList}
+        {mode === "start" && (
+          <>
+            <h3 className={styles.title}>Escolha uma categoria de Filtro</h3>
+            <div className={styles.buttonCatList}>
+              <button
+                className={styles.buttonCategory}
+                style={{ backgroundColor: "#e08585" }}
+                onClick={() => setMode("condiction")}
+              >
+                Condição
+              </button>
+              <button
+                className={styles.buttonCategory}
+                style={{ backgroundColor: "#85e094" }}
+                onClick={() => setMode("priority")}
+              >
+                Prioridade
+              </button>
+              <button
+                className={styles.buttonCategory}
+                style={{ backgroundColor: "#85a3e0" }}
+                onClick={() => setMode("keyword")}
+              >
+                Palavra-Chave
+              </button>
+            </div>
+          </>
+        )}
         {mode !== "start" && choiceContent}
+        {mode !== "start" && (
+          <button className={`${styles.button} button`} onClick={() => setMode("start")}>
+            Voltar
+          </button>
+        )}
       </div>
     </div>
   );
