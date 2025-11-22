@@ -33,7 +33,7 @@ export default function Panel() {
       }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
   });
 
 
@@ -44,7 +44,7 @@ export default function Panel() {
   );
 
   activityInstances = updateCondiction(activityInstances);
-  
+
 
   activityInstances = filterActivities(activityInstances, filterCondictions, filterPriorities, filterKeywords);
 
@@ -67,11 +67,21 @@ export default function Panel() {
   const today = new Date();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
+  const todayDay = today.getDate();
 
   let sectionMonthsBefore;
+  let sectionMonthsAfter;
+
   activitiesMonths.forEach(month => {
     const { month: m, year } = month.date;
-    if (year < currentYear || (year === currentYear && m < currentMonth)) {
+    const isCurrentMonth = m === currentMonth && year === currentYear;
+
+    // Parte anterior ao dia de hoje
+    if (
+      (year < currentYear) ||
+      (year === currentYear && m < currentMonth) ||
+      (isCurrentMonth && month.name.includes(`1 - ${todayDay - 1}`))
+    ) {
       sectionMonthsBefore = (
         <>
           {sectionMonthsBefore}
@@ -79,30 +89,32 @@ export default function Panel() {
             activities={month.activities}
             monthName={month.name}
             year={month.date.year}
-            key={`${m}-${year}`}
+            key={`before-${m}-${year}-${month.name}`}
+          />
+        </>
+      );
+    }
+
+    // Parte do mês atual (de hoje até fim) ou meses futuros
+    if (
+      (year > currentYear) ||
+      (year === currentYear && m > currentMonth) ||
+      (isCurrentMonth && month.name.includes(`${todayDay} - fim`))
+    ) {
+      sectionMonthsAfter = (
+        <>
+          {sectionMonthsAfter}
+          <Section
+            activities={month.activities}
+            monthName={month.name}
+            year={month.date.year}
+            key={`after-${m}-${year}-${month.name}`}
           />
         </>
       );
     }
   });
 
-  let sectionMonthsAfter;
-  activitiesMonths.forEach(month => {
-    const { month: m, year } = month.date;
-    if (year > currentYear || (year === currentYear && m >= currentMonth)) {
-      sectionMonthsAfter = (
-        <>
-          {sectionMonthsAfter}
-          <Section
-            activities={month.activities}
-            year={month.date.year}
-            monthName={month.name}
-            key={`${m}-${year}`}
-          />
-        </>
-      );
-    }
-  });
 
   return (
     <div className={style.panel}>

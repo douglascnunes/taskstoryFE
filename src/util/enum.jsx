@@ -138,3 +138,9 @@ export const AVATAR = {
 }
 
 export const IMAGEM_PERFIL_DEFAULT = ['default.png'];
+
+export const DEPENDENCY = [
+  'TODAY',
+  'ACTIVITY',
+  'DESCRIPTION',
+];

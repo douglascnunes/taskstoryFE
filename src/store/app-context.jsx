@@ -29,6 +29,7 @@ export const AppContext = createContext({
   openModal: () => { },
   closeModal: () => { },
   setMode: () => { },
+  setType: () => { },
   setFilterDate: () => { },
   toggleFilterCondiction: () => { },
   toggleFilterPriority: () => { },
@@ -62,6 +63,10 @@ function appReducer(state, action) {
 
   if (action.type === 'SET_MODE') {
     return { ...state, mode: action.payload }
+  };
+
+  if (action.type === 'SET_TYPE') {
+    return { ...state, type: action.payload }
   };
 
 
@@ -151,6 +156,10 @@ export default function AppContextProvider({ children }) {
     appDispatch({ type: 'SET_MODE', payload: mode });
   };
 
+  function handleSetType(type) {
+    appDispatch({ type: 'SET_TYPE', payload: type });
+  };
+
   function handleSetFilterDate(type, date) {
     appDispatch({ type: 'SET_FILTER_DATE', payload: { type, date } });
   };
@@ -183,6 +192,7 @@ export default function AppContextProvider({ children }) {
     openModal: handleOpenModal,
     closeModal: handleCloseModal,
     setMode: handleSetMode,
+    setType: handleSetType,
     setFilterDate: handleSetFilterDate,
     toggleFilterCondiction: handleToggleFilterCondiction,
     toggleFilterPriority: handleToggleFilterPriority,

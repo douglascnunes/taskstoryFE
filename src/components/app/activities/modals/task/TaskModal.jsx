@@ -16,6 +16,7 @@ import CondictionTag from "../CondictionTag";
 import { cleanObject } from "../../../../../util/api-helpers/activity"
 import { ACTIVITY_TYPE } from "../../../../../util/enum";
 import TrashButton from "./TrashButton";
+import DependenceSetter from "../DependenceSetter";
 
 
 
@@ -27,6 +28,7 @@ export default function TaskModal({ ref }) {
     importance,
     difficulty,
     keywords,
+    dependencies,
     task,
     isActivityChange, isInstanceChange,
     reset,
@@ -124,6 +126,7 @@ export default function TaskModal({ ref }) {
         setFunction={setDescription}
       />
       <StepSetter />
+      <DependenceSetter />
       <KeywordsSetter />
     </>
   );

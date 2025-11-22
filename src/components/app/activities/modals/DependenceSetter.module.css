@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.label label {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.container svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.dependenciesContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.keyword {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.nokeywords {
+  height: 4rem;
+  justify-items: center;
+  align-content: center;
+}
+
+.nokeywords p {
+  font-size: 0.8rem;
+  width: 12rem;
+  height: 1.4rem;
+  text-align: center;
+  align-content: center;
+  border-radius: 0.5rem;
+  color: #999999;
+  background-color: #dddddd;
+}
+
+.addKeywordButton{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  background-color: #333333;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.addKeywordButton:active, .addKeywordButton:hover {
+  background-color: #555555;
+}

@@ -32,9 +32,6 @@ export function updateCondiction(activityInstances) {
   return activityInstances;
 };
 
-
-
-
 export function filterActivities(activities, filterCondictions, filterPriorities, filterKeywords) {
   let filteredActivities = activities;
 
@@ -178,30 +175,84 @@ export function filterMonthActivities(activityInstances, startOverviewDate, endO
   let remainingActivities = [];
   let activitiesMonths = [];
 
+  const today = new Date();
+  const todayDay = today.getDate();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
   while (getYearMonthNumber(refDate) <= getYearMonthNumber(endOverDate)) {
-    remainingActivities = [];
-    const month = {
-      name: MONTHS_NAME[refDate.getMonth()],
-      date: {
-        month: refDate.getMonth(),
-        year: refDate.getFullYear()
-      },
-      activities: []
-    };
-    activityInstances.forEach(activity => {
-      if (activity.type === 'TASK') {
-        if (isOnMonth(new Date(activity.task.instance.finalDate),
-          refDate.getMonth(), refDate.getFullYear(), startOverviewDate, endOverviewDate)) {
-          month.activities.push(activity);
-        }
-        else {
-          remainingActivities.push(activity);
-        };
+    const isCurrentMonth = refDate.getMonth() === currentMonth && refDate.getFullYear() === currentYear;
+
+    if (isCurrentMonth) {
+      // Parte 1: do 1 até ontem
+      const monthPart1 = {
+        name: `${MONTHS_NAME[refDate.getMonth()]} (1 - ${todayDay - 1})`,
+        date: {
+          month: refDate.getMonth(),
+          year: refDate.getFullYear()
+        },
+        activities: []
       };
-    });
-    activitiesMonths.push(month);
+
+      // Parte 2: de hoje até fim do mês
+      const monthPart2 = {
+        name: `${MONTHS_NAME[refDate.getMonth()]} (${todayDay} - fim)`,
+        date: {
+          month: refDate.getMonth(),
+          year: refDate.getFullYear()
+        },
+        activities: []
+      };
+
+      remainingActivities = [];
+
+      activityInstances.forEach(activity => {
+        if (activity.type === 'TASK') {
+          const finalDate = new Date(activity.task.instance.finalDate);
+          const isSameMonth = isOnMonth(finalDate, refDate.getMonth(), refDate.getFullYear(), startOverviewDate, endOverviewDate);
+
+          if (isSameMonth) {
+            if (finalDate.getDate() < todayDay) {
+              monthPart1.activities.push(activity);
+            } else {
+              monthPart2.activities.push(activity);
+            }
+          } else {
+            remainingActivities.push(activity);
+          }
+        }
+      });
+
+      activitiesMonths.push(monthPart1, monthPart2);
+    } else {
+      const month = {
+        name: MONTHS_NAME[refDate.getMonth()],
+        date: {
+          month: refDate.getMonth(),
+          year: refDate.getFullYear()
+        },
+        activities: []
+      };
+
+      remainingActivities = [];
+
+      activityInstances.forEach(activity => {
+        if (activity.type === 'TASK') {
+          if (isOnMonth(new Date(activity.task.instance.finalDate),
+            refDate.getMonth(), refDate.getFullYear(), startOverviewDate, endOverviewDate)) {
+            month.activities.push(activity);
+          } else {
+            remainingActivities.push(activity);
+          }
+        }
+      });
+
+      activitiesMonths.push(month);
+    }
+
     refDate.setMonth(refDate.getMonth() + 1);
     activityInstances = remainingActivities;
-  };
+  }
+
   return activitiesMonths;
-};
+}

@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 
 
 
-export default function CondictionTag({ task }) {
+export default function CondictionTag({ task}) {
   const { instance } = task;
 
   const { isPending: createPending, mutate: createInstance } = useMutation({

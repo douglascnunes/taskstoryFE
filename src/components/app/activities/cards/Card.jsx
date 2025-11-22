@@ -51,7 +51,7 @@ const activityConfigMap = {
   // },
 };
 
-export default function PanelCard({ activity }) {
+export default function PanelCard({ activity}) {
   const { openModal } = useContext(AppContext);
   const { loader } = useContext(ModalContext);
 
@@ -89,39 +89,41 @@ export default function PanelCard({ activity }) {
         </div>
       </div>
 
-      <div className={styles.status}>
-        <CondictionTag task={config.getTask(activity)} />
-        <TrashButton task={config.getTask(activity)} />
-        <PriorityTag importance={activity.importance} difficulty={activity.difficulty} />
-      </div>
 
+      <div className={styles.status}>
+        <CondictionTag task={config.getTask(activity)}/>
+        <TrashButton task={config.getTask(activity)} />
+        <PriorityTag importance={activity.importance} difficulty={activity.difficulty}/>
+      </div>
       <p className={styles.description}>{activity.description}</p>
 
       {config.component(activity)}
 
-      <div className={styles.keywords}>
-        {activity.keywords.map((kw, i) => (
-          <KeywordTag keyword={kw} key={i} />
-        ))}
-      </div>
       <div className={styles.footer}>
-        {finalDate && (
-          <div className={styles.dates}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              strokeWidth={1.5} stroke="currentColor" className="size-6"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 
+        <div className={styles.keywords}>
+          {activity.keywords.map((kw, i) => (
+            <KeywordTag keyword={kw} key={i}/>
+          ))}
+        </div>
+        <div className={styles.date}>
+          {finalDate && (
+            <div className={styles.dates}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                strokeWidth={1.5} stroke="currentColor" className="size-6"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 
               0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <p>
-              {finalDate.toLocaleDateString("pt-br", {
-                day: "2-digit",
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
-          </div>
-        )}
+              </svg>
+              <p>
+                {finalDate.toLocaleDateString("pt-br", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div >
   );

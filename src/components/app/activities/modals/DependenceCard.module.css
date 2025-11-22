@@ -97,9 +97,34 @@
   stroke: #666666;
 }
 
-.footer {
+.footerCompact {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+.trashArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: 0;
+  width: 20%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  border-radius: 0 7px 7px 0;
+  opacity: 0;
+}
+
+.trashArea:hover {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.trashArea svg {
+  height: 5rem;
+  width: 5rem;
+  stroke: #ffffff;
 }

@@ -1,6 +1,7 @@
 import { createContext, useReducer } from "react";
 import { updateTaskCondiction } from "../../util/panel/task";
 import { yyyymmddToDate } from "../../util/date";
+import { cleanToDependency } from "../../util/helpers/activity";
 
 
 function hasChanged(prev, next) {
@@ -17,6 +18,7 @@ export const ModalContext = createContext({
   difficulty: null,
   keywords: null,
   type: null,
+  dependencies: null,
   task: {
     id: null,
     startPeriod: null,
@@ -40,6 +42,7 @@ export const ModalContext = createContext({
   setDifficulty: () => { },
   toggleKeywords: () => { },
   setType: () => { },
+  toggleDependencies: () => { },
   loader: () => { },
   setTaskStartPeriod: () => { },
   setTaskEndPeriod: () => { },
@@ -95,7 +98,7 @@ function activityReducer(state, action) {
 
 
   if (action.type === 'TOGGLE_KEYWORDS') {
-    const currentKeywords = state.keywords ?? []; // garante que seja um array
+    const currentKeywords = state.keywords ?? [];
     const exists = currentKeywords.some(k => k.id === action.payload.id);
 
     if (exists && currentKeywords.length === 1) {
@@ -111,6 +114,45 @@ function activityReducer(state, action) {
       isActivityChange: JSON.stringify(currentKeywords) !== JSON.stringify(newKeywords) || state.isActivityChange,
       keywords: newKeywords
     };
+  }
+
+  if (action.type === 'TOGGLE_DEPENDENCY') {
+    const currentDependencies = state.dependencies || [];
+ 
+    if (action.payload.type === "ACTIVITY") {
+      const cleanActivity = cleanToDependency(action.payload.activity);
+      if (!cleanActivity) {
+        return { ...state }
+      }
+      
+      if (cleanActivity.type === "TASK") {
+        const hasActivityDependency = currentDependencies.some(d => d.activity?.task?.instance?.id === cleanActivity.task.instance.id);
+
+        if (hasActivityDependency) {
+          return {
+            ...state,
+            isActivityChange: true,
+            dependencies: currentDependencies.filter(d => d.activity?.task?.instance?.id !== cleanActivity.task.instance.id),
+          };
+        }
+        const newDependence = {
+          index: currentDependencies.length,
+          type: action.payload.type || 'ACTIVITY',
+          activity: cleanActivity || null,
+          description: action.payload.description || null,
+        };
+
+        return {
+          ...state,
+          isActivityChange: true,
+          dependencies: [...currentDependencies, newDependence],
+        };
+      }
+    }
+
+    return {
+      ...state
+    }
   }
 
 
@@ -140,7 +182,7 @@ function activityReducer(state, action) {
       activity.task.instance = activity.task.instance ?? instance;
       activity.task.instance.condiction = updateTaskCondiction(activity);
     };
-    // console.log('modal-contexnt: ',activity.task)
+  
     return {
       ...state,
       id: activity.id,
@@ -149,6 +191,7 @@ function activityReducer(state, action) {
       importance: activity.importance,
       difficulty: activity.difficulty,
       keywords: activity.keywords || [],
+      dependencies: activity.dependencies || [],
       type,
       isActivityChange: false,
       isInstanceChange: false,
@@ -474,6 +517,7 @@ export default function ModalContextProvider({ children }) {
     importance: "MEDIUM",
     difficulty: "MEDIUM",
     keywords: null,
+    dependencies: null,
     type: null,
     task: {
       id: null,
@@ -515,6 +559,10 @@ export default function ModalContextProvider({ children }) {
 
   function handleToggleKeyword(keyword) {
     activityDispatch({ type: 'TOGGLE_KEYWORDS', payload: keyword });
+  };
+
+  function handleToggleDependencies(type, activity, description) {
+    activityDispatch({ type: 'TOGGLE_DEPENDENCY', payload: { type, activity, description } });
   };
 
   function handleSetType(type) {
@@ -596,6 +644,7 @@ export default function ModalContextProvider({ children }) {
     importance: activityState.importance,
     difficulty: activityState.difficulty,
     keywords: activityState.keywords,
+    dependencies: activityState.dependencies,
     type: activityState.type,
     task: activityState.task,
     isActivityChange: activityState.isActivityChange,
@@ -605,6 +654,7 @@ export default function ModalContextProvider({ children }) {
     setImportance: handleSetImportance,
     setDifficulty: handleSetDifficulty,
     toggleKeywords: handleToggleKeyword,
+    toggleDependencies: handleToggleDependencies,
     setType: handleSetType,
     loader: handleLoader,
     // TASK REDUCERS

@@ -2,7 +2,7 @@ import { IMPORTANCE_VALUES, DIFFICULTY_VALUES, PRIORITY } from "../../../util/en
 import styles from "./PriorityTag.module.css";
 
 
-export default function PriorityView({ importance, difficulty }) {
+export default function PriorityView({ importance, difficulty}) {
   const importanceValue = IMPORTANCE_VALUES[importance]?.[1];
   const difficultyValue = DIFFICULTY_VALUES[difficulty]?.[1];
 
