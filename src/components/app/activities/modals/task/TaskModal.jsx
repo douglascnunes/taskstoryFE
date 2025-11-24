@@ -28,7 +28,6 @@ export default function TaskModal({ ref }) {
     importance,
     difficulty,
     keywords,
-    dependencies,
     task,
     isActivityChange, isInstanceChange,
     reset,
@@ -58,6 +57,7 @@ export default function TaskModal({ ref }) {
     mutationFn: updateTaskInstance,
     onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
   });
+
 
   useImperativeHandle(ref, () => {
     return {

@@ -25,7 +25,7 @@ function taskCopy(activity, finalDate) {
 
 
 function structureTask(activity, index) {
-  const instance = activity.task.taskInstances[index];
+  const instance = activity.task.instance[index];
 
   const StepsId = activity.task.steps.map(step => step.id);
   const filteredStepsStatus = instance.stepCompletionStatus.filter(status => StepsId.includes(status));
@@ -48,14 +48,14 @@ function structureTask(activity, index) {
       }
     }
   };
-  delete newTask.task.taskInstances
+  // delete newTask.task.instance
   return newTask
 };
 
 
 export function generateTaskInstances(activity, startOverviewDate, endOverviewDate) {
   const { task, createdAt } = activity;
-  const { taskInstances, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod, deletedInstances } = task;
+  const { instance, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod, deletedInstances } = task;
 
 
   if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
@@ -66,11 +66,11 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
       });
     };
     if (!wasDeleted) {
-      if (taskInstances.length === 0) {
+      if (instance.length === 0) {
         return [taskCopy(activity, new Date(endPeriod))];
       }
       else {
-        taskInstances[0].finalDate = new Date(endPeriod);
+        instance[0].finalDate = new Date(endPeriod);
         return [structureTask(activity, 0)];
       }
     }
@@ -101,8 +101,8 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
         });
       };
       if (!wasDeleted) {
-        if (taskInstances.length > 0) {
-          const index = taskInstances
+        if (instance.length > 0) {
+          const index = instance
             .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
           if (index !== -1) {
             activityInstances.push(structureTask(activity, index));
@@ -119,13 +119,13 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
       current.setDate(current.getDate() + frequenceIntervalDays);
     }
 
-    const remaining = taskInstances.filter(instance => {
+    const remaining = instance.filter(instance => {
       const instanceDate = new Date(instance.finalDate);
       return !addedDates.includes(instanceDate.toDateString());
     });
 
     for (const instance of remaining) {
-      const index = taskInstances.findIndex(i =>
+      const index = instance.findIndex(i =>
         compareDatesOnly(new Date(i.finalDate), new Date(instance.finalDate)) === 0
       );
       if (index !== -1) {
@@ -161,8 +161,8 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
         });
       };
       if (!wasDeleted && frequenceWeeklyDays.includes(current.getDay())) {
-        if (taskInstances.length > 0) {
-          const index = taskInstances
+        if (instance.length > 0) {
+          const index = instance
             .findIndex(instance => compareDatesOnly(new Date(instance.finalDate), current) === 0);
           if (index !== -1) {
             activityInstances.push(structureTask(activity, index));
@@ -179,13 +179,13 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
       current.setDate(current.getDate() + 1);
     }
 
-    const remaining = taskInstances.filter(instance => {
+    const remaining = instance.filter(instance => {
       const instanceDate = new Date(instance.finalDate);
       return !addedDates.includes(instanceDate.toDateString());
     });
 
     for (const instance of remaining) {
-      const index = taskInstances.findIndex(i =>
+      const index = instance.findIndex(i =>
         compareDatesOnly(new Date(i.finalDate), new Date(instance.finalDate)) === 0
       );
       if (index !== -1) {
@@ -203,7 +203,6 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 
 
 export function updateTaskCondiction(activity) {
-  // console.log("updateTaskCondiction", activity);
   const today = new Date();
   const { task } = activity;
   const { completedOn, stepCompletionStatus } = task.instance;
@@ -213,7 +212,12 @@ export function updateTaskCondiction(activity) {
     else return 'DONE_LATE';
   };
 
+  if (activity.dependencies && activity.dependencies.length > 0) {
+    return 'WAITING';
+  }
+
   if (compareDatesOnly(new Date(task.instance.finalDate), today) < 0) {
+    if (activity.dependencies && activity.dependencies.length > 0) return 'WAITING_LATE';
     if (stepCompletionStatus.length > 0) return "DOING_LATE";
     if (completedOn === null) return "TODO_LATE";
   }

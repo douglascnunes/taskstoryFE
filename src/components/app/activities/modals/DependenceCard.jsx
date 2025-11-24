@@ -51,7 +51,6 @@ export default function DependenceCard({ dependency, viewMode = "card" }) {
   const { mutateAsync: createInstance } = useMutation({
     mutationFn: createTaskInstance,
     onSuccess: () => queryClient.invalidateQueries(['activities'])
-
   });
 
   const bgColor = condiction ? CONDICTION[condiction]?.[3] : '#ffffff';
@@ -69,10 +68,16 @@ export default function DependenceCard({ dependency, viewMode = "card" }) {
 
   async function handleClick(mode) {
     if (viewMode === "select" || mode === "select") {
-      if (activity.type === "TASK" && !activity.task.instance.id) {
+      if (activity.type === "TASK" && !activity.task?.instance?.id) {
         const response = await createInstance({ taskId: activity.task.id, instance: cleanObject(activity.task.instance) });
-        console.log("Created instance:", response.instance);
-        const updated = { ...activity, task: { ...activity.task, instance: response.instance } };
+        const updated = {
+          ...activity,
+          task: {
+            ...activity.task,
+            instance: response.instance,
+            id: response.instance.taskId
+          }
+        };
 
         toggleDependencies("ACTIVITY", updated, null);
       } else {

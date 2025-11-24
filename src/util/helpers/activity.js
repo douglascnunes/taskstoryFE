@@ -5,20 +5,18 @@ import { updateTaskCondiction } from "../panel/task";
 function getActivityAndInstanceId(activity) {
   const activityId = activity.id;
   let instanceId = null;
-  if (activity.type === 'TASK' && activity.task?.instance?.id) {
+  if (String(activity.type).toUpperCase === "TASK" && activity.task?.instance?.id) {
     instanceId = activity.task?.instance?.id;
   }
   return { activityId, instanceId };
 }
 
 export function compareInstances(a, b) {
+
   const { activityId: activityIdA, instanceId: instanceIdA } = getActivityAndInstanceId(a);
   const { activityId: activityIdB, instanceId: instanceIdB } = getActivityAndInstanceId(b);
 
-  if (activityIdA === activityIdB && instanceIdA === instanceIdB) {
-    return true;
-  }
-  return false;
+  return activityIdA === activityIdB && instanceIdA === instanceIdB;
 }
 
 
@@ -52,20 +50,24 @@ export function cleanToDependency(activity) {
 
 
 export function generateInstance(activity) {
+  let activityCopy = null;
+
   if (activity.type === "TASK") {
     const priority = calcPriority(activity);
 
-    return {
+    activityCopy = {
       ...activity,
       priority,
       task: {
         ...activity.task,
         instance: {
-          ...activity.task.instance,
+          ...activity.task.instance[0],
           status: STATUS[0], // ACTIVE
-          condiction: updateTaskCondiction(activity),
         }
       }
+      }
     }
+    activityCopy.task.instance.condiction = updateTaskCondiction(activityCopy);
+
+    return activityCopy;
   }
-}

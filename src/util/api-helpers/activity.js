@@ -14,3 +14,20 @@ export function cleanObject(object) {
   }
   return cleanedObject;
 };
+
+
+export function preProcessDependency(instanceId, dependencies) {
+  return dependencies.map(dep => {
+    let depInstanceId = null;
+    if (dep.activity.type === "TASK") {
+      depInstanceId = dep.activity.task.instance.id ?? null;
+    }
+    return [
+      dep.activity.id,
+      depInstanceId,
+      instanceId,
+      dep.type,
+      dep.description
+    ]
+  });
+};

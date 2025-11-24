@@ -89,3 +89,24 @@ export async function updateActivity({ signal, activity }) {
 
   return await response.json();
 };
+
+
+
+export async function upsertDependencies({ signal, activityId, dependencies }) {
+  const token = getAuthToken();
+  const response = await fetch(url + 'activities/' + activityId + '/dependencies', {
+    signal,
+    method: 'POST',
+    body: JSON.stringify(dependencies),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create activity");
+  };
+
+  return await response.json();
+};

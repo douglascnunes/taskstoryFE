@@ -1,19 +1,32 @@
 import { useContext, useEffect, useRef } from 'react';
 import styles from './DependenceModal.module.css';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { ModalContext } from '../../../store/modal-context/modal-context';
-import { getOverview } from '../../../api/activities';
+import { getOverview, upsertDependencies } from '../../../api/activities';
 import { generateInstances, updateCondiction } from '../../../util/panel/panel';
 import { AppContext } from '../../../store/app-context';
 import DependenceCard from './modals/DependenceCard';
 import { compareInstances, generateInstance } from '../../../util/helpers/activity';
+import { cleanObject, preProcessDependency } from '../../../util/api-helpers/activity';
+import { createTaskInstance } from '../../../api/task';
+import { queryClient } from '../../../api/queryClient';
 
 
 export default function DependenceModal({ isOpenModal, closeModal }) {
-  const { dependencies } = useContext(ModalContext);
+  const { id, task, dependencies, getInstanceId } = useContext(ModalContext);
   const { startDate, endDate } = useContext(AppContext);
 
   const modalRef = useRef();
+
+  const { mutate: mutateUpsertDependencies } = useMutation({
+    mutationFn: upsertDependencies,
+    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
+  });
+
+  const { mutateAsync: createInstance } = useMutation({
+    mutationFn: createTaskInstance,
+    onSuccess: () => queryClient.invalidateQueries(['activities'])
+  });
 
   const { data: fetchedActivities } = useQuery({
     queryKey: ['activities', 'overview', startDate, endDate],
@@ -43,17 +56,31 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
     return !dependencies.some(dep => compareInstances(dep.activity, activity));
   });
 
+  async function handleClose() {
+    if (!dependencies || dependencies.length === 0) return;
+    let instanceId = getInstanceId();
+    if (!instanceId) {
+      const response = await createInstance({ taskId: task.id, instance: cleanObject(task.instance) });
+      instanceId = response.instance.taskId;
+    };
+    console.log('Instance ID on close:', instanceId);
+    mutateUpsertDependencies({
+      activityId: id,
+      dependencies: preProcessDependency(instanceId, dependencies),
+    });
+  }
 
 
   useEffect(() => {
     const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
+        handleClose();
         closeModal();
       }
     };
     if (isOpenModal) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpenModal, closeModal]);
+  }, [isOpenModal, closeModal, id, dependencies]);
 
   if (!isOpenModal) return null;
 

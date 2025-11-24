@@ -1,7 +1,7 @@
 import { createContext, useReducer } from "react";
 import { updateTaskCondiction } from "../../util/panel/task";
 import { yyyymmddToDate } from "../../util/date";
-import { cleanToDependency } from "../../util/helpers/activity";
+import { cleanToDependency, compareInstances, generateInstance } from "../../util/helpers/activity";
 
 
 function hasChanged(prev, next) {
@@ -57,6 +57,7 @@ export const ModalContext = createContext({
   setTaskStepDescription: () => { },
   setFinalDate: () => { },
   toggleStepCompletion: () => { },
+  getInstanceId: () => { },
   setIsActivityChange: () => { },
   setIsInstanceChange: () => { },
   reset: () => { },
@@ -118,13 +119,21 @@ function activityReducer(state, action) {
 
   if (action.type === 'TOGGLE_DEPENDENCY') {
     const currentDependencies = state.dependencies || [];
- 
+
     if (action.payload.type === "ACTIVITY") {
       const cleanActivity = cleanToDependency(action.payload.activity);
+
       if (!cleanActivity) {
         return { ...state }
       }
-      
+
+      if (compareInstances(cleanActivity, state)) {
+        return {
+          ...state
+        }
+          ;
+      }
+
       if (cleanActivity.type === "TASK") {
         const hasActivityDependency = currentDependencies.some(d => d.activity?.task?.instance?.id === cleanActivity.task.instance.id);
 
@@ -172,8 +181,16 @@ function activityReducer(state, action) {
     const type = String(activity.type).toLocaleLowerCase();
     activity.createdAt = activity.createdAt ? new Date(activity.createdAt) : null;
 
+    const dependencies = activity.dependencies ? activity.dependencies.map((dep, index) => {
+      return {
+        activity: generateInstance(dep),
+        type: dep.dependency.type,
+        description: dep.dependency.description,
+      }
+    }) : [];
+
     if (type === 'task') {
-      activity.task.instance = activity.task.taskInstances ? activity.task.taskInstances[0] : null;
+      activity.task.instance = activity.task.instance ? activity.task.instance[0] : null;
       activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : null;
       activity.task.endPeriod = activity.task.endPeriod ? new Date(activity.task.endPeriod) : null;
       activity.task.frequenceIntervalDays = activity.task.frequenceIntervalDays ?? null;
@@ -182,7 +199,8 @@ function activityReducer(state, action) {
       activity.task.instance = activity.task.instance ?? instance;
       activity.task.instance.condiction = updateTaskCondiction(activity);
     };
-  
+
+
     return {
       ...state,
       id: activity.id,
@@ -191,7 +209,7 @@ function activityReducer(state, action) {
       importance: activity.importance,
       difficulty: activity.difficulty,
       keywords: activity.keywords || [],
-      dependencies: activity.dependencies || [],
+      dependencies: dependencies,
       type,
       isActivityChange: false,
       isInstanceChange: false,
@@ -625,6 +643,13 @@ export default function ModalContextProvider({ children }) {
     activityDispatch({ type: 'LOADER', payload: { activity, instance } })
   };
 
+  function handleGetInstanceId() {
+    if (activityState?.type === "task") {
+      return activityState.task?.instance?.id || null;
+    }
+    return null;
+  };
+
   function handleSetIsActivityChange(value) {
     activityDispatch({ type: 'SET_ISACTIVITYCHANGE', payload: value })
   };
@@ -671,6 +696,7 @@ export default function ModalContextProvider({ children }) {
     removeTaskStep: handleRemoveTaskStep,
     setFinalDate: handleSetFinalDate,
     toggleStepCompletion: handleToggleStepCompletion,
+    getInstanceId: handleGetInstanceId,
     setIsActivityChange: handleSetIsActivityChange,
     setIsInstanceChange: handleSetIsInstanceChange,
     reset: handleReset,

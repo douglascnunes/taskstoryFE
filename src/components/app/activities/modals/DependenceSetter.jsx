@@ -32,14 +32,9 @@ export default function DependenceSetter() {
           <label htmlFor="keywords">Dependências</label>
         </div>
         <div className={styles.dependenciesContainer}>
-          {dependencies && dependencies.map((dependency, index) => {
-            const updatedDependency = {
-              type: dependency.type,
-              activity: generateInstance(dependency.activity),
-              description: dependency.description,
-            };
-            return (<DependenceCard key={index} dependency={updatedDependency} viewMode="card" />)
-          })}
+          {dependencies && dependencies.map((dependency, index) =>
+            (<DependenceCard key={index} dependency={dependency} viewMode="card" />)
+          )}
           <button className={`${styles.addKeywordButton} button`} onClick={openDependencyModal}>+</button>
         </div>
       </div>
