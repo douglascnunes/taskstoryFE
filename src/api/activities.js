@@ -12,6 +12,7 @@ export async function getOverview({ signal, startdateFilter, finaldateFilter }) 
 
   const response = await fetch(`${url}overview?${params.toString()}`, {
     signal,
+    method: 'GET',
     headers: { 'Authorization': 'Bearer ' + token }
   });
 

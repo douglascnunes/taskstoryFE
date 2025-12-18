@@ -48,7 +48,6 @@ function structureTask(activity, index) {
       }
     }
   };
-  // delete newTask.task.instance
   return newTask
 };
 

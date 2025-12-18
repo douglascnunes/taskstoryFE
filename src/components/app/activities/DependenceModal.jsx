@@ -49,6 +49,7 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
 
   activityInstances = updateCondiction(activityInstances);
 
+
   const filteredInstances = activityInstances.filter(activity => {
     if (!dependencies) {
       return activityInstances;
@@ -63,7 +64,7 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
       const response = await createInstance({ taskId: task.id, instance: cleanObject(task.instance) });
       instanceId = response.instance.taskId;
     };
-    console.log('Instance ID on close:', instanceId);
+
     mutateUpsertDependencies({
       activityId: id,
       dependencies: preProcessDependency(instanceId, dependencies),
@@ -92,14 +93,9 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
         {dependencies && dependencies.length > 0 ? (
           <div className={styles.keywordsList}>
             <h4>Dependências Adicionadas:</h4>
-            {dependencies && dependencies.map((dependency, index) => {
-              const updatedDependency = {
-                type: dependency.type,
-                activity: generateInstance(dependency.activity),
-                description: dependency.description,
-              };
-              return (<DependenceCard key={index} dependency={updatedDependency} viewMode="select" />)
-            })}
+            {dependencies && dependencies.map((dependency, index) =>
+              (<DependenceCard key={index} dependency={dependency} viewMode="select" />)
+            )}
           </div>
         ) : (
           <div className={styles.noKeywords}>

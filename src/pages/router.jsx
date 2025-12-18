@@ -10,6 +10,7 @@ import RootApp from "./app/RootApp";
 import LoginPage, { action as loginAction } from "./auth/LoginPage";
 import { checkAuthLoader, checkProcrastinationType, tokenLoader } from "../util/auth";
 import { action as logoutAction } from "../pages/auth/Logout";
+import UserHubPage from "./app/UserHub";
 
 
 const checkAuthLoader_AND_questionsLoader = async () => {
@@ -63,6 +64,11 @@ const router = createBrowserRouter([
         element: <MainApp />,
         // loader: activitiesLoader,
       },
+      {
+        path: 'perfil',
+        element: <UserHubPage />,
+        loader: tokenLoader_checkAuthLoader_AND_checkProcrastinationType,
+      }
     ]
   },
 ]);

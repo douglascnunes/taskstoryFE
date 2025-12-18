@@ -189,6 +189,7 @@ function activityReducer(state, action) {
       }
     }) : [];
 
+
     if (type === 'task') {
       activity.task.instance = activity.task.instance ? activity.task.instance[0] : null;
       activity.task.startPeriod = activity.task.startPeriod ? new Date(activity.task.startPeriod) : null;

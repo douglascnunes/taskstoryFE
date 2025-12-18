@@ -1,0 +1,22 @@
+.dropDownProfile {
+  position: absolute;
+  top: 4.5rem;
+  right: 1.5rem;
+  width: 20rem;
+  padding: 1rem 1rem 0 1rem;
+  border-radius: 15px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+a.link {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+a.link:hover {
+  color: #4080bf;
+  text-decoration: none;
+}

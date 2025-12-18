@@ -24,8 +24,9 @@ export async function getTask({ signal, id, instanceId }) {
 
 
 export async function createTask({ signal, activity }) {
+  console.log('HTTP: createTask');
+  console.log(activity);
   const token = getAuthToken();
-  console.log('createTask');
   const response = await fetch(url + 'tasks', {
     signal,
     method: 'POST',
@@ -46,7 +47,7 @@ export async function createTask({ signal, activity }) {
 
 
 export async function updateTask({ signal, activity }) {
-  console.log('updateTask');
+  console.log('HTTP: updateTask');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + activity.id, {
@@ -68,7 +69,7 @@ export async function updateTask({ signal, activity }) {
 
 
 export async function upsertSteps({ signal, id, steps }) {
-  console.log('upsertSteps');
+  console.log('HTTP: upsertSteps');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + id + '/steps', {
@@ -91,7 +92,7 @@ export async function upsertSteps({ signal, id, steps }) {
 
 
 export async function createTaskInstance({ signal, taskId, instance }) {
-  console.log('createTaskInstance');
+  console.log('HTTP: createTaskInstance');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + taskId + '/instance', {
@@ -114,7 +115,7 @@ export async function createTaskInstance({ signal, taskId, instance }) {
 
 
 export async function updateTaskInstance({ signal, taskId, instanceId, instance }) {
-  console.log('updateTaskInstance');
+  console.log('HTTP: updateTaskInstance');
   const token = getAuthToken();
 
   const response = await fetch(url + 'tasks/' + taskId + '/instance/' + instanceId, {

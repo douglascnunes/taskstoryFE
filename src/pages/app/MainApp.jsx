@@ -17,7 +17,8 @@ export default function MainApp() {
   const { data: fetchedUser } = useQuery({
     queryKey: ['user'],
     queryFn: ({ signal }) => getUser({ signal }),
-  })
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   useEffect(() => {
     if (fetchedUser) {

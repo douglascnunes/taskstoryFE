@@ -1,0 +1,135 @@
+.graphWrapper {
+  width: 100%;
+  height: 15rem;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  grid-template-rows: 1fr auto;
+  column-gap: 0.5rem;
+}
+
+
+.graph {
+  grid-column: 2;
+  grid-row: 1;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 0.2rem solid #ccc;
+  border-radius: 0.5rem;
+  background: #dddddd;
+}
+/* Linhas centrais */
+.verticalMid {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0.2rem;
+  height: 100%;
+  background: #cccccc;
+}
+
+.horizontalMid {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 0.2rem;
+  width: 100%;
+  background: #cccccc;
+}
+
+/* Quadrantes */
+.quadrant {
+  position: absolute;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 6px;
+}
+
+.topLeft {
+  top: 5%;
+  left: 5%;
+}
+
+.topRight {
+  top: 5%;
+  right: 5%;
+  text-align: right;
+}
+
+.bottomLeft {
+  bottom: 5%;
+  left: 5%;
+}
+
+.bottomRight {
+  bottom: 5%;
+  right: 5%;
+  text-align: right;
+}
+
+/* Ponto */
+.point {
+  position: absolute;
+  width: 1.4rem;
+  height: 1.4rem;
+  background: #1980e6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px #1980e6;
+}
+
+/* Labels dos eixos */
+.yAxisLabel {
+  grid-column: 1;
+  grid-row: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1rem;
+  font-weight: 600;
+  color: #aaa;
+}
+
+.yAxisLabel span {
+  transform: rotate(-90deg);
+  white-space: nowrap;
+}
+
+.xAxisLabel {
+  grid-column: 2;
+  grid-row: 2;
+
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #aaa;
+}
+
+
+.title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.header svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  stroke: #333333;
+}

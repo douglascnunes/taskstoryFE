@@ -45,7 +45,6 @@ export default function Panel() {
 
   activityInstances = updateCondiction(activityInstances);
 
-
   activityInstances = filterActivities(activityInstances, filterCondictions, filterPriorities, filterKeywords);
 
   activityInstances = orderActivities(activityInstances);
@@ -63,6 +62,7 @@ export default function Panel() {
   activityInstances = remainingWeekActivities;
 
   let activitiesMonths = filterMonthActivities(activityInstances, fetchedActivities?.startdate || startDate, fetchedActivities?.finaldate || endDate);
+
 
   const today = new Date();
   const currentMonth = today.getMonth();

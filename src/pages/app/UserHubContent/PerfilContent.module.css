@@ -1,0 +1,107 @@
+.container {
+  width: 100%;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;;
+  margin-bottom: 0.2rem;
+  color: #333;
+}
+
+.procrastinationType {
+  margin-left: 0.5rem;
+}
+
+.progressBar {
+  height: 1.6rem;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.progressBarAutoRegEff {
+  height: 1rem;
+  width: 12rem;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.fillAutoRegEff {
+  height: 100%;
+  background-color: #4080bf;
+  transition: width 0.3s ease;
+}
+
+.autoRegEffcontainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.userLevel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.level {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #666;
+  margin: 0 auto 0.5rem 0;
+}
+
+.name{
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.5rem 1rem 1rem 1rem;
+}
+
+.procrastinationType{
+  font-size: 1.2rem;
+  font-weight: 500;;
+  color: #999;
+  font-style: italic;
+  margin: 0 0 0 1rem;
+}
+
+.avatar{
+  width: 8rem;
+  border-radius: 20%;
+}
+
+.header{
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.header div {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelbar {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.divbar {
+  margin: 3rem 0 ;
+}

@@ -8,7 +8,7 @@
   width: 100%;
   top: 0;
   left: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: white;
@@ -68,4 +68,41 @@ button {
   height: 3rem;
   width: 3rem;
   border-radius: 20%;
+}
+
+
+.labelbar {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.progressBarAutoRegEff {
+  height: 0.8rem;
+  width: 3rem;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.fillAutoRegEff {
+  height: 100%;
+  background-color: #4080bf;
+  transition: width 0.3s ease;
+}
+
+.autoRegEffcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.autoRegEffcontainer>div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.3rem;
 }

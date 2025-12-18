@@ -51,6 +51,7 @@ export function cleanToDependency(activity) {
 
 export function generateInstance(activity) {
   let activityCopy = null;
+  console.log('Generating instance for activity:', activity); // Debug log
 
   if (activity.type === "TASK") {
     const priority = calcPriority(activity);
@@ -65,9 +66,10 @@ export function generateInstance(activity) {
           status: STATUS[0], // ACTIVE
         }
       }
-      }
     }
     activityCopy.task.instance.condiction = updateTaskCondiction(activityCopy);
-
-    return activityCopy;
   }
+
+
+  return activityCopy;
+}

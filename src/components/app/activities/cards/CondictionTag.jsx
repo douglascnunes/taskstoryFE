@@ -16,7 +16,9 @@ export default function CondictionTag({ task}) {
 
   const { isPending: updatePending, mutate: updateInstance } = useMutation({
     mutationFn: updateTaskInstance,
-    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['activities', 'overview'])
+    }
   });
 
   function toggleCompleted(e) {
