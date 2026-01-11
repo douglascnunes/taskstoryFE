@@ -95,6 +95,7 @@ export async function updateActivity({ signal, activity }) {
 
 export async function upsertDependencies({ signal, activityId, dependencies }) {
   const token = getAuthToken();
+  console.log(dependencies);
   const response = await fetch(url + 'activities/' + activityId + '/dependencies', {
     signal,
     method: 'POST',

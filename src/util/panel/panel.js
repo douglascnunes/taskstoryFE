@@ -7,6 +7,7 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
   let activityInstances = [];
 
   activities.forEach(activity => {
+    
     if (activity.type === "TASK") {
       const instance = generateTaskInstances(activity, startOverviewDate, endOverviewDate);
       if (instance) {
@@ -22,7 +23,12 @@ export function generateInstances(activities, startOverviewDate, endOverviewDate
 
 export function updateCondiction(activityInstances) {
 
-  activityInstances.forEach(activity => {
+  if (!activityInstances || activityInstances.length === 0) {
+    return activityInstances;
+  };
+
+  activityInstances.forEach(item => {
+    const activity = item.activity ?? item;
 
     if (activity.type === "TASK") {
       activity.task.instance.condiction = updateTaskCondiction(activity);
@@ -71,7 +77,7 @@ function orderByPriority(activities) {
 };
 
 function orderByCondiction(activities) {
-  return activities.sort((a, b) => CONDICTION[b.task.instance.condiction][4] - CONDICTION[a.task.instance.condiction][4]);
+  return activities.sort((a, b) => CONDICTION[a.task.instance.condiction][4] - CONDICTION[b.task.instance.condiction][4]);
 };
 
 

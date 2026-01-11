@@ -48,14 +48,38 @@ function structureTask(activity, index) {
       }
     }
   };
-  return newTask
-};
+
+  if (newTask.dependencies && Array.isArray(newTask.dependencies)) {
+    newTask.dependencies = newTask.dependencies
+      .map(dep => {
+        if (dep && dep.type === "TASK") {
+          if (dep.dependency && dep.dependency.instanceId === instance.id) {
+            return dep;
+          }
+        }
+        return null;
+      })
+      .filter(dep => dep !== null);
+  } else {
+    newTask.dependencies = [];
+  }
+
+  return newTask;
+}
 
 
 export function generateTaskInstances(activity, startOverviewDate, endOverviewDate) {
   const { task, createdAt } = activity;
   const { instance, endPeriod, frequenceIntervalDays, frequenceWeeklyDays, startPeriod, deletedInstances } = task;
 
+  // if (!startOverviewDate) {
+  //   startOverviewDate = new Date();
+  //   startOverviewDate.setMonth(startOverviewDate.getMonth() - 2);
+  // }
+  // if (!endOverviewDate) {
+  //   endOverviewDate = new Date();
+  //   endOverviewDate.setMonth(endOverviewDate.getMonth() + 2);
+  // }
 
   if (endPeriod && !frequenceIntervalDays && !frequenceWeeklyDays) {
     let wasDeleted;
@@ -123,10 +147,14 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
       return !addedDates.includes(instanceDate.toDateString());
     });
 
-    for (const instance of remaining) {
-      const index = instance.findIndex(i =>
-        compareDatesOnly(new Date(i.finalDate), new Date(instance.finalDate)) === 0
+    for (const remainingInstance of remaining) {
+      const index = activity.task.instance.findIndex(i =>
+        compareDatesOnly(
+          new Date(i.finalDate),
+          new Date(remainingInstance.finalDate)
+        ) === 0
       );
+
       if (index !== -1) {
         activityInstances.push(structureTask(activity, index));
       }
@@ -204,27 +232,39 @@ export function generateTaskInstances(activity, startOverviewDate, endOverviewDa
 export function updateTaskCondiction(activity) {
   const today = new Date();
   const { task } = activity;
-  const { completedOn, stepCompletionStatus } = task.instance;
+  const { completedOn, stepCompletionStatus, finalDate } = task.instance;
 
+  // Já concluída
   if (completedOn) {
-    if (compareDatesOnly(new Date(completedOn), new Date(task.instance.finalDate)) <= 0) return 'DONE';
-    else return 'DONE_LATE';
+    return compareDatesOnly(new Date(completedOn), new Date(finalDate)) <= 0
+      ? 'DONE'
+      : 'DONE_LATE';
   };
 
-  if (activity.dependencies && activity.dependencies.length > 0) {
-    return 'WAITING';
+  const hasDependencies = activity.dependencies && activity.dependencies.length > 0;
+  let allDependenciesDone = false;
+
+  if (hasDependencies) {
+    allDependenciesDone = activity.dependencies.every(dep => {
+      if (dep.type === "TASK") {
+        return dep.task?.instance[0]?.completedOn !== null &&
+          dep.task?.instance[0]?.completedOn !== undefined;
+      }
+    });
   }
 
-  if (compareDatesOnly(new Date(task.instance.finalDate), today) < 0) {
-    if (activity.dependencies && activity.dependencies.length > 0) return 'WAITING_LATE';
-    if (stepCompletionStatus.length > 0) return "DOING_LATE";
-    if (completedOn === null) return "TODO_LATE";
-  }
-  else {
-    if (stepCompletionStatus.length > 0) return "DOING";
+  // Fluxo principal
+  const isLate = compareDatesOnly(new Date(finalDate), today) < 0;
+
+  if (hasDependencies && !allDependenciesDone) {
+    return isLate ? 'WAITING_LATE' : 'WAITING';
   }
 
-  return "TODO";
+  if (stepCompletionStatus && stepCompletionStatus.length > 0) {
+    return isLate ? 'DOING_LATE' : 'DOING';
+  }
+
+  return isLate ? 'TODO_LATE' : 'TODO';
 };
 
 

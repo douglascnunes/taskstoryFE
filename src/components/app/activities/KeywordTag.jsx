@@ -5,9 +5,10 @@ export default function KeywordTag({ keyword, hoverColor = false, viewMode = "no
   const hslColor = getColorFromAngle(keyword.colorAngle);
   const className = `${style.keywordTag} ${hoverColor ? style.hoverable : ''}`;
   const height = viewMode === "normal" ? "rem" : "0.5rem";
+  const width = viewMode === "normal" ? "rem" : "1.5rem";
 
   return (
-    <div style={{ backgroundColor: hslColor, height: height }} className={className}>
+    <div style={{ backgroundColor: hslColor, height: height, width: width }} className={className}>
       {viewMode === "normal" &&
         <p>{keyword.name}</p>
       }

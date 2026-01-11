@@ -3,11 +3,11 @@ import DependenceModal from '../DependenceModal';
 import styles from './DependenceSetter.module.css';
 import DependenceCard from './DependenceCard';
 import { ModalContext } from '../../../../store/modal-context/modal-context';
-import { generateInstance } from '../../../../util/helpers/activity';
+import { updateCondiction } from '../../../../util/panel/panel';
 
 
 export default function DependenceSetter() {
-  const { dependencies } = useContext(ModalContext);
+  const { id, dependencies } = useContext(ModalContext);
   const [isOpenDependencyModal, setIsOpenDependency] = useState(false);
 
   function openDependencyModal() {
@@ -17,6 +17,8 @@ export default function DependenceSetter() {
   function closeDependencyModal() {
     setIsOpenDependency(false);
   };
+
+  const dependenciesUpdated = updateCondiction(dependencies);
 
   return (
     <>
@@ -32,8 +34,19 @@ export default function DependenceSetter() {
           <label htmlFor="keywords">Dependências</label>
         </div>
         <div className={styles.dependenciesContainer}>
-          {dependencies && dependencies.map((dependency, index) =>
-            (<DependenceCard key={index} dependency={dependency} viewMode="card" />)
+          {dependenciesUpdated && dependenciesUpdated.map((dep, index) => {
+            if (dep.type === "ACTIVITY") {
+              return (
+                <DependenceCard key={index}
+                  depActivityID={id}
+                  dependencies={dependencies}
+                  viewMode="card"
+                  type={dep.type}
+                  activity={dep.activity}
+                />
+              )
+            }
+          }
           )}
           <button className={`${styles.addKeywordButton} button`} onClick={openDependencyModal}>+</button>
         </div>

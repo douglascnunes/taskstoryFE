@@ -5,8 +5,11 @@ import { updateTaskCondiction } from "../panel/task";
 function getActivityAndInstanceId(activity) {
   const activityId = activity.id;
   let instanceId = null;
-  if (String(activity.type).toUpperCase === "TASK" && activity.task?.instance?.id) {
-    instanceId = activity.task?.instance?.id;
+  if (
+    String(activity.type).toUpperCase() === "TASK" &&
+    activity.task?.instance?.id != null
+  ) {
+    instanceId = activity.task.instance.id;
   }
   return { activityId, instanceId };
 }
@@ -31,6 +34,7 @@ export function cleanToDependency(activity) {
     difficulty: activity.difficulty,
     createdAt: activity.createdAt,
     keywords: activity.keywords,
+    dependencies: activity.dependencies,
   };
 
   if (activity.type === 'TASK') {
@@ -49,27 +53,27 @@ export function cleanToDependency(activity) {
 };
 
 
-export function generateInstance(activity) {
-  let activityCopy = null;
-  console.log('Generating instance for activity:', activity); // Debug log
+export function generateDepInstance(activity) {
 
   if (activity.type === "TASK") {
     const priority = calcPriority(activity);
 
-    activityCopy = {
-      ...activity,
-      priority,
-      task: {
-        ...activity.task,
-        instance: {
-          ...activity.task.instance[0],
-          status: STATUS[0], // ACTIVE
+    const aaa = activity.task.instance.map(inst => {
+      return {
+        ...activity,
+        priority,
+        task: {
+          ...activity.task,
+          instance: {
+            ...inst,
+            status: STATUS[0], // ACTIVE
+            condiction: updateTaskCondiction(activity),
+          }
         }
       }
-    }
-    activityCopy.task.instance.condiction = updateTaskCondiction(activityCopy);
+    });
+
+    return aaa;
   }
-
-
-  return activityCopy;
+  return;
 }

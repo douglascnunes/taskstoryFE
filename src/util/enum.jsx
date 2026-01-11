@@ -14,35 +14,36 @@ export const STATUS = [
 ];
 
 // LabelText, TagColor, LabelColor, CardColor, OrderValue
+// Menor OderValue = Maior Prioridade
 export const CONDICTION = {
   REFERENCE:
-    ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9', 0],
+    ['Referência', '#cccccc', '#4d4d4d', '#d9d9d9', 998],
   INCUBATION:
-    ['Incubação', '#d9cabf', '#8f6e56', '#d9cabf', 0],
+    ['Incubação', '#d9cabf', '#8f6e56', '#d9cabf', 998],
   TODO:
     ['A Fazer', '#f5e0a3', '#635836', '#f4ebbe', 3],
   TODO_LATE:
-    ['A fazer com atraso', '#f5b8a3', '#cf4517', '#eccfc6', 6],
+    ['A fazer com atraso', '#f5b8a3', '#cf4517', '#eccfc6', 2],
   WAITING:
-    ['Esperando', '#bbbbbb', '#888888', '#d0d0d0', 0],
+    ['Esperando', '#bbbbbb', '#888888', '#d0d0d0', 5],
   WAITING_LATE:
-    ['Esperando com atraso', '#bbbbbb', '#75b6d7', '#d0d0d0', 0],
+    ['Esperando com atraso', '#bbbbbb', '#75b6d7', '#d0d0d0', 4],
   DOING:
-    ['Fazendo', '#a3daf5', '#365463', '#bee2f4', 5],
+    ['Fazendo', '#a3daf5', '#365463', '#bee2f4', 1],
   DOING_LATE:
-    ['Fazendo com atraso', '#8c9df2', '#363e63', '#bac4f7', 7],
+    ['Fazendo com atraso', '#8c9df2', '#363e63', '#bac4f7', 0],
   DONE:
-    ['Concluído', '#a3f5b1', '#36633e', '#99e6a6', 1],
+    ['Concluído', '#a3f5b1', '#36633e', '#99e6a6', 101],
   DONE_LATE:
-    ['Concluído com atraso', '#b3ccb7', '#36633e', '#94b89a', 2],
+    ['Concluído com atraso', '#b3ccb7', '#36633e', '#94b89a', 100],
   PAUSED:
-    ['Pausado', '#bbbbbb', '#888888', '#d0d0d0', 0],
+    ['Pausado', '#bbbbbb', '#888888', '#d0d0d0', 997],
   PAUSED_LATE:
-    ['Pausado com atraso', '#bbbbbb', '#888888', '#d0d0d0', 0],
+    ['Pausado com atraso', '#bbbbbb', '#888888', '#d0d0d0', 996],
   DELETED:
-    ['Deletado', '#bbbbbb', '#888888', '#d0d0d0', 0],
+    ['Deletado', '#bbbbbb', '#888888', '#d0d0d0', 999],
   TRASH:
-    ['Excluído', '#bbbbbb', '#888888', '#808080', 0],
+    ['Excluído', '#bbbbbb', '#888888', '#808080', 999],
 };
 
 

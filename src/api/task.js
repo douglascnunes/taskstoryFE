@@ -25,7 +25,6 @@ export async function getTask({ signal, id, instanceId }) {
 
 export async function createTask({ signal, activity }) {
   console.log('HTTP: createTask');
-  console.log(activity);
   const token = getAuthToken();
   const response = await fetch(url + 'tasks', {
     signal,

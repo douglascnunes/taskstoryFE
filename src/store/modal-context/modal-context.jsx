@@ -1,7 +1,8 @@
 import { createContext, useReducer } from "react";
 import { updateTaskCondiction } from "../../util/panel/task";
 import { yyyymmddToDate } from "../../util/date";
-import { cleanToDependency, compareInstances, generateInstance } from "../../util/helpers/activity";
+import { cleanToDependency, compareInstances, generateDepInstance } from "../../util/helpers/activity";
+import { computeNextDependencies } from "./modal-activity-context";
 
 
 function hasChanged(prev, next) {
@@ -118,51 +119,15 @@ function activityReducer(state, action) {
   }
 
   if (action.type === 'TOGGLE_DEPENDENCY') {
-    const currentDependencies = state.dependencies || [];
-
-    if (action.payload.type === "ACTIVITY") {
-      const cleanActivity = cleanToDependency(action.payload.activity);
-
-      if (!cleanActivity) {
-        return { ...state }
-      }
-
-      if (compareInstances(cleanActivity, state)) {
-        return {
-          ...state
-        }
-          ;
-      }
-
-      if (cleanActivity.type === "TASK") {
-        const hasActivityDependency = currentDependencies.some(d => d.activity?.task?.instance?.id === cleanActivity.task.instance.id);
-
-        if (hasActivityDependency) {
-          return {
-            ...state,
-            isActivityChange: true,
-            dependencies: currentDependencies.filter(d => d.activity?.task?.instance?.id !== cleanActivity.task.instance.id),
-          };
-        }
-        const newDependence = {
-          index: currentDependencies.length,
-          type: action.payload.type || 'ACTIVITY',
-          activity: cleanActivity || null,
-          description: action.payload.description || null,
-        };
-
-        return {
-          ...state,
-          isActivityChange: true,
-          dependencies: [...currentDependencies, newDependence],
-        };
-      }
-    }
+    const nextDependencies = computeNextDependencies(state, action.payload);
 
     return {
-      ...state
-    }
+      ...state,
+      isActivityChange: nextDependencies !== state.dependencies,
+      dependencies: nextDependencies,
+    };
   }
+
 
 
 
@@ -181,13 +146,19 @@ function activityReducer(state, action) {
     const type = String(activity.type).toLocaleLowerCase();
     activity.createdAt = activity.createdAt ? new Date(activity.createdAt) : null;
 
-    const dependencies = activity.dependencies ? activity.dependencies.map((dep, index) => {
-      return {
-        activity: generateInstance(dep),
-        type: dep.dependency.type,
-        description: dep.dependency.description,
-      }
+    const dependencies = activity.dependencies ? activity.dependencies.flatMap((dep) => {
+      const depInstancies = generateDepInstance(dep);
+
+      return depInstancies.flatMap(depInst => {
+        return {
+          activity: depInst,
+          type: dep.dependency.type,
+          description: dep.dependency.description,
+        }
+      })
     }) : [];
+
+    // console.log(dependencies)
 
 
     if (type === 'task') {

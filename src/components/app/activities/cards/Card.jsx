@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { act, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import styles from './Card.module.css';
@@ -13,6 +13,9 @@ import { ACTIVITY_TYPE, CONDICTION } from '../../../../util/enum.jsx';
 import PriorityTag from '../PriorityTag';
 import CondictionTag from './CondictionTag.jsx';
 import TrashButton from './TrashButton.jsx';
+import DependenceCard from '../modals/DependenceCard.jsx';
+import { generateInstances, updateCondiction } from '../../../../util/panel/panel.js';
+import { generateDepInstance } from '../../../../util/helpers/activity.js';
 
 
 const activityConfigMap = {
@@ -21,6 +24,7 @@ const activityConfigMap = {
     getFinalDate: (activity) => new Date(activity.task.instance.finalDate),
     getCondiction: (activity) => activity.task.instance.condiction,
     getTask: (activity) => activity.task,
+    getInstanceID: (activity) => activity.task.instance.id,
     queryFn: getTask,
     getParams: ({ signal, activity }) => ({
       signal,
@@ -51,7 +55,7 @@ const activityConfigMap = {
   // },
 };
 
-export default function PanelCard({ activity}) {
+export default function PanelCard({ activity }) {
   const { openModal } = useContext(AppContext);
   const { loader } = useContext(ModalContext);
 
@@ -67,11 +71,20 @@ export default function PanelCard({ activity}) {
     const result = await refetch();
     config.loaderHandler(loader, result, activity);
     openModal('UPDATE', activity.type.toUpperCase());
-  }
+  };
 
   const finalDate = config.getFinalDate?.(activity);
   const condiction = config.getCondiction?.(activity);
   const bgColor = condiction ? CONDICTION[condiction]?.[3] : '#ffffff';
+
+  let dependencyInstances = activity.dependencies.flatMap(dep => generateDepInstance(dep));
+
+  let dependenciesUpdated = updateCondiction(dependencyInstances);
+  dependenciesUpdated = dependenciesUpdated.filter(dep => dep.task.instance.condiction !== 'DONE');
+  if (activity.title === "PRINCIPAL") {
+    console.log(dependencyInstances)
+  }
+
 
   return (
     <div
@@ -91,9 +104,9 @@ export default function PanelCard({ activity}) {
 
 
       <div className={styles.status}>
-        <CondictionTag task={config.getTask(activity)}/>
+        <CondictionTag task={config.getTask(activity)} />
         <TrashButton task={config.getTask(activity)} />
-        <PriorityTag importance={activity.importance} difficulty={activity.difficulty}/>
+        <PriorityTag importance={activity.importance} difficulty={activity.difficulty} />
       </div>
       <p className={styles.description}>{activity.description}</p>
 
@@ -102,7 +115,7 @@ export default function PanelCard({ activity}) {
       <div className={styles.footer}>
         <div className={styles.keywords}>
           {activity.keywords.map((kw, i) => (
-            <KeywordTag keyword={kw} key={i}/>
+            <KeywordTag keyword={kw} key={i} />
           ))}
         </div>
         <div className={styles.date}>
@@ -125,6 +138,24 @@ export default function PanelCard({ activity}) {
           )}
         </div>
       </div>
+      {dependenciesUpdated && dependenciesUpdated.length > 0 && (
+        <div className={styles.dependencies}>
+          {dependenciesUpdated.map((dep, index) => {
+            if (dep.dependency.type === "ACTIVITY") {
+              return (
+                <DependenceCard key={index}
+                  depActivityID={activity.id}
+                  dependencies={dependenciesUpdated}
+                  viewMode="card"
+                  type={dep.dependency.type}
+                  activity={dep}
+                />
+              )
+            }
+          }
+          )}
+        </div>
+      )}
     </div >
   );
 }

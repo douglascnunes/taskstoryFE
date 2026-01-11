@@ -56,7 +56,7 @@ export function checkProcrastinationType() {
 export function authenticateStorage({ token, procrastinationType }) {
   localStorage.setItem('token', token);
   const expiration = new Date();
-  expiration.setHours(expiration.getHours() + 1);
+  expiration.setHours(expiration.getHours() + 5);
   localStorage.setItem('expiration', expiration.toISOString());
   localStorage.setItem('procrastinationType', procrastinationType);
 };

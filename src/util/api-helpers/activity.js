@@ -22,6 +22,7 @@ export function preProcessDependency(instanceId, dependencies) {
     if (dep.activity.type === "TASK") {
       depInstanceId = dep.activity.task.instance.id ?? null;
     }
+    
     return [
       dep.activity.id,
       depInstanceId,

@@ -6,27 +6,17 @@ import { getOverview, upsertDependencies } from '../../../api/activities';
 import { generateInstances, updateCondiction } from '../../../util/panel/panel';
 import { AppContext } from '../../../store/app-context';
 import DependenceCard from './modals/DependenceCard';
-import { compareInstances, generateInstance } from '../../../util/helpers/activity';
+import { compareInstances, generateDepInstance } from '../../../util/helpers/activity';
 import { cleanObject, preProcessDependency } from '../../../util/api-helpers/activity';
 import { createTaskInstance } from '../../../api/task';
 import { queryClient } from '../../../api/queryClient';
 
 
 export default function DependenceModal({ isOpenModal, closeModal }) {
-  const { id, task, dependencies, getInstanceId } = useContext(ModalContext);
+  const { id, task, dependencies } = useContext(ModalContext);
   const { startDate, endDate } = useContext(AppContext);
 
   const modalRef = useRef();
-
-  const { mutate: mutateUpsertDependencies } = useMutation({
-    mutationFn: upsertDependencies,
-    onSuccess: () => queryClient.invalidateQueries(['activities', 'overview']),
-  });
-
-  const { mutateAsync: createInstance } = useMutation({
-    mutationFn: createTaskInstance,
-    onSuccess: () => queryClient.invalidateQueries(['activities'])
-  });
 
   const { data: fetchedActivities } = useQuery({
     queryKey: ['activities', 'overview', startDate, endDate],
@@ -41,41 +31,41 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
     staleTime: 1000 * 60 * 10,
   });
 
+
+  const { mutateAsync: createInstance } = useMutation({
+    mutationFn: createTaskInstance,
+    onSuccess: () => queryClient.invalidateQueries(['activities'])
+  });
+
+  async function helperCreateInstance() {
+    const response = await createInstance({
+      taskId: task.id,
+      instance: cleanObject(task.instance),
+    })
+    return response.instance.id;
+  }
+
+
   let activityInstances = generateInstances(
     fetchedActivities?.activities || [],
     fetchedActivities?.startdate,
     fetchedActivities?.finaldate
   );
-
   activityInstances = updateCondiction(activityInstances);
+  
 
-
-  const filteredInstances = activityInstances.filter(activity => {
-    if (!dependencies) {
-      return activityInstances;
-    }
-    return !dependencies.some(dep => compareInstances(dep.activity, activity));
-  });
-
-  async function handleClose() {
-    if (!dependencies || dependencies.length === 0) return;
-    let instanceId = getInstanceId();
-    if (!instanceId) {
-      const response = await createInstance({ taskId: task.id, instance: cleanObject(task.instance) });
-      instanceId = response.instance.taskId;
-    };
-
-    mutateUpsertDependencies({
-      activityId: id,
-      dependencies: preProcessDependency(instanceId, dependencies),
+  let filteredInstances = [];
+  if (!dependencies) {
+    return;
+  } else {
+    filteredInstances = activityInstances.filter(activity => {
+      return !dependencies.some(dep => compareInstances(dep.activity, activity));
     });
   }
-
 
   useEffect(() => {
     const handleClickOutside = e => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
-        handleClose();
         closeModal();
       }
     };
@@ -93,8 +83,20 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
         {dependencies && dependencies.length > 0 ? (
           <div className={styles.keywordsList}>
             <h4>Dependências Adicionadas:</h4>
-            {dependencies && dependencies.map((dependency, index) =>
-              (<DependenceCard key={index} dependency={dependency} viewMode="select" />)
+            {dependencies && dependencies.map((dep, index) => {
+              if (dep.type === "ACTIVITY") {
+                return (
+                  <DependenceCard key={index}
+                    depActivityID={id}
+                    dependencies={dependencies}
+                    depCreateInstance={helperCreateInstance}
+                    viewMode="select"
+                    type={dep.type}
+                    activity={dep.activity}
+                  />
+                )
+              }
+            }
             )}
           </div>
         ) : (
@@ -105,9 +107,17 @@ export default function DependenceModal({ isOpenModal, closeModal }) {
 
         <div className={styles.dependencysList}>
           <h4>Lista de Atividades:</h4>
-          {filteredInstances.map((dep, index) => (
-            <DependenceCard key={index} dependency={{ type: "ACTIVITY", activity: dep, description: null }} viewMode="select" />
-          ))}
+          {filteredInstances && filteredInstances.map((dep, index) => (
+            <DependenceCard key={index}
+              depActivityID={id}
+              dependencies={dependencies}
+              depCreateInstance={helperCreateInstance}
+              instanceId={task.instance.id}
+              viewMode="select"
+              type="ACTIVITY"
+              activity={dep}
+            />)
+          )}
         </div>
       </ div>
     </div>
